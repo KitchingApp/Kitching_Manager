@@ -1,4 +1,4 @@
-package com.kitching.app.ui.screen.bottomtab
+package com.kitching.app.ui.screen.other
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -15,7 +15,7 @@ import androidx.navigation.NavController
 import com.kitching.app.ui.theme.KitchingManagerTheme
 
 @Composable
-fun ScheduleTabScreen(navController: NavController) {
+fun OtherTabScreen(navController: NavController) {
     KitchingManagerTheme {
         Surface(
             modifier = Modifier.fillMaxSize()
@@ -26,7 +26,7 @@ fun ScheduleTabScreen(navController: NavController) {
                 verticalArrangement = Arrangement.Center
             ) {
                 Text(
-                    text = "Schedule Tab"
+                    text = "Other Tab"
                 )
             }
         }

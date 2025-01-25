@@ -9,11 +9,11 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.kitching.app.navgraph.ScreenRouteDef
 import com.kitching.app.navgraph.sliceNavGraph
-import com.kitching.app.ui.screen.bottomtab.OtherTabScreen
-import com.kitching.app.ui.screen.bottomtab.OrderTabScreen
-import com.kitching.app.ui.screen.bottomtab.PrepTabScreen
-import com.kitching.app.ui.screen.bottomtab.RecipeTabScreen
-import com.kitching.app.ui.screen.bottomtab.ScheduleTabScreen
+import com.kitching.app.ui.screen.other.OtherTabScreen
+import com.kitching.app.ui.screen.order.OrderTabScreen
+import com.kitching.app.ui.screen.prep.PrepTabScreen
+import com.kitching.app.ui.screen.recipe.RecipeTabScreen
+import com.kitching.app.ui.screen.schedule.ScheduleTabScreen
 
 @Composable
 fun CustomNavHost(
@@ -27,7 +27,6 @@ fun CustomNavHost(
     ) {
         composable(ScreenRouteDef.ScheduleTab.routeName) {
             ScheduleTabScreen(
-                navController
             )
         }
         composable(ScreenRouteDef.PrepTab.routeName) {
