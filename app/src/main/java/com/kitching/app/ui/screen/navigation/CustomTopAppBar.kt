@@ -11,6 +11,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.vectorResource
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.sp
 import com.kitching.app.R
 import com.kitching.app.ui.theme.mainColor
 import kotlinx.coroutines.CoroutineScope
@@ -27,7 +29,9 @@ fun CustomTopAppBar(
         title = {
             Text(
                 text = title,
-                color = Color.White
+                color = Color.White,
+                fontSize = 20.sp,
+                fontWeight = FontWeight.Bold
             )
         },
         colors = TopAppBarDefaults.topAppBarColors(
@@ -44,7 +48,7 @@ fun CustomTopAppBar(
                 }
             }) {
                 Icon(
-                    imageVector = ImageVector.vectorResource(R.drawable.icon_menu),
+                    imageVector = ImageVector.vectorResource(R.drawable.icon_hamburger_menu),
                     contentDescription = "navigation icon",
                     tint = Color.White
                 )

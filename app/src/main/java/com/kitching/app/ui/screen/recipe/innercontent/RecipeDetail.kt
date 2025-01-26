@@ -1,6 +1,5 @@
-package com.kitching.app.ui.screen.bottomtab
+package com.kitching.app.ui.screen.recipe.innercontent
 
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -12,12 +11,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavController
-import com.kitching.app.ui.theme.KitchingManagerTheme
 
 @Composable
-fun RecipeTabScreen(navController: NavController) {
-    KitchingManagerTheme {
+fun RecipeDetail(recipeId: String?) {
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center
+    ) {
         Surface(
             modifier = Modifier.fillMaxSize()
         ) {
@@ -27,10 +27,7 @@ fun RecipeTabScreen(navController: NavController) {
                 verticalArrangement = Arrangement.Center
             ) {
                 Text(
-                    text = "Recipe Tab",
-                    Modifier.clickable {
-                        navController.navigate("detail/1")
-                    }
+                    text = "Recipe Detail: $recipeId"
                 )
             }
         }

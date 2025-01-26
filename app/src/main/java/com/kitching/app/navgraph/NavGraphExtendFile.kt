@@ -6,7 +6,7 @@ import androidx.navigation.NavType
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import androidx.navigation.navigation
-import com.kitching.app.ui.screen.innercontent.RecipeDetail
+import com.kitching.app.ui.screen.recipe.innercontent.RecipeDetail
 
 fun NavGraphBuilder.sliceNavGraph(navController: NavController) {
     navigation(
