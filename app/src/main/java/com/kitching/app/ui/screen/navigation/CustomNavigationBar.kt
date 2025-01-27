@@ -18,7 +18,6 @@ import com.kitching.app.navgraph.BottomNavItem
 import com.kitching.app.ui.theme.bottomNavItemColor
 import com.kitching.app.ui.theme.bottomNavLabelColor
 import com.kitching.app.ui.theme.mainColor
-import com.kitching.app.ui.theme.pretendard
 
 @Composable
 fun CustomNavigationBar(
@@ -43,7 +42,6 @@ fun CustomNavigationBar(
                     label = {
                         Text(
                             text = bottomNavItem.tabName,
-                            fontFamily = pretendard
                         )
                     },
                     icon = {

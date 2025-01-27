@@ -19,7 +19,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.kitching.app.navgraph.ScheduleTabItem
 import com.kitching.app.ui.theme.mainColor
-import com.kitching.app.ui.theme.pretendard
 import com.kitching.app.ui.theme.subColor1
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
@@ -66,7 +65,6 @@ fun ScheduleTabs(
                             fontWeight = if (tabPageState.currentPage == index) FontWeight.Bold else FontWeight.Normal,
                             color = Color.Black,
                             fontSize = 16.dp.value.sp,
-                            fontFamily = pretendard
                         )
                     }
                 )

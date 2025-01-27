@@ -21,7 +21,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.kitching.app.R
-import com.kitching.app.ui.theme.pretendard
 import com.kitching.app.ui.theme.subTextColor
 import java.time.LocalDate
 
@@ -66,7 +65,6 @@ fun DateSelector(
                     text = selectedDate.toString(),
                     color = subTextColor,
                     fontSize = 16.sp,
-                    fontFamily = pretendard,
                     fontWeight = FontWeight.SemiBold
                 )
             }
