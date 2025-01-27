@@ -24,7 +24,7 @@ import java.time.ZoneId
 fun DatePickerModal(
     selectedDateTime: LocalDateTime,
     onDismissRequest: () -> Unit,
-    onClickConfirm: (selectedDateMills: Long?) -> Unit,
+    onClickConfirm: (selectedDateMillis: Long?) -> Unit,
     onClickCancel: () -> Unit
 ) {
 
