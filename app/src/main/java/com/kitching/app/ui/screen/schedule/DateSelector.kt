@@ -22,7 +22,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.kitching.app.R
 import com.kitching.app.ui.theme.subTextColor
-import java.time.LocalDate
+import java.time.LocalDateTime
 
 /**
  * 날짜 선택 컴포넌트
@@ -31,8 +31,8 @@ import java.time.LocalDate
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun DateSelector(
-    selectedDate: LocalDate,
-    onDateChange: (LocalDate) -> Unit, // 날짜 변경시 호출
+    selectedDateTime: LocalDateTime,
+    onDateChange: (LocalDateTime) -> Unit, // 날짜 변경시 호출
     onClickDateBtn: () -> Unit // 날짜 텍스트 버튼 클릭시 호출
 ) {
     Column(
@@ -45,7 +45,7 @@ fun DateSelector(
         Row(
         ) {
             IconButton(onClick = {
-                onDateChange(selectedDate.minusDays(1))
+                onDateChange(selectedDateTime.minusDays(1))
             }) {
                 Icon(
                     imageVector = ImageVector.vectorResource(R.drawable.icon_left_triangle),
@@ -62,14 +62,14 @@ fun DateSelector(
                 },
             ) {
                 Text(
-                    text = selectedDate.toString(),
+                    text = selectedDateTime.toLocalDate().toString(),
                     color = subTextColor,
                     fontSize = 16.sp,
                     fontWeight = FontWeight.SemiBold
                 )
             }
             IconButton(onClick = {
-                onDateChange(selectedDate.plusDays(1))
+                onDateChange(selectedDateTime.plusDays(1))
             }) {
                 Icon(
                     imageVector = ImageVector.vectorResource(R.drawable.icon_right_triangle),
