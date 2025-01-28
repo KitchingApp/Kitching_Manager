@@ -10,9 +10,12 @@ val Purple40 = Color(0xFF6650a4)
 val PurpleGrey40 = Color(0xFF625b71)
 val Pink40 = Color(0xFF7D5260)
 
+val whiteColor = Color(0xFFFFFFFF)
+
 val mainColor = Color(0xFF51D088)
 val subColor1 = Color(0xFFF0FDD2)
 val subColor2 = Color(0xFF3E825B)
+val subColor3 = Color(0xFF4AE08B)
 val bottomNavItemColor = Color(0xFFCCCCCC)
 val bottomNavLabelColor = Color(0xFF949494)
 val subTextColor = Color(0xFF565656)
