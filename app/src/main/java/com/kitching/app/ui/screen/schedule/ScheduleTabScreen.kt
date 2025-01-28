@@ -1,32 +1,59 @@
 package com.kitching.app.ui.screen.schedule
 
+import android.os.Build
+import android.util.Log
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
+import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.res.vectorResource
-import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
-import com.kitching.app.R
+import com.kitching.app.common.ActionIconInfo
+import com.kitching.app.common.CommonState
+import com.kitching.app.common.NavigationIconInfo
 import com.kitching.app.navgraph.ScheduleTabItem
 import com.kitching.app.ui.theme.KitchingManagerTheme
-import com.kitching.app.ui.theme.subTextColor
+import kotlinx.coroutines.launch
+import java.time.LocalDateTime
 
-@Preview
+//@RequiresApi(Build.VERSION_CODES.O)
+@RequiresApi(Build.VERSION_CODES.UPSIDE_DOWN_CAKE)
 @Composable
-fun ScheduleTabScreen() {
+fun ScheduleTabScreen(
+    commonState: CommonState
+) {
+    commonState.topAppBarState.value = commonState.topAppBarState.value.copy(
+        navIconInfo = NavigationIconInfo.DRAWER,
+        onClickNavIcon = {
+            if (commonState.topAppBarState.value.drawerState.isOpen) {
+                commonState.scope.launch { commonState.topAppBarState.value.drawerState.close() }
+            } else {
+                commonState.scope.launch { commonState.topAppBarState.value.drawerState.open() }
+            }
+        },
+        actionIconInfo = ActionIconInfo.ADD,
+        onClickActionIcon = {
+            Log.d("TopAppBar", "Action Icon Clicked in ScheduleTabScreen")
+        },
+    )
+
+    var showDatePicker by remember { mutableStateOf(false) }
+    var selectedDateTime by remember { mutableStateOf(LocalDateTime.now()) }
+
+    val tabItems = ScheduleTabItem().renderTabItems()
+    val tabPageState = rememberPagerState(
+        initialPage = 0,
+        pageCount = { tabItems.size }
+    )
+
     KitchingManagerTheme {
         Surface(
             modifier = Modifier.fillMaxSize()
@@ -36,42 +63,6 @@ fun ScheduleTabScreen() {
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Top
             ) {
-                Column(
-                    modifier = Modifier.fillMaxWidth().height(60.dp),
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.Center
-                ) {
-                    Row(
-                    ) {
-                        IconButton(onClick = {}) {
-                            Icon(
-                                imageVector = ImageVector.vectorResource(R.drawable.icon_left_triangle),
-                                contentDescription = "prev date button",
-                                tint = subTextColor
-                            )
-                        }
-                        Text(
-                            modifier = Modifier.padding(27.dp, 0.dp).align(Alignment.CenterVertically),
-                            text = "2025-01-24",
-                            color = subTextColor,
-                            fontSize = 16.sp
-                        )
-                        IconButton(onClick = {}) {
-                            Icon(
-                                imageVector = ImageVector.vectorResource(R.drawable.icon_right_triangle),
-                                contentDescription = "next date button",
-                                tint = subTextColor
-                            )
-                        }
-                    }
-                }
-                Column(
-                    modifier = Modifier.fillMaxWidth().height(60.dp),
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.Center
-                ) {
-                    ScheduleTabItem().renderTabItems()
-                }
             }
         }
     }
