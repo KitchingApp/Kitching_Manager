@@ -14,7 +14,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
 import com.kitching.app.common.ActionIconInfo
 import com.kitching.app.common.TopAppBarState
-import com.kitching.app.ui.theme.mainColor
+import com.kitching.app.ui.theme.PrimaryGreen300
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -31,7 +31,7 @@ fun CustomTopAppBar(
             )
         },
         colors = TopAppBarDefaults.topAppBarColors(
-            containerColor = mainColor
+            containerColor = PrimaryGreen300
         ),
         navigationIcon = {
             IconButton(onClick = topAppBarState.onClickNavIcon) {
