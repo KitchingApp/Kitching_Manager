@@ -13,7 +13,7 @@ import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
-import com.kitching.app.ui.theme.mainColor
+import com.kitching.app.ui.theme.PrimaryGreen300
 import com.kitching.app.ui.theme.pretendard
 import java.time.LocalDateTime
 import java.time.ZoneId
@@ -42,7 +42,7 @@ fun DatePickerModal(
             ) {
                 Text(
                     text = "확인",
-                    color = mainColor,
+                    color = PrimaryGreen300,
                     fontWeight = FontWeight.Bold,
                     fontFamily = pretendard
                 )
@@ -54,7 +54,7 @@ fun DatePickerModal(
             ) {
                 Text(
                     text = "취소",
-                    color = mainColor,
+                    color = PrimaryGreen300,
                     fontWeight = FontWeight.Bold,
                     fontFamily = pretendard
                 )

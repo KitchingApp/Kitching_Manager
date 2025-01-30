@@ -26,7 +26,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.kitching.app.R
-import com.kitching.app.ui.theme.mainColor
+import com.kitching.app.ui.theme.PrimaryGreen300
 
 @Preview
 @Composable
@@ -69,7 +69,7 @@ fun AppliedScheduleItemUI() {
                     .height(28.dp),
                 shape = RoundedCornerShape(5.dp),
                 colors = ButtonDefaults.buttonColors(
-                    containerColor = mainColor,
+                    containerColor = PrimaryGreen300,
                     contentColor = Color.White,
                     disabledContainerColor = Color.LightGray,
                     disabledContentColor = Color.White

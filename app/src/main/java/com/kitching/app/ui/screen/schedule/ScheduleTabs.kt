@@ -18,8 +18,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.kitching.app.navgraph.ScheduleTabItem
-import com.kitching.app.ui.theme.mainColor
-import com.kitching.app.ui.theme.subColor1
+import com.kitching.app.ui.theme.PrimaryGreen300
+import com.kitching.app.ui.theme.SecondaryLightGreen100
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
@@ -37,7 +37,7 @@ fun ScheduleTabs(
             indicator = { tabPositions ->
                 TabRowDefaults.SecondaryIndicator(
                     modifier = Modifier.tabIndicatorOffset(tabPositions[tabPageState.currentPage]),
-                    color = mainColor
+                    color = PrimaryGreen300
                 )
             }
         ) {
@@ -51,7 +51,7 @@ fun ScheduleTabs(
                     },
                     modifier = Modifier
                         .background(
-                            color = if (tabPageState.currentPage == index) subColor1
+                            color = if (tabPageState.currentPage == index) SecondaryLightGreen100
                             else Color.White,
                             shape = RoundedCornerShape(
                                 topStart = 10.dp,
