@@ -19,10 +19,10 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.kitching.app.ui.theme.subColor3
 import com.kitching.app.R
-import com.kitching.app.ui.theme.mainColor
-import com.kitching.app.ui.theme.whiteColor
+import com.kitching.app.ui.theme.NeutralGray0
+import com.kitching.app.ui.theme.NeutralGray300
+import com.kitching.app.ui.theme.PrimaryGreen300
 
 @Preview
 @Composable
@@ -33,8 +33,8 @@ fun TeamListItem(
         modifier = Modifier
             .size(width = 344.dp, height = 60.dp)
             .clip(RoundedCornerShape(8.dp))
-            .border(width = 2.dp, color = subColor3, shape = RoundedCornerShape(8.dp))
-            .background(color = whiteColor, shape = RoundedCornerShape(8.dp))
+            .border(width = 2.dp, color = NeutralGray300, shape = RoundedCornerShape(8.dp))
+            .background(color = NeutralGray0, shape = RoundedCornerShape(8.dp))
     ) {
         Row(
             modifier = Modifier
@@ -46,7 +46,7 @@ fun TeamListItem(
                 painter = painterResource(id = R.drawable.fluent_spatula_spoon_24_filled),
                 contentDescription = null,
                 modifier = Modifier.size(24.dp),
-                tint = mainColor
+                tint = PrimaryGreen300
             )
 
             Spacer(modifier = Modifier.width(8.dp))
