@@ -10,6 +10,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import com.kitching.app.ui.item.AppliedScheduleItemUI
 import com.kitching.app.ui.screen.commondialog.BasicConfirmDialog
+import com.kitching.app.ui.screen.schedule.dialog.ScheduleRejectDialog
 
 //@Preview
 @Composable
@@ -17,7 +18,7 @@ fun AppliedScheduleScreen(
     mutableState: MutableState<List<ScheduleDTO>>,
     scheduleList: State<List<ScheduleDTO>>
 ) {
-    var showDeleteDialog by remember { mutableStateOf(false) }
+    val showRejectDialog = remember { mutableStateOf(false) }
 
     if(scheduleList.value.isEmpty()) {
         EmptyScheduleScreen()
@@ -25,18 +26,12 @@ fun AppliedScheduleScreen(
         LazyColumn {
             scheduleList.value.filter { !it.isFix }.forEach { schedule ->
                 item {
-                    AppliedScheduleItemUI(schedule, mutableState)
+                    AppliedScheduleItemUI(schedule, mutableState, showRejectDialog)
                 }
             }
         }
     }
-    if(showDeleteDialog){
-        BasicConfirmDialog(
-            message = "스케줄을 삭제하시겠습니까?",
-            confirmText = "삭제",
-            onClickConfirm = {},
-            cancelText = "취소",
-            onClickCancel = { showDeleteDialog = false }
-        )
+    if(showRejectDialog.value) {
+        ScheduleRejectDialog(showRejectDialog)
     }
 }

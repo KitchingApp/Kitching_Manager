@@ -32,7 +32,8 @@ import com.kitching.app.ui.theme.PrimaryGreen300
 @Composable
 fun FixedScheduleItemUI(
     schedule: ScheduleDTO,
-    scheduleList: MutableState<List<ScheduleDTO>>
+    scheduleList: MutableState<List<ScheduleDTO>>,
+    showDeleteDialog: MutableState<Boolean>
 ) {
     Row(
         modifier = Modifier.fillMaxWidth().height(60.dp)
@@ -77,9 +78,10 @@ fun FixedScheduleItemUI(
                 ),
                 contentPadding = PaddingValues(0.dp),
                 onClick = {
-                    val newList = scheduleList.value.toMutableList()
-                    newList.remove(schedule)
-                    scheduleList.value = newList
+                    showDeleteDialog.value = true
+//                    val newList = scheduleList.value.toMutableList()
+//                    newList.remove(schedule)
+//                    scheduleList.value = newList
                 }
             ) {
                 Icon(

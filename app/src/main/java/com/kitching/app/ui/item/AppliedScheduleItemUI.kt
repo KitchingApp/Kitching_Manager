@@ -35,7 +35,8 @@ import com.kitching.app.ui.theme.PrimaryGreen300
 @Composable
 fun AppliedScheduleItemUI(
     schedule: ScheduleDTO,
-    scheduleList: MutableState<List<ScheduleDTO>>
+    scheduleList: MutableState<List<ScheduleDTO>>,
+    showRejectDialog: MutableState<Boolean>
 ) {
     Row(
         modifier = Modifier
@@ -82,13 +83,13 @@ fun AppliedScheduleItemUI(
                 ),
                 contentPadding = PaddingValues(0.dp),
                 onClick = {
-                    scheduleList.value = scheduleList.value.map {
-                        if (it.scheduleId == schedule.scheduleId) {
-                            it.copy(isFix = true)
-                        } else {
-                            it
-                        }
-                    }
+//                    scheduleList.value = scheduleList.value.map {
+//                        if (it.scheduleId == schedule.scheduleId) {
+//                            it.copy(isFix = true)
+//                        } else {
+//                            it
+//                        }
+//                    }
                 }
             ) {
                 Icon(
@@ -117,9 +118,10 @@ fun AppliedScheduleItemUI(
                     ),
                     contentPadding = PaddingValues(0.dp),
                     onClick = {
-                        val newList = scheduleList.value.toMutableList()
-                        newList.remove(schedule)
-                        scheduleList.value = newList
+                        showRejectDialog.value = true
+//                        val newList = scheduleList.value.toMutableList()
+//                        newList.remove(schedule)
+//                        scheduleList.value = newList
                     }
                 ) {
                     Icon(
