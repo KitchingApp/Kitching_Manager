@@ -38,7 +38,7 @@ fun ScheduleTabScreen(
     val isExpanded = remember { mutableStateOf(false) }
 
     var showDatePicker by remember { mutableStateOf(false) }
-    var selectedDateTime by remember { mutableStateOf(LocalDateTime.now()) }
+    val selectedDateTime = remember { mutableStateOf(LocalDateTime.now()) }
 
     val tabItems = ScheduleTabItem().renderTabItems()
     val tabPageState = rememberPagerState(
@@ -71,9 +71,9 @@ fun ScheduleTabScreen(
                 verticalArrangement = Arrangement.Top
             ) {
                 DateSelector(
-                    selectedDateTime = selectedDateTime,
+                    selectedDateTime = selectedDateTime.value,
                     onDateChange = { newDate ->
-                        selectedDateTime = newDate
+                        selectedDateTime.value = newDate
                     },
                     onClickDateBtn = {
                         showDatePicker = true
@@ -84,14 +84,16 @@ fun ScheduleTabScreen(
                     tabPageState = tabPageState,
                     scope = commonState.scope
                 )
-                ScheduleTabContent(tabPageState)
+                ScheduleTabContent(
+                    pagerState = tabPageState,
+                    selectedDateTime = selectedDateTime.value.toLocalDate().toString())
                 if (showDatePicker) {
                     DatePickerModal(
-                        selectedDateTime = selectedDateTime,
+                        selectedDateTime = selectedDateTime.value,
                         onDismissRequest = { showDatePicker = false },
                         onClickConfirm = { selectedDateMillis ->
                             if(selectedDateMillis !== null) {
-                                selectedDateTime =
+                                selectedDateTime.value =
                                     LocalDateTime.ofInstant(
                                         Instant.ofEpochMilli(selectedDateMillis),
                                         ZoneId.systemDefault()
@@ -113,7 +115,7 @@ fun ScheduleTabScreen(
                             showCreateDialog = false
                         }
                     },
-                    selectedDateTime = selectedDateTime
+                    selectedDateTime = selectedDateTime.value
                 )
             }
         }
