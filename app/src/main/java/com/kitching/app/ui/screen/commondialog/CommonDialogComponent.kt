@@ -1,4 +1,4 @@
-package com.kitching.app.ui.screen.dialog
+package com.kitching.app.ui.screen.commondialog
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
@@ -50,11 +50,14 @@ fun CommonDialogComponent(
         )
     ) {
         Box(
-            modifier = Modifier.background(
-                color = NeutralGray0,
-                shape = RoundedCornerShape(radius)
-            ).border(1.dp, NeutralGray300, RoundedCornerShape(radius))
-                .height(height).width(296.dp)
+            modifier = Modifier
+                .background(
+                    color = NeutralGray0,
+                    shape = RoundedCornerShape(radius)
+                )
+                .border(1.dp, NeutralGray300, RoundedCornerShape(radius))
+                .height(height)
+                .width(296.dp)
                 .padding(20.dp, paddingTop, 20.dp, paddingBottom),
             contentAlignment = Alignment.Center
         ) {
@@ -72,8 +75,15 @@ fun CommonDialogComponent(
                     verticalAlignment = Alignment.CenterVertically,
                 ) {
                     Button(
-                        onClick = { onClickConfirm() },
-                        modifier = Modifier.width(112.dp).height(32.dp),
+                        onClick = {
+                            onClickConfirm()
+
+                            // 작업 완료 후 닫기
+                            onClickCancel()
+                        },
+                        modifier = Modifier
+                            .width(112.dp)
+                            .height(32.dp),
                         colors = ButtonColors(
                             containerColor = PrimaryGreen300,
                             contentColor = NeutralGray0,
@@ -89,7 +99,9 @@ fun CommonDialogComponent(
                     }
                     Button(
                         onClick = { onClickCancel() },
-                        modifier = Modifier.width(112.dp).height(32.dp),
+                        modifier = Modifier
+                            .width(112.dp)
+                            .height(32.dp),
                         colors = ButtonColors(
                             containerColor = NeutralGray0,
                             contentColor = NeutralGray400,

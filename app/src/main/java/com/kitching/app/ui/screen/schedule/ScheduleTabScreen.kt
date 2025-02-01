@@ -19,19 +19,23 @@ import com.kitching.app.common.ActionIconInfo
 import com.kitching.app.common.CommonState
 import com.kitching.app.common.NavigationIconInfo
 import com.kitching.app.navgraph.ScheduleTabItem
-import com.kitching.app.ui.screen.dialog.BasicConfirmDialog
-import com.kitching.app.ui.screen.dialog.DatePickerModal
+import com.kitching.app.ui.screen.schedule.dialog.DatePickerModal
+import com.kitching.app.ui.screen.schedule.dialog.ScheduleCreateDialog
 import com.kitching.app.ui.theme.KitchingManagerTheme
-import java.time.LocalDateTime
 import kotlinx.coroutines.launch
+import java.time.Instant
+import java.time.LocalDateTime
+import java.time.ZoneId
 
-//@RequiresApi(Build.VERSION_CODES.O)
 @RequiresApi(Build.VERSION_CODES.UPSIDE_DOWN_CAKE)
 @Composable
 fun ScheduleTabScreen(
     commonState: CommonState
 ) {
     var showCreateDialog by remember { mutableStateOf(false) }
+
+    /** 드롭다운 메뉴가 열려있는지 저장 */
+    val isExpanded = remember { mutableStateOf(false) }
 
     var showDatePicker by remember { mutableStateOf(false) }
     var selectedDateTime by remember { mutableStateOf(LocalDateTime.now()) }
@@ -89,8 +93,8 @@ fun ScheduleTabScreen(
                             if(selectedDateMillis !== null) {
                                 selectedDateTime =
                                     LocalDateTime.ofInstant(
-                                        java.time.Instant.ofEpochMilli(selectedDateMillis),
-                                        java.time.ZoneId.systemDefault()
+                                        Instant.ofEpochMilli(selectedDateMillis),
+                                        ZoneId.systemDefault()
                                     )
                             }
                             showDatePicker = false
@@ -100,12 +104,16 @@ fun ScheduleTabScreen(
                 }
             }
             if(showCreateDialog) {
-                BasicConfirmDialog(
-                    message = "스케줄을 삭제하시겠습니까?",
-                    confirmText = "삭제",
-                    onClickConfirm = {  },
-                    cancelText = "취소",
-                    onClickCancel = { showCreateDialog = false}
+                ScheduleCreateDialog(
+                    isExpandedRemember = isExpanded,
+                    onDismissRequest = {
+                        if (isExpanded.value) {
+                            isExpanded.value = false
+                        } else {
+                            showCreateDialog = false
+                        }
+                    },
+                    selectedDateTime = selectedDateTime
                 )
             }
         }
