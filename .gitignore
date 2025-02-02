@@ -15,6 +15,7 @@
 /.idea/kotlinc.xml
 /.idea/migrations.xml
 /.idea/vcs.xml
+/.idea/inspectionProfiles/Project_Default.xml
 /app/google-services.json
 .DS_Store
 /build
