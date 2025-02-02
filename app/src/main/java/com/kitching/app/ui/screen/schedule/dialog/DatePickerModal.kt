@@ -1,4 +1,4 @@
-package com.kitching.app.ui.screen.dialog
+package com.kitching.app.ui.screen.schedule.dialog
 
 import android.os.Build
 import androidx.annotation.RequiresApi

@@ -1,4 +1,4 @@
-package com.kitching.app.ui.screen.dialog
+package com.kitching.app.ui.screen.commondialog
 
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
