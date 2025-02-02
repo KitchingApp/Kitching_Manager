@@ -9,6 +9,7 @@ import androidx.compose.ui.graphics.Paint
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.drawOutline
 import androidx.compose.ui.graphics.drawscope.drawIntoCanvas
+import androidx.compose.ui.layout.layout
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 
@@ -39,5 +40,21 @@ fun Modifier.dropShadow(
         canvas.translate(offsetX.toPx(), offsetY.toPx())
         canvas.drawOutline(shadowOutline, paint)
         canvas.restore()
+    }
+}
+
+/** 드롭다운 옵션 메뉴 위아래 여백 잘라내기 */
+fun Modifier.crop(
+    horizontal: Dp = 0.dp,
+    vertical: Dp = 0.dp,
+): Modifier = this.layout { measurable, constraints ->
+    val placeable = measurable.measure(constraints)
+    fun Dp.toPxInt(): Int = this.toPx().toInt()
+
+    layout(
+        placeable.width - (horizontal * 2).toPxInt(),
+        placeable.height - (vertical * 2).toPxInt()
+    ) {
+        placeable.placeRelative(-horizontal.toPx().toInt(), -vertical.toPx().toInt())
     }
 }

@@ -22,6 +22,7 @@ val subColor2 = Color(0xFF3E825B)
 val NeutralGray200 = Color(0xFFE4E5E6)
 val NeutralGray300 = Color(0xFFCCCED1)
 val NeutralGray400 = Color(0xFFB3B6BA)
+val NeutralGray500 = Color(0xFF8B8F93)
 val NeutralGray600 = Color(0xFF6F7174)
 val NeutralGray800 = Color(0xFF343636)
 
