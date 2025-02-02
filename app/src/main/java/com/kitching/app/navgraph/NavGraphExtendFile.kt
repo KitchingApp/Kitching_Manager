@@ -20,7 +20,7 @@ fun NavGraphBuilder.sliceNavGraph(
             arguments = listOf(navArgument("recipeId") { NavType.StringType })
         ) { backStackEntry ->
             RecipeDetail(
-                recipeId = backStackEntry.arguments?.getString("recipeId"),
+                recipeId = backStackEntry.arguments?.getString("recipeId").toString(),
                 commonState = commonState
             )
         }
