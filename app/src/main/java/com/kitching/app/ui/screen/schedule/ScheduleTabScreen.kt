@@ -22,6 +22,7 @@ import com.kitching.app.navgraph.ScheduleTabItem
 import com.kitching.app.ui.screen.schedule.dialog.DatePickerModal
 import com.kitching.app.ui.screen.schedule.dialog.ScheduleCreateDialog
 import com.kitching.app.ui.theme.KitchingManagerTheme
+import com.kitching.app.ui.theme.PrimaryGreen300
 import kotlinx.coroutines.launch
 import java.time.Instant
 import java.time.LocalDateTime
@@ -47,6 +48,7 @@ fun ScheduleTabScreen(
     )
 
     commonState.topAppBarState.value = commonState.topAppBarState.value.copy(
+        containerColor = PrimaryGreen300,
         navIconInfo = NavigationIconInfo.DRAWER,
         onClickNavIcon = {
             if (commonState.topAppBarState.value.drawerState.isOpen) {
