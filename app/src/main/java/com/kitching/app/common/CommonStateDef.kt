@@ -2,8 +2,10 @@ package com.kitching.app.common
 
 import androidx.compose.material3.DrawerState
 import androidx.compose.runtime.MutableState
+import androidx.compose.ui.graphics.Color
 import androidx.navigation.NavHostController
 import com.kitching.app.R
+import com.kitching.app.ui.theme.NeutralGray0
 import kotlinx.coroutines.CoroutineScope
 
 enum class ActionIconInfo(val icon: Int, val description: String) {
@@ -19,6 +21,7 @@ enum class NavigationIconInfo(val icon: Int, val description: String) {
 }
 
 data class TopAppBarState(
+    val containerColor: Color = NeutralGray0,
     val title: String = "Kitching",
     val drawerState: DrawerState,
     val navIconInfo: NavigationIconInfo = NavigationIconInfo.DRAWER,

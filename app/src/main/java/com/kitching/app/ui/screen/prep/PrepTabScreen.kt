@@ -13,6 +13,7 @@ import com.kitching.app.common.NavigationIconInfo
 import com.kitching.app.ui.screen.categoryscreen.CategoryItemForScreen
 import com.kitching.app.ui.screen.categoryscreen.CategoryScreen
 import com.kitching.app.ui.theme.KitchingManagerTheme
+import com.kitching.app.ui.theme.NeutralGray0
 import kotlinx.coroutines.launch
 
 data class PrepCategoryDTO(val categoryId: String, val categoryName: String, val color: String)
@@ -42,6 +43,7 @@ fun PrepTabScreen(
     val optionMenuIndex = remember { mutableStateOf<Int?>(null) }
 
     commonState.topAppBarState.value = commonState.topAppBarState.value.copy(
+        containerColor = NeutralGray0,
         navIconInfo = NavigationIconInfo.DRAWER,
         onClickNavIcon = {
             if (commonState.topAppBarState.value.drawerState.isOpen) {
