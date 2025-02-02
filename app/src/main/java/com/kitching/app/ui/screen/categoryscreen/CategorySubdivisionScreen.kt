@@ -45,7 +45,11 @@ fun CategorySubDivisionScreen(
                         onOptionBtnClick = { onCardOptionBtnClick(index) },
                     )
                     if (optionMenuIndex.value == index) {
-                        DropdownOptionMenu(optionMenuIndex)
+                        DropdownOptionMenu(
+                            optionMenuIndex,
+                            onClickModify = {},
+                            onClickDelete = {}
+                        )
                     }
                 }
             }

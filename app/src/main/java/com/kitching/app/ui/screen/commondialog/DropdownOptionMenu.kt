@@ -22,7 +22,9 @@ import com.kitching.app.util.crop
 
 @Composable
 fun DropdownOptionMenu(
-    optionMenuIndex: MutableState<Int?>
+    optionMenuIndex: MutableState<Int?>,
+    onClickModify: () -> Unit,
+    onClickDelete: () -> Unit
 ) {
     Box() {
         DropdownMenu(
@@ -35,12 +37,12 @@ fun DropdownOptionMenu(
             DropdownMenuItem(
                 modifier = Modifier.height(40.dp).background(PrimaryGreen300),
                 text = { Text(text = "수정", style = H3.copy(color = NeutralGray0)) },
-                onClick = {  }
+                onClick = { onClickModify() }
             )
             DropdownMenuItem(
                 modifier = Modifier.height(40.dp).border(1.dp, NeutralGray500),
                 text = { Text(text = "삭제", style = H3.copy(color = NeutralGray800)) },
-                onClick = {  }
+                onClick = { onClickDelete() }
             )
         }
     }
