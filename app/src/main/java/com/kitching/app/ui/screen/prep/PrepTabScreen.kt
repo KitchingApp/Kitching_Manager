@@ -16,6 +16,7 @@ import com.kitching.app.common.ActionIconInfo
 import com.kitching.app.common.CommonState
 import com.kitching.app.common.NavigationIconInfo
 import com.kitching.app.ui.theme.KitchingManagerTheme
+import com.kitching.app.ui.theme.NeutralGray0
 import kotlinx.coroutines.launch
 
 @Composable
@@ -23,6 +24,7 @@ fun PrepTabScreen(
     commonState: CommonState
 ) {
     commonState.topAppBarState.value = commonState.topAppBarState.value.copy(
+        containerColor = NeutralGray0,
         navIconInfo = NavigationIconInfo.DRAWER,
         onClickNavIcon = {
             if (commonState.topAppBarState.value.drawerState.isOpen) {
