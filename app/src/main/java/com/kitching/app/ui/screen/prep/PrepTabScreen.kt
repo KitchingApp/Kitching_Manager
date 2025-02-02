@@ -10,11 +10,14 @@ import androidx.compose.ui.Modifier
 import com.kitching.app.common.ActionIconInfo
 import com.kitching.app.common.CommonState
 import com.kitching.app.common.NavigationIconInfo
+import com.kitching.app.navgraph.ScreenRouteDef
 import com.kitching.app.ui.screen.categoryscreen.CategoryItemForScreen
 import com.kitching.app.ui.screen.categoryscreen.CategoryScreen
 import com.kitching.app.ui.theme.KitchingManagerTheme
 import com.kitching.app.ui.theme.NeutralGray0
 import kotlinx.coroutines.launch
+import java.net.URLEncoder
+import java.nio.charset.StandardCharsets
 
 data class PrepCategoryDTO(val categoryId: String, val categoryName: String, val color: String)
 
@@ -26,23 +29,24 @@ fun PrepTabScreen(
         PrepCategoryDTO(
             categoryId = "YG9hVIsiIKvNQxNOutIG",
             categoryName = "핫",
-            color = "#EF9A9A"
-        ),
-        PrepCategoryDTO(
-            categoryId = "hvkhbRkK1gjoF5F1DP9F",
-            categoryName = "프랩키친",
-            color = "#CE93D8"
+            color = "#FFE1E1"
         ),
         PrepCategoryDTO(
             categoryId = "nXyjU7oMmHljfPgzfYF5",
             categoryName = "콜드",
-            color = "#90CAF9"
+            color = "#D6F6FF"
+        ),
+        PrepCategoryDTO(
+            categoryId = "hvkhbRkK1gjoF5F1DP9F",
+            categoryName = "프랩키친",
+            color = "#EEEEEE"
         )
     )
 
     val optionMenuIndex = remember { mutableStateOf<Int?>(null) }
 
     commonState.topAppBarState.value = commonState.topAppBarState.value.copy(
+        title = "Kitching",
         containerColor = NeutralGray0,
         navIconInfo = NavigationIconInfo.DRAWER,
         onClickNavIcon = {
@@ -71,7 +75,10 @@ fun PrepTabScreen(
                         categoryColor = category.color
                     )
                 },
-                onCardClick = { },
+                onCardClick = { categoryId, categoryName, categoryColor ->
+                    val encodedColor = URLEncoder.encode(categoryColor, StandardCharsets.UTF_8.toString())
+                    commonState.navController.navigate("${ScreenRouteDef.InnerContent.PrepDetail.routeName}/${categoryId}/${categoryName}/${encodedColor}")
+                              },
                 onCardOptionBtnClick = { index ->
                     optionMenuIndex.value = if (optionMenuIndex.value == index) null else index
                 },
