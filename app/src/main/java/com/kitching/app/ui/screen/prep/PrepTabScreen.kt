@@ -4,8 +4,10 @@ import android.util.Log
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import com.kitching.app.common.ActionIconInfo
 import com.kitching.app.common.CommonState
@@ -13,6 +15,7 @@ import com.kitching.app.common.NavigationIconInfo
 import com.kitching.app.navgraph.ScreenRouteDef
 import com.kitching.app.ui.screen.categoryscreen.CategoryItemForScreen
 import com.kitching.app.ui.screen.categoryscreen.CategoryScreen
+import com.kitching.app.ui.screen.commondialog.ColorInputDialog
 import com.kitching.app.ui.theme.KitchingManagerTheme
 import com.kitching.app.ui.theme.NeutralGray0
 import kotlinx.coroutines.launch
@@ -42,6 +45,7 @@ fun PrepTabScreen(
             color = "#EEEEEE"
         )
     )
+    var showCreateDialog by remember { mutableStateOf(false) }
 
     val optionMenuIndex = remember { mutableStateOf<Int?>(null) }
 
@@ -58,7 +62,7 @@ fun PrepTabScreen(
         },
         actionIconInfo = ActionIconInfo.ADD,
         onClickActionIcon = {
-            Log.d("TopAppBar", "Action Icon Clicked in PrepTabScreen")
+            showCreateDialog = true
         },
     )
 
@@ -84,6 +88,15 @@ fun PrepTabScreen(
                 },
                 optionMenuIndex = optionMenuIndex
             )
+            if(showCreateDialog) {
+                ColorInputDialog(
+                    title = "프렙 카테고리 추가",
+                    confirmText = "생성",
+                    onClickConfirm = { },
+                    cancelText = "취소",
+                    onClickCancel = { showCreateDialog = false }
+                )
+            }
         }
     }
 }
