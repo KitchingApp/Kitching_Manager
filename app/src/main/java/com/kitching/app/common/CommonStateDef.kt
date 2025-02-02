@@ -32,3 +32,13 @@ data class CommonState(
     var topAppBarState: MutableState<TopAppBarState>,
     val scope: CoroutineScope,
     )
+
+data class TeamSize(val label: String, val value: Int)
+
+val teamSizeList = listOf(
+    TeamSize("10명", 10),
+    TeamSize("30명", 30),
+    TeamSize("50명", 50),
+    TeamSize("100명", 100),
+    TeamSize("200명", 200),
+)
