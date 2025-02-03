@@ -17,10 +17,12 @@ import androidx.compose.foundation.selection.selectableGroup
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
+import androidx.compose.material3.Icon
 import androidx.compose.material3.RadioButton
 import androidx.compose.material3.RadioButtonDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -30,10 +32,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.graphics.toArgb
+import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import com.kitching.app.R
 import com.kitching.app.ui.theme.Body1
 import com.kitching.app.ui.theme.CategoryColor1
 import com.kitching.app.ui.theme.CategoryColor2
@@ -42,6 +47,7 @@ import com.kitching.app.ui.theme.CategoryColor4
 import com.kitching.app.ui.theme.CategoryColor5
 import com.kitching.app.ui.theme.CategoryColor6
 import com.kitching.app.ui.theme.H3_m
+import com.kitching.app.ui.theme.NeutralGray0
 import com.kitching.app.ui.theme.NeutralGray300
 import com.kitching.app.ui.theme.NeutralGray800
 
@@ -50,6 +56,8 @@ import com.kitching.app.ui.theme.NeutralGray800
 fun ColorInputDialog(
     title: String,
     placeHolder: String,
+    textState: MutableState<TextFieldValue>,
+    colorState: MutableState<Color>,
     confirmText: String,
     onClickConfirm: () -> Unit,
     cancelText: String,
@@ -63,8 +71,6 @@ fun ColorInputDialog(
         CategoryColor5,
         CategoryColor6
     )
-    val (selectedColor, onColorSelected) = remember { mutableStateOf(colorList[0]) }
-    var textState by remember { mutableStateOf(TextFieldValue("")) }
 
     CommonDialogComponent(
         height = 261.dp,
@@ -90,7 +96,7 @@ fun ColorInputDialog(
                 .padding(20.dp, 0.dp)
         ) {
             // 텍스트가 비어 있을 때만 placeholder를 표시
-            if (textState.text.isEmpty()) {
+            if (textState.value.text.isEmpty()) {
                 Text(
                     text = placeHolder,
                     style = Body1.copy(color = NeutralGray300, textAlign = TextAlign.Start),
@@ -99,9 +105,9 @@ fun ColorInputDialog(
             }
             BasicTextField(
                 modifier = Modifier.fillMaxWidth().align(Alignment.Center),
-                value = textState,
+                value = textState.value,
                 onValueChange = {
-                    textState = it
+                    textState.value = it
                 },
                 textStyle = Body1.copy(color = NeutralGray800, textAlign = TextAlign.Start),
                 singleLine = true,
@@ -117,17 +123,18 @@ fun ColorInputDialog(
                 Box(
                     modifier = Modifier
                         .selectable(
-                        selected = (color == selectedColor),
-                        onClick = { onColorSelected(color) },
+                        selected = (color == colorState.value),
+                        onClick = { colorState.value = color },
                         role = Role.RadioButton,
                     ).background(
                         color = Color(color.toArgb()),
                         shape = CircleShape
                     ).size(32.73.dp),
+                    contentAlignment = Alignment.Center
                 ) {
                     RadioButton(
                         modifier = Modifier.fillMaxSize(),
-                        selected = (color == selectedColor),
+                        selected = (color == colorState.value),
                         onClick = null,
                         colors = RadioButtonDefaults.colors(
                             selectedColor = Color.Transparent,
@@ -136,6 +143,14 @@ fun ColorInputDialog(
                             disabledUnselectedColor = Color.Transparent,
                         )
                     )
+                    if(color == colorState.value) {
+                        Icon(
+                            imageVector = ImageVector.vectorResource(R.drawable.icon_check),
+                            contentDescription = "선택된 컬러 표시",
+                            tint = NeutralGray0,
+                            modifier = Modifier.size(20.dp)
+                        )
+                    }
                 }
             }
         }
