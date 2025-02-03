@@ -1,6 +1,5 @@
 package com.kitching.app.ui.screen.prep
 
-import android.util.Log
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
@@ -9,6 +8,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.input.TextFieldValue
 import com.kitching.app.common.ActionIconInfo
 import com.kitching.app.common.CommonState
@@ -20,6 +20,7 @@ import com.kitching.app.ui.screen.categoryscreen.EmptyScreen
 import com.kitching.app.ui.screen.commondialog.ColorInputDialog
 import com.kitching.app.ui.theme.KitchingManagerTheme
 import com.kitching.app.ui.theme.NeutralGray0
+import com.kitching.app.util.hexToArgb
 import kotlinx.coroutines.launch
 import java.net.URLEncoder
 import java.nio.charset.StandardCharsets
@@ -49,8 +50,7 @@ fun PrepTabScreen(
     )
 
     var showCreateDialog by remember { mutableStateOf(false) }
-    var showModifyDialog by remember { mutableStateOf(false) }
-    var showDeleteDialog by remember { mutableStateOf(false) }
+    val showModifyDialog = remember { mutableStateOf(false) }
     val textState = remember { mutableStateOf(TextFieldValue("")) }
     val colorState = remember { mutableStateOf(NeutralGray0) }
 
@@ -97,9 +97,16 @@ fun PrepTabScreen(
                     onCardOptionBtnClick = { index ->
                         optionMenuIndex.value = if (optionMenuIndex.value == index) null else index
                     },
-                    optionMenuIndex = optionMenuIndex
+                    optionMenuIndex = optionMenuIndex,
+                    textState = textState,
+                    colorState = colorState,
+                    showModifyDialog = showModifyDialog
                 )
                 if(showCreateDialog) {
+                    // state 초기화
+                    textState.value = TextFieldValue("")
+                    colorState.value = NeutralGray0
+                    
                     ColorInputDialog(
                         title = "프렙 카테고리 추가",
                         placeHolder = "카테고리명을 입력해주세요",
@@ -109,6 +116,18 @@ fun PrepTabScreen(
                         onClickConfirm = { },
                         cancelText = "취소",
                         onClickCancel = { showCreateDialog = false }
+                    )
+                }
+                if(showModifyDialog.value) {
+                    ColorInputDialog(
+                        title = "프렙 카테고리 수정",
+                        placeHolder = "카테고리명을 입력해주세요",
+                        textState = textState,
+                        colorState = colorState,
+                        confirmText = "수정",
+                        onClickConfirm = { },
+                        cancelText = "취소",
+                        onClickCancel = { showModifyDialog.value = false }
                     )
                 }
             }

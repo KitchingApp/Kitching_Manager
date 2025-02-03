@@ -19,37 +19,52 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import com.kitching.app.ui.item.CategoryCardItem
 import com.kitching.app.ui.screen.commondialog.BasicConfirmDialog
-import com.kitching.app.ui.screen.commondialog.BasicInputDialog
 import com.kitching.app.ui.screen.commondialog.DropdownOptionMenu
 import com.kitching.app.ui.theme.H2
 import com.kitching.app.ui.theme.NeutralGray800
 import com.kitching.app.ui.theme.defaultPadding
+import com.kitching.app.util.hexToArgb
 
-data class CategoryItemForScreen(val categoryId: String, val categoryName: String, val categoryColor: String)
+data class CategoryItemForScreen(
+    val categoryId: String,
+    val categoryName: String,
+    val categoryColor: String
+)
 
 @Composable
 fun CategoryScreen(
     title: String,
     categoryList: List<CategoryItemForScreen>,
     onCardClick: (categoryId: String, categoryName: String, color: String) -> Unit,
-    onCardOptionBtnClick: (Int) -> Unit,
-    optionMenuIndex: MutableState<Int?>
-    ) {
+    onCardOptionBtnClick: (index: Int) -> Unit,
+    optionMenuIndex: MutableState<Int?>,
+    textState: MutableState<TextFieldValue>,
+    colorState: MutableState<Color>,
+    showModifyDialog: MutableState<Boolean>
+) {
     var showDeleteDialog by remember { mutableStateOf(false) }
 
     Column(
-        modifier = Modifier.fillMaxSize().padding(defaultPadding, 0.dp),
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(defaultPadding, 0.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Box(
-            modifier = Modifier.fillMaxWidth().height(80.dp),
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(80.dp),
             contentAlignment = Alignment.CenterStart
         ) {
             Text(
-                modifier = Modifier.fillMaxSize().wrapContentHeight(),
+                modifier = Modifier
+                    .fillMaxSize()
+                    .wrapContentHeight(),
                 text = "$title 카테고리",
                 style = H2.copy(color = NeutralGray800)
             )
@@ -66,17 +81,28 @@ fun CategoryScreen(
                     CategoryCardItem(
                         cardText = category.categoryName,
                         cardColor = category.categoryColor,
-                        onCardClick = { onCardClick(category.categoryId, category.categoryName, category.categoryColor) },
+                        onCardClick = {
+                            onCardClick(
+                                category.categoryId,
+                                category.categoryName,
+                                category.categoryColor
+                            )
+                        },
                         onOptionBtnClick = { onCardOptionBtnClick(index) },
                     )
-                    if(optionMenuIndex.value == index) {
+                    if (optionMenuIndex.value == index) {
                         DropdownOptionMenu(
                             optionMenuIndex = optionMenuIndex,
-                            onClickModify = { },
+                            onClickModify = {
+                                optionMenuIndex.value = null
+                                textState.value = TextFieldValue(category.categoryName)
+                                colorState.value = Color(hexToArgb(category.categoryColor))
+                                showModifyDialog.value = true
+                            },
                             onClickDelete = { showDeleteDialog = true }
                         )
                     }
-                    if(showDeleteDialog) {
+                    if (showDeleteDialog) {
                         BasicConfirmDialog(
                             message = "프렙 카테고리를 \n삭제하시겠습니까?",
                             confirmText = "삭제",
