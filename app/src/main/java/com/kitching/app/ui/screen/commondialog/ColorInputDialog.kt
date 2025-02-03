@@ -93,18 +93,18 @@ fun ColorInputDialog(
                     border = BorderStroke(1.dp, NeutralGray300),
                     shape = RoundedCornerShape(8.dp)
                 )
-                .padding(20.dp, 0.dp)
+                .background(color = colorState.value, shape = RoundedCornerShape(8.dp))
         ) {
             // 텍스트가 비어 있을 때만 placeholder를 표시
             if (textState.value.text.isEmpty()) {
                 Text(
                     text = placeHolder,
                     style = Body1.copy(color = NeutralGray300, textAlign = TextAlign.Start),
-                    modifier = Modifier.align(Alignment.CenterStart)
+                    modifier = Modifier.align(Alignment.CenterStart).padding(20.dp, 0.dp)
                 )
             }
             BasicTextField(
-                modifier = Modifier.fillMaxWidth().align(Alignment.Center),
+                modifier = Modifier.fillMaxWidth().align(Alignment.Center).padding(20.dp, 0.dp),
                 value = textState.value,
                 onValueChange = {
                     textState.value = it
