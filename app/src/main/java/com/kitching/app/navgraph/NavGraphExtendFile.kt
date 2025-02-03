@@ -10,7 +10,6 @@ import com.kitching.app.ui.screen.recipe.innercontent.RecipeDetailScreen
 import com.kitching.app.ui.screen.recipe.innercontent.RecipeEditScreen
 import com.kitching.app.ui.screen.order.OrderDetailScreen
 import com.kitching.app.ui.screen.prep.subdivisionscreen.PrepDetailScreen
-import com.kitching.app.ui.screen.recipe.innercontent.RecipeDetail
 
 fun NavGraphBuilder.sliceNavGraph(
     commonState: CommonState
