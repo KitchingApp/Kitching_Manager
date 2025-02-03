@@ -14,6 +14,7 @@ val NeutralGray0 = Color(0xFFFFFFFF)
 
 val PrimaryGreen300 = Color(0xFF51D088)
 val PrimaryGreen200 = Color(0xFF8BDDAB)
+val PrimaryGreen50 = Color(0xFFE3F7EA)
 
 val SecondaryLightGreen100 = Color(0xFFE8FCC3)
 
