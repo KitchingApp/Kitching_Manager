@@ -1,7 +1,8 @@
-package com.kitching.app.ui.screen.dialog
+package com.kitching.app.ui.screen.commondialog
 
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.kitching.app.ui.theme.H3_m
 
@@ -27,6 +28,8 @@ fun BasicConfirmDialog(
         Text(
             text = message,
             style = H3_m,
+            softWrap = true,
+            textAlign = TextAlign.Center
         )
     }
 }
