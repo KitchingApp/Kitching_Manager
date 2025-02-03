@@ -7,10 +7,14 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
@@ -19,43 +23,32 @@ import com.kitching.app.common.ActionIconInfo
 import com.kitching.app.common.CommonState
 import com.kitching.app.common.NavigationIconInfo
 import com.kitching.app.ui.screen.recipe.dummyRecipes
-import com.kitching.app.ui.theme.H2
 import com.kitching.app.ui.theme.H4_m
 import com.kitching.app.ui.theme.KitchingManagerTheme
 
 @Composable
-fun RecipeDetailScreen(
+fun RecipeEditScreen(
     recipeId: String,
     commonState: CommonState
 ) {
     commonState.topAppBarState.value = commonState.topAppBarState.value.copy(
         navIconInfo = NavigationIconInfo.BACK,
-        onClickNavIcon = {
-            commonState.navController.popBackStack()
-        },
+        onClickNavIcon = { commonState.navController.popBackStack() },
         actionIconInfo = ActionIconInfo.CHECK,
         onClickActionIcon = {
-            commonState.navController.navigate("detail/edit/${recipeId}")
+            // TODO: 저장 로직 추가
+            commonState.navController.popBackStack()
         }
     )
 
-    val recipeDetail = dummyRecipes.find { it.id == recipeId }
+    val recipeDetail = dummyRecipes.find { it.id == recipeId } ?: return
 
-    if (recipeDetail == null) {
-        Box(
-            modifier = Modifier.fillMaxSize(),
-            contentAlignment = Alignment.Center
-        ) {
-            Text(
-                text = "레시피 정보를 찾을 수 없습니다.",
-                style = H2,
-            )
-        }
-        return
-    }
+    var recipeName by remember { mutableStateOf(recipeDetail.name) }
+    var ingredients by remember { mutableStateOf(recipeDetail.ingredients) }
+    var steps by remember { mutableStateOf(recipeDetail.steps) }
 
     KitchingManagerTheme {
-        Surface(
+        Surface (
             modifier = Modifier.fillMaxSize()
         ) {
             LazyColumn(
@@ -68,17 +61,19 @@ fun RecipeDetailScreen(
                     Image(
                         painter = painterResource(id = recipeDetail.picture),
                         contentDescription = "${recipeDetail.name} 이미지",
-                        modifier = Modifier
-                            .fillMaxWidth(),
+                        modifier = Modifier.fillMaxWidth(),
                         contentScale = ContentScale.Fit
                     )
                 }
 
                 item {
-                    Text(
-                        text = recipeDetail.name,
-                        style = H2,
-                        modifier = Modifier.padding(start = 20.dp, end = 20.dp, top = 10.dp)
+                    OutlinedTextField(
+                        value = recipeName,
+                        onValueChange = { recipeName = it },
+                        label = { "레시피 이름" },
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 20.dp)
                     )
                 }
 
@@ -88,7 +83,9 @@ fun RecipeDetailScreen(
 
                 item {
                     Box(modifier = Modifier.padding(start = 20.dp, end = 20.dp)) {
-                        IngredientsTable(ingredients = recipeDetail.ingredients)
+                        EditIngredientsTable(ingredients) { updatedIngredients ->
+                            ingredients = updatedIngredients
+                        }
                     }
                 }
 
@@ -98,7 +95,9 @@ fun RecipeDetailScreen(
 
                 item {
                     Box(modifier = Modifier.padding(start = 20.dp, end = 20.dp)) {
-                        StepTable(steps = recipeDetail.steps)
+                        EditStepTable(steps) { updatedSteps ->
+                            steps = updatedSteps
+                        }
                     }
                 }
             }
