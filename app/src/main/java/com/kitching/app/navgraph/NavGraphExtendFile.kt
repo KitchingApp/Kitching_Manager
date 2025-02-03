@@ -6,7 +6,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import androidx.navigation.navigation
 import com.kitching.app.common.CommonState
-import com.kitching.app.ui.screen.recipe.innercontent.RecipeDetail
+import com.kitching.app.ui.screen.recipe.innercontent.RecipeDetailScreen
 
 fun NavGraphBuilder.sliceNavGraph(
     commonState: CommonState
@@ -19,7 +19,7 @@ fun NavGraphBuilder.sliceNavGraph(
             ScreenRouteDef.InnerContent.RecipeDetail.routeName + "/{recipeId}", // detail/1
             arguments = listOf(navArgument("recipeId") { NavType.StringType })
         ) { backStackEntry ->
-            RecipeDetail(
+            RecipeDetailScreen(
                 recipeId = backStackEntry.arguments?.getString("recipeId").toString(),
                 commonState = commonState
             )
