@@ -15,6 +15,7 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawBehind
@@ -23,14 +24,20 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.kitching.app.R
+import com.kitching.app.ui.screen.schedule.ScheduleDTO
+import com.kitching.app.ui.theme.NeutralGray0
+import com.kitching.app.ui.theme.NeutralGray300
 import com.kitching.app.ui.theme.PrimaryGreen300
 
-@Preview
+//@Preview
 @Composable
-fun AppliedScheduleItemUI() {
+fun AppliedScheduleItemUI(
+    schedule: ScheduleDTO,
+    scheduleList: MutableState<List<ScheduleDTO>>,
+    showRejectDialog: MutableState<Boolean>
+) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -50,12 +57,12 @@ fun AppliedScheduleItemUI() {
                 .padding(48.dp, 0.dp, 0.dp, 0.dp)
                 .weight(1f),
             textAlign = TextAlign.Left,
-            text = "이데레사"
+            text = schedule.userName
         )
         Text(
             modifier = Modifier.weight(1f),
             textAlign = TextAlign.Center,
-            text = "오픈"
+            text = schedule.scheduleTimeName
         )
         Row(
             modifier = Modifier
@@ -70,17 +77,25 @@ fun AppliedScheduleItemUI() {
                 shape = RoundedCornerShape(5.dp),
                 colors = ButtonDefaults.buttonColors(
                     containerColor = PrimaryGreen300,
-                    contentColor = Color.White,
-                    disabledContainerColor = Color.LightGray,
-                    disabledContentColor = Color.White
+                    contentColor = NeutralGray0,
+                    disabledContainerColor = NeutralGray300,
+                    disabledContentColor = NeutralGray0
                 ),
                 contentPadding = PaddingValues(0.dp),
-                onClick = {}
+                onClick = {
+//                    scheduleList.value = scheduleList.value.map {
+//                        if (it.scheduleId == schedule.scheduleId) {
+//                            it.copy(isFix = true)
+//                        } else {
+//                            it
+//                        }
+//                    }
+                }
             ) {
                 Icon(
                     imageVector = ImageVector.vectorResource(R.drawable.icon_check),
                     contentDescription = "apply icon",
-                    tint = Color.White,
+                    tint = NeutralGray0,
                 )
             }
             Box(modifier = Modifier.padding(16.dp, 0.dp, 0.dp, 0.dp)) {
@@ -90,24 +105,29 @@ fun AppliedScheduleItemUI() {
                         .height(28.dp)
                         .border(
                             width = 1.dp,
-                            color = Color.LightGray,
+                            color = NeutralGray300,
                             shape = RoundedCornerShape(5.dp)
                         )
                         .padding(0.dp),
                     shape = RoundedCornerShape(5.dp),
                     colors = ButtonDefaults.buttonColors(
-                        containerColor = Color.White,
-                        contentColor = Color.LightGray,
-                        disabledContainerColor = Color.LightGray,
-                        disabledContentColor = Color.White
+                        containerColor = NeutralGray0,
+                        contentColor = NeutralGray300,
+                        disabledContainerColor = NeutralGray300,
+                        disabledContentColor = NeutralGray0
                     ),
                     contentPadding = PaddingValues(0.dp),
-                    onClick = {}
+                    onClick = {
+                        showRejectDialog.value = true
+//                        val newList = scheduleList.value.toMutableList()
+//                        newList.remove(schedule)
+//                        scheduleList.value = newList
+                    }
                 ) {
                     Icon(
                         imageVector = ImageVector.vectorResource(R.drawable.icon_clear),
                         contentDescription = "cancel icon",
-                        tint = Color.LightGray,
+                        tint = NeutralGray300,
                     )
                 }
             }
