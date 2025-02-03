@@ -5,10 +5,8 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -26,7 +24,7 @@ import com.kitching.app.ui.theme.H4_m
 import com.kitching.app.ui.theme.KitchingManagerTheme
 
 @Composable
-fun RecipeDetail(
+fun RecipeDetailScreen(
     recipeId: String,
     commonState: CommonState
 ) {
@@ -71,7 +69,7 @@ fun RecipeDetail(
                         contentDescription = "${recipeDetail.name} 이미지",
                         modifier = Modifier
                             .fillMaxWidth(),
-                        contentScale = ContentScale.Crop
+                        contentScale = ContentScale.Fit
                     )
                 }
 

@@ -30,7 +30,7 @@ import com.kitching.app.ui.theme.Caption1_R
 fun RecipeItem(recipe: Recipe, commonState: CommonState) {
     Card (
         modifier = Modifier
-            .size(width = 150.dp, height = 228.dp)
+            .size(width = 150.dp, height = 188.dp)
             .clip(RoundedCornerShape(8.dp))
             .background(Color.White, RoundedCornerShape(8.dp))
             .clickable { commonState.navController.navigate("detail/${recipe.id}") },
@@ -47,7 +47,7 @@ fun RecipeItem(recipe: Recipe, commonState: CommonState) {
                 contentDescription = "${recipe.name} Img",
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(200.dp),
+                    .height(160.dp),
                 contentScale = ContentScale.FillBounds
             )
 
