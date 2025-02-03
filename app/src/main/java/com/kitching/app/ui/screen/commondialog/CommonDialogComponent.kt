@@ -29,6 +29,7 @@ import com.kitching.app.ui.theme.NeutralGray200
 import com.kitching.app.ui.theme.NeutralGray300
 import com.kitching.app.ui.theme.NeutralGray400
 import com.kitching.app.ui.theme.PrimaryGreen300
+import com.kitching.app.ui.theme.defaultPadding
 
 @Composable
 fun CommonDialogComponent(
@@ -58,7 +59,7 @@ fun CommonDialogComponent(
                 .border(1.dp, NeutralGray300, RoundedCornerShape(radius))
                 .height(height)
                 .width(296.dp)
-                .padding(20.dp, paddingTop, 20.dp, paddingBottom),
+                .padding(defaultPadding),
             contentAlignment = Alignment.Center
         ) {
             Column(
