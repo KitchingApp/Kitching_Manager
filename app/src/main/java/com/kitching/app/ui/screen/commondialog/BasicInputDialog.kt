@@ -38,6 +38,7 @@ import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.TextFieldValue
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.kitching.app.ui.theme.Body1
@@ -84,22 +85,23 @@ fun BasicInputDialog(
                     border = BorderStroke(1.dp, NeutralGray300),
                     shape = RoundedCornerShape(8.dp)
                 )
+                .padding(20.dp, 0.dp)
         ) {
             // 텍스트가 비어 있을 때만 placeholder를 표시
             if (textState.value.text.isEmpty()) {
                 Text(
                     text = placeHolder,
-                    style = Body1.copy(color = NeutralGray300),
-                    modifier = Modifier.align(Alignment.Center)
+                    style = Body1.copy(color = NeutralGray300, textAlign = TextAlign.Start),
+                    modifier = Modifier.align(Alignment.CenterStart)
                 )
             }
             BasicTextField(
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier.fillMaxWidth().align(Alignment.Center),
                 value = textState.value,
                 onValueChange = {
                     textState.value = it
                 },
-                textStyle = Body1.copy(color = NeutralGray800),
+                textStyle = Body1.copy(color = NeutralGray800, textAlign = TextAlign.Start),
                 singleLine = true,
                 cursorBrush = SolidColor(NeutralGray800),
             )

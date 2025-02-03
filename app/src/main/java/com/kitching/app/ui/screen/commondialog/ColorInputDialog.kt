@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.selection.selectable
@@ -31,6 +32,7 @@ import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.input.TextFieldValue
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.kitching.app.ui.theme.Body1
 import com.kitching.app.ui.theme.CategoryColor1
@@ -47,6 +49,7 @@ import com.kitching.app.ui.theme.NeutralGray800
 @Composable
 fun ColorInputDialog(
     title: String,
+    placeHolder: String,
     confirmText: String,
     onClickConfirm: () -> Unit,
     cancelText: String,
@@ -84,22 +87,23 @@ fun ColorInputDialog(
                     border = BorderStroke(1.dp, NeutralGray300),
                     shape = RoundedCornerShape(8.dp)
                 )
+                .padding(20.dp, 0.dp)
         ) {
             // 텍스트가 비어 있을 때만 placeholder를 표시
             if (textState.text.isEmpty()) {
                 Text(
-                    text = "카테고리명을 입력해주세요",
-                    style = Body1.copy(color = NeutralGray300),
-                    modifier = Modifier.align(Alignment.Center)
+                    text = placeHolder,
+                    style = Body1.copy(color = NeutralGray300, textAlign = TextAlign.Start),
+                    modifier = Modifier.align(Alignment.CenterStart)
                 )
             }
             BasicTextField(
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier.fillMaxWidth().align(Alignment.Center),
                 value = textState,
                 onValueChange = {
                     textState = it
                 },
-                textStyle = Body1.copy(color = NeutralGray800),
+                textStyle = Body1.copy(color = NeutralGray800, textAlign = TextAlign.Start),
                 singleLine = true,
                 cursorBrush = SolidColor(NeutralGray800),
             )

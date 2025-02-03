@@ -1,6 +1,5 @@
 package com.kitching.app.ui.screen.prep
 
-import android.util.Log
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
@@ -15,6 +14,7 @@ import com.kitching.app.common.NavigationIconInfo
 import com.kitching.app.navgraph.ScreenRouteDef
 import com.kitching.app.ui.screen.categoryscreen.CategoryItemForScreen
 import com.kitching.app.ui.screen.categoryscreen.CategoryScreen
+import com.kitching.app.ui.screen.categoryscreen.EmptyScreen
 import com.kitching.app.ui.screen.commondialog.ColorInputDialog
 import com.kitching.app.ui.theme.KitchingManagerTheme
 import com.kitching.app.ui.theme.NeutralGray0
@@ -28,7 +28,7 @@ data class PrepCategoryDTO(val categoryId: String, val categoryName: String, val
 fun PrepTabScreen(
     commonState: CommonState
 ) {
-    val mockDataList = listOf(
+    val mockDataList = listOf<PrepCategoryDTO>(
         PrepCategoryDTO(
             categoryId = "YG9hVIsiIKvNQxNOutIG",
             categoryName = "핫",
@@ -45,6 +45,7 @@ fun PrepTabScreen(
             color = "#EEEEEE"
         )
     )
+
     var showCreateDialog by remember { mutableStateOf(false) }
 
     val optionMenuIndex = remember { mutableStateOf<Int?>(null) }
@@ -70,32 +71,38 @@ fun PrepTabScreen(
         Surface(
             modifier = Modifier.fillMaxSize()
         ) {
-            CategoryScreen(
-                title = "프렙",
-                categoryList = mockDataList.map { category ->
-                    CategoryItemForScreen(
-                        categoryId = category.categoryId,
-                        categoryName = category.categoryName,
-                        categoryColor = category.color
-                    )
-                },
-                onCardClick = { categoryId, categoryName, categoryColor ->
-                    val encodedColor = URLEncoder.encode(categoryColor, StandardCharsets.UTF_8.toString())
-                    commonState.navController.navigate("${ScreenRouteDef.InnerContent.PrepDetail.routeName}/${categoryId}/${categoryName}/${encodedColor}")
-                              },
-                onCardOptionBtnClick = { index ->
-                    optionMenuIndex.value = if (optionMenuIndex.value == index) null else index
-                },
-                optionMenuIndex = optionMenuIndex
-            )
-            if(showCreateDialog) {
-                ColorInputDialog(
-                    title = "프렙 카테고리 추가",
-                    confirmText = "생성",
-                    onClickConfirm = { },
-                    cancelText = "취소",
-                    onClickCancel = { showCreateDialog = false }
+            if(mockDataList.isEmpty()) {
+                // 리스트가 비어있을때
+                EmptyScreen("프렙 카테고리를 추가해주세요")
+            } else {
+                CategoryScreen(
+                    title = "프렙",
+                    categoryList = mockDataList.map { category ->
+                        CategoryItemForScreen(
+                            categoryId = category.categoryId,
+                            categoryName = category.categoryName,
+                            categoryColor = category.color
+                        )
+                    },
+                    onCardClick = { categoryId, categoryName, categoryColor ->
+                        val encodedColor = URLEncoder.encode(categoryColor, StandardCharsets.UTF_8.toString())
+                        commonState.navController.navigate("${ScreenRouteDef.InnerContent.PrepDetail.routeName}/${categoryId}/${categoryName}/${encodedColor}")
+                    },
+                    onCardOptionBtnClick = { index ->
+                        optionMenuIndex.value = if (optionMenuIndex.value == index) null else index
+                    },
+                    optionMenuIndex = optionMenuIndex
                 )
+                if(showCreateDialog) {
+                    ColorInputDialog(
+                        title = "프렙 카테고리 추가",
+                        placeHolder = "카테고리 이름을 입력해주세요",
+                        confirmText = "생성",
+                        onClickConfirm = { },
+                        cancelText = "취소",
+                        onClickCancel = { showCreateDialog = false }
+                    )
+                }
             }
         }
     }
