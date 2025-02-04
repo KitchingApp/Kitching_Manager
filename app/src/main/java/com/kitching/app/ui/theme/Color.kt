@@ -21,6 +21,7 @@ val SecondaryLightGreen500 = Color(0xFFB3F31C)
 
 val subColor2 = Color(0xFF3E825B)
 
+val NeutralGray100 = Color(0xFFEEEFEF)
 val NeutralGray200 = Color(0xFFE4E5E6)
 val NeutralGray300 = Color(0xFFCCCED1)
 val NeutralGray400 = Color(0xFFB3B6BA)
