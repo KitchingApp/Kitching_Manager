@@ -17,6 +17,7 @@ val PrimaryGreen200 = Color(0xFF8BDDAB)
 val PrimaryGreen50 = Color(0xFFE3F7EA)
 
 val SecondaryLightGreen100 = Color(0xFFE8FCC3)
+val SecondaryLightGreen500 = Color(0xFFB3F31C)
 
 val subColor2 = Color(0xFF3E825B)
 
