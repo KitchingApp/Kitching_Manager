@@ -14,7 +14,7 @@ import com.kitching.app.common.ActionIconInfo
 import com.kitching.app.common.CommonState
 import com.kitching.app.common.NavigationIconInfo
 import com.kitching.app.ui.screen.categoryscreen.CategorySubDivisionScreen
-import com.kitching.app.ui.screen.categoryscreen.EmptyScreen
+import com.kitching.app.ui.screen.common.EmptyScreen
 import com.kitching.app.ui.screen.categoryscreen.SubdivisionItemForScreen
 import com.kitching.app.ui.screen.commondialog.BasicInputDialog
 import com.kitching.app.ui.theme.KitchingManagerTheme

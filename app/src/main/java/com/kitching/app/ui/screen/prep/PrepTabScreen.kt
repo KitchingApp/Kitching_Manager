@@ -8,7 +8,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.input.TextFieldValue
 import com.kitching.app.common.ActionIconInfo
 import com.kitching.app.common.CommonState
@@ -16,11 +15,10 @@ import com.kitching.app.common.NavigationIconInfo
 import com.kitching.app.navgraph.ScreenRouteDef
 import com.kitching.app.ui.screen.categoryscreen.CategoryItemForScreen
 import com.kitching.app.ui.screen.categoryscreen.CategoryScreen
-import com.kitching.app.ui.screen.categoryscreen.EmptyScreen
+import com.kitching.app.ui.screen.common.EmptyScreen
 import com.kitching.app.ui.screen.commondialog.ColorInputDialog
 import com.kitching.app.ui.theme.KitchingManagerTheme
 import com.kitching.app.ui.theme.NeutralGray0
-import com.kitching.app.util.hexToArgb
 import kotlinx.coroutines.launch
 import java.net.URLEncoder
 import java.nio.charset.StandardCharsets

@@ -1,4 +1,4 @@
-package com.kitching.app.ui.screen.categoryscreen
+package com.kitching.app.ui.screen.common
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
