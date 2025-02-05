@@ -8,33 +8,28 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import com.kitching.app.ui.item.FixedScheduleItemUI
 import com.kitching.app.ui.screen.commondialog.BasicConfirmDialog
+import com.kitching.domain.entities.Schedule
 
 //@Preview
 @Composable
 fun FixedScheduleScreen(
-    mutableState: MutableState<List<ScheduleDTO>>,
-    scheduleList: State<List<ScheduleDTO>>
+    scheduleList: List<Schedule>,
+    onDeleteClick: (scheduleId: String) -> Unit
 ) {
-    val showDeleteDialog = remember { mutableStateOf(false) }
 
-    if(scheduleList.value.isEmpty()) {
+    if(scheduleList.isEmpty()) {
         EmptyScheduleScreen()
     } else {
         LazyColumn {
-            scheduleList.value.filter { it.isFix }.forEach { schedule ->
+            scheduleList.forEach { schedule ->
                 item {
-                    FixedScheduleItemUI(schedule, mutableState, showDeleteDialog)
+                    FixedScheduleItemUI(
+                        schedule = schedule,
+                        onDeleteClick = { scheduleId -> onDeleteClick(scheduleId) }
+                    )
                 }
             }
         }
     }
-    if(showDeleteDialog.value){
-        BasicConfirmDialog(
-            message = "스케줄을 삭제하시겠습니까?",
-            confirmText = "삭제",
-            onClickConfirm = {},
-            cancelText = "취소",
-            onClickCancel = { showDeleteDialog.value = false }
-        )
-    }
+
 }

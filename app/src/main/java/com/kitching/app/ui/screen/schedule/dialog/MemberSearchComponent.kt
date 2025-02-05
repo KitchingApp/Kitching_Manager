@@ -48,30 +48,24 @@ import com.kitching.app.ui.theme.NeutralGray0
 import com.kitching.app.ui.theme.NeutralGray200
 import com.kitching.app.ui.theme.NeutralGray300
 import com.kitching.app.ui.theme.NeutralGray800
+import com.kitching.domain.entities.Member
 
 @Composable
 fun MemberSearchComponent(
-    selectedMemberRemember: MutableState<DropDownMembersDTO>,
-    isExpandedRemember: MutableState<Boolean>
+    members: List<Member>,
+    selectedMember: MutableState<Member>,
+    isExpanded: MutableState<Boolean>
 ) {
-    val memberDTOListMockData = listOf(
-        DropDownMembersDTO(userId = "a", userName = "박민수"),
-        DropDownMembersDTO(userId = "b", userName = "박지수"),
-        DropDownMembersDTO(userId = "c", userName = "김수연"),
-        DropDownMembersDTO(userId = "d", userName = "김채연"),
-        DropDownMembersDTO(userId = "e", userName = "최다혜"),
-        DropDownMembersDTO(userId = "f", userName = "최정혜")
-    )
 
     /** 사용자가 입력한 텍스트를 저장 */
     var textState by remember { mutableStateOf(TextFieldValue("")) }
 
     /** 드롭다운 열림 상태가 변경될때마다 실행 */
-    LaunchedEffect(isExpandedRemember.value) {
-        if (!isExpandedRemember.value) {
+    LaunchedEffect(isExpanded.value) {
+        if (!isExpanded.value) {
             textState = TextFieldValue(
-                text = selectedMemberRemember.value.userName,
-                selection = TextRange(selectedMemberRemember.value.userName.length)
+                text = selectedMember.value.userName,
+                selection = TextRange(selectedMember.value.userName.length)
             )
         }
     }
@@ -113,7 +107,7 @@ fun MemberSearchComponent(
                     value = textState,
                     onValueChange = {
                         textState = it
-                        isExpandedRemember.value = true
+                        isExpanded.value = true
                     },
                     textStyle = H3_m.copy(color = NeutralGray800),
                     singleLine = true,
@@ -127,12 +121,12 @@ fun MemberSearchComponent(
             IconButton(
                 modifier = Modifier
                     .size(24.dp).align(Alignment.CenterVertically),
-                onClick = { isExpandedRemember.value = !isExpandedRemember.value }
+                onClick = { isExpanded.value = !isExpanded.value }
             ) {
                 Icon(
                     modifier = Modifier.size(20.dp),
                     imageVector = ImageVector.vectorResource(
-                        if (isExpandedRemember.value) R.drawable.icon_up_triangle
+                        if (isExpanded.value) R.drawable.icon_up_triangle
                         else R.drawable.icon_down_triangle
                     ),
                     contentDescription = "arrow",
@@ -141,7 +135,7 @@ fun MemberSearchComponent(
             }
         }
 
-        AnimatedVisibility(visible = isExpandedRemember.value) {
+        AnimatedVisibility(visible = isExpanded.value) {
             Card(
                 modifier = Modifier
                     .width(240.dp),
@@ -157,7 +151,7 @@ fun MemberSearchComponent(
                     modifier = Modifier.heightIn(max = 150.dp)
                 ) {
                     items(
-                        memberDTOListMockData
+                        members
                             .filter { it.userName.contains(textState.text.lowercase()) || textState.text.isEmpty() }
                             .sortedBy { it.userName }
                     ) { member ->
@@ -168,8 +162,8 @@ fun MemberSearchComponent(
                                 text = memberItem.userName,
                                 selection = TextRange(memberItem.userName.length)
                             )
-                            selectedMemberRemember.value = memberItem
-                            isExpandedRemember.value = false
+                            selectedMember.value = memberItem
+                            isExpanded.value = false
                         }
                     }
                 }
@@ -181,8 +175,8 @@ fun MemberSearchComponent(
 /** 드롭다운 아이템 하나를 정의 */
 @Composable
 fun DropDownMemberList(
-    member: DropDownMembersDTO,
-    onClickItem: (DropDownMembersDTO) -> Unit
+    member: Member,
+    onClickItem: (Member) -> Unit
 ) {
     Row(
         modifier = Modifier
