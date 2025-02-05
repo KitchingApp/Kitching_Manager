@@ -8,6 +8,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.input.TextFieldValue
 import com.kitching.app.common.ActionIconInfo
 import com.kitching.app.common.CommonState
@@ -16,9 +17,11 @@ import com.kitching.app.navgraph.ScreenRouteDef
 import com.kitching.app.ui.screen.categoryscreen.CategoryItemForScreen
 import com.kitching.app.ui.screen.categoryscreen.CategoryScreen
 import com.kitching.app.ui.screen.categoryscreen.EmptyScreen
+import com.kitching.app.ui.screen.commondialog.BasicConfirmDialog
 import com.kitching.app.ui.screen.commondialog.ColorInputDialog
 import com.kitching.app.ui.theme.KitchingManagerTheme
 import com.kitching.app.ui.theme.NeutralGray0
+import com.kitching.app.util.hexToArgb
 import kotlinx.coroutines.launch
 import java.net.URLEncoder
 import java.nio.charset.StandardCharsets
@@ -45,12 +48,15 @@ fun OrderTabScreen(commonState: CommonState) {
         )
     )
 
+    // 다이얼로그 상태
     var showCreateDialog by remember { mutableStateOf(false) }
-    val showModifyDialog = remember { mutableStateOf(false) }
+    var showModifyDialog by remember { mutableStateOf(false) }
+    var showDeleteDialog by remember { mutableStateOf(false) }
+
+    // input 상태
     val textState = remember { mutableStateOf(TextFieldValue("")) }
     val colorState = remember { mutableStateOf(NeutralGray0) }
-
-    val optionMenuIndex = remember { mutableStateOf<Int?>(null) }
+    val optionMenuId = remember { mutableStateOf("") }
 
     commonState.topAppBarState.value = commonState.topAppBarState.value.copy(
         title = "Kitching",
@@ -87,16 +93,25 @@ fun OrderTabScreen(commonState: CommonState) {
                         )
                     },
                     onCardClick = { categoryId, categoryName, categoryColor ->
-                        val encodedColor = URLEncoder.encode(categoryColor, StandardCharsets.UTF_8.toString())
+                        val encodedColor =
+                            URLEncoder.encode(categoryColor, StandardCharsets.UTF_8.toString())
                         commonState.navController.navigate("${ScreenRouteDef.InnerContent.OrderDetail.routeName}/${categoryId}/${categoryName}/${encodedColor}")
                     },
-                    onCardOptionBtnClick = { index ->
-                        optionMenuIndex.value = if (optionMenuIndex.value == index) null else index
+                    onCardOptionBtnClick = { categoryId ->
+                        optionMenuId.value =
+                            if (optionMenuId.value == categoryId) "" else categoryId
                     },
-                    optionMenuIndex = optionMenuIndex,
-                    textState = textState,
-                    colorState = colorState,
-                    showModifyDialog = showModifyDialog
+                    optionMenuId = optionMenuId,
+                    onClickModify = { categoryId, categoryName, categoryColor ->
+                        optionMenuId.value = categoryId
+                        textState.value = TextFieldValue(categoryName)
+                        colorState.value = Color(hexToArgb(categoryColor))
+                        showModifyDialog = true
+                    },
+                    onClickDelete = { categoryId ->
+                        optionMenuId.value = categoryId
+                        showDeleteDialog = true
+                    },
                 )
                 if(showCreateDialog) {
                     // state 초기화
@@ -114,7 +129,7 @@ fun OrderTabScreen(commonState: CommonState) {
                         onClickCancel = { showCreateDialog = false }
                     )
                 }
-                if(showModifyDialog.value) {
+                if(showModifyDialog) {
                     ColorInputDialog(
                         title = "발주 카테고리 수정",
                         placeHolder = "카테고리명을 입력해주세요",
@@ -123,7 +138,18 @@ fun OrderTabScreen(commonState: CommonState) {
                         confirmText = "수정",
                         onClickConfirm = { },
                         cancelText = "취소",
-                        onClickCancel = { showModifyDialog.value = false }
+                        onClickCancel = { showModifyDialog = false }
+                    )
+                }
+                if (showDeleteDialog) {
+                    BasicConfirmDialog(
+                        message = "발주 카테고리를 \n삭제하시겠습니까?",
+                        confirmText = "삭제",
+                        onClickConfirm = { },
+                        cancelText = "취소",
+                        onClickCancel = {
+                            showDeleteDialog = false
+                        }
                     )
                 }
             }

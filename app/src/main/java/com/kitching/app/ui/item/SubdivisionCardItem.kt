@@ -28,7 +28,12 @@ import com.kitching.app.ui.theme.NeutralGray300
 import com.kitching.app.ui.theme.NeutralGray600
 import com.kitching.app.ui.theme.NeutralGray800
 
-//@Preview
+/**
+ * Subdivision card item
+ *
+ * @param cardText 카테고리 속 세부 아이템 이름
+ * @param onOptionBtnClick 옵션버튼 클릭 시 액션
+ */
 @Composable
 fun SubdivisionCardItem(
     cardText: String,
