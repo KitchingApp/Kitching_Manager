@@ -28,7 +28,6 @@ import java.time.LocalDateTime
  * 날짜 선택 컴포넌트
  * ex) < 2025-01-26 >
  * */
-@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun DateSelector(
     selectedDateTime: LocalDateTime,

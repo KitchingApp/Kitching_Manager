@@ -25,15 +25,14 @@ import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.kitching.app.R
-import com.kitching.app.ui.screen.schedule.ScheduleDTO
 import com.kitching.app.ui.theme.PrimaryGreen300
+import com.kitching.domain.entities.Schedule
 
 //@Preview
 @Composable
 fun FixedScheduleItemUI(
-    schedule: ScheduleDTO,
-    scheduleList: MutableState<List<ScheduleDTO>>,
-    showDeleteDialog: MutableState<Boolean>
+    schedule: Schedule,
+    onDeleteClick: (scheduleId: String) -> Unit
 ) {
     Row(
         modifier = Modifier.fillMaxWidth().height(60.dp)
@@ -78,10 +77,7 @@ fun FixedScheduleItemUI(
                 ),
                 contentPadding = PaddingValues(0.dp),
                 onClick = {
-                    showDeleteDialog.value = true
-//                    val newList = scheduleList.value.toMutableList()
-//                    newList.remove(schedule)
-//                    scheduleList.value = newList
+                    onDeleteClick(schedule.scheduleId)
                 }
             ) {
                 Icon(

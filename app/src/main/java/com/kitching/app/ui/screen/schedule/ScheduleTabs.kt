@@ -27,7 +27,7 @@ import kotlinx.coroutines.launch
 fun ScheduleTabs(
     tabItems: List<ScheduleTabItem>,
     tabPageState: PagerState,
-    scope: CoroutineScope
+    onClickTabs: (index: Int) -> Unit
 ) {
     Column(
         modifier = Modifier.fillMaxWidth()
@@ -44,11 +44,7 @@ fun ScheduleTabs(
             tabItems.forEachIndexed { index, tabItem ->
                 Tab(
                     selected = tabPageState.currentPage == index,
-                    onClick = {
-                        scope.launch {
-                            tabPageState.animateScrollToPage(index)
-                        }
-                    },
+                    onClick = { onClickTabs(index) },
                     modifier = Modifier
                         .background(
                             color = if (tabPageState.currentPage == index) SecondaryLightGreen100

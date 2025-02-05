@@ -13,22 +13,14 @@ import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import com.kitching.app.ui.item.CategoryCardItem
-import com.kitching.app.ui.screen.commondialog.BasicConfirmDialog
 import com.kitching.app.ui.screen.commondialog.DropdownOptionMenu
 import com.kitching.app.ui.theme.H2
 import com.kitching.app.ui.theme.NeutralGray800
 import com.kitching.app.ui.theme.defaultPadding
-import com.kitching.app.util.hexToArgb
 
 data class CategoryItemForScreen(
     val categoryId: String,
@@ -36,18 +28,27 @@ data class CategoryItemForScreen(
     val categoryColor: String
 )
 
+/**
+ * Category screen
+ *
+ * @param title 카테고리 이름
+ * @param categoryList [CategoryItemForScreen]으로 변환된 카테고리 목록
+ * @param onCardClick 카드 클릭 시 액션
+ * @param onCardOptionBtnClick 옵션버튼 클릭 시 액션
+ * @param optionMenuId 선택된 옵션버튼의 아이템 ID(선택하지 않을 시 "")
+ * @param onClickModify 옵션메뉴의 수정 클릭 시
+ * @param onClickDelete 옵션메뉴의 삭제 클릭 시
+ */
 @Composable
 fun CategoryScreen(
     title: String,
     categoryList: List<CategoryItemForScreen>,
     onCardClick: (categoryId: String, categoryName: String, color: String) -> Unit,
-    onCardOptionBtnClick: (index: Int) -> Unit,
-    optionMenuIndex: MutableState<Int?>,
-    textState: MutableState<TextFieldValue>,
-    colorState: MutableState<Color>,
-    showModifyDialog: MutableState<Boolean>
+    onCardOptionBtnClick: (categoryId: String) -> Unit,
+    optionMenuId: MutableState<String>,
+    onClickModify: (categoryId: String, categoryName: String, categoryColor: String) -> Unit,
+    onClickDelete: (categoryId: String) -> Unit
 ) {
-    var showDeleteDialog by remember { mutableStateOf(false) }
 
     Column(
         modifier = Modifier
@@ -73,7 +74,7 @@ fun CategoryScreen(
             modifier = Modifier.weight(1f),
             verticalArrangement = Arrangement.spacedBy(20.dp)
         ) {
-            itemsIndexed(categoryList) { index, category ->
+            itemsIndexed(categoryList) { _, category ->
                 Column(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalAlignment = Alignment.End
@@ -88,27 +89,17 @@ fun CategoryScreen(
                                 category.categoryColor
                             )
                         },
-                        onOptionBtnClick = { onCardOptionBtnClick(index) },
+                        onOptionBtnClick = { onCardOptionBtnClick(category.categoryId) },
                     )
-                    if (optionMenuIndex.value == index) {
+                    if (optionMenuId.value == category.categoryId) {
                         DropdownOptionMenu(
-                            optionMenuIndex = optionMenuIndex,
+                            optionMenuId = optionMenuId,
                             onClickModify = {
-                                optionMenuIndex.value = null
-                                textState.value = TextFieldValue(category.categoryName)
-                                colorState.value = Color(hexToArgb(category.categoryColor))
-                                showModifyDialog.value = true
+                                onClickModify(category.categoryId, category.categoryName, category.categoryColor)
                             },
-                            onClickDelete = { showDeleteDialog = true }
-                        )
-                    }
-                    if (showDeleteDialog) {
-                        BasicConfirmDialog(
-                            message = "프렙 카테고리를 \n삭제하시겠습니까?",
-                            confirmText = "삭제",
-                            onClickConfirm = { },
-                            cancelText = "취소",
-                            onClickCancel = { showDeleteDialog = false }
+                            onClickDelete = {
+                                onClickDelete(category.categoryId)
+                            }
                         )
                     }
                 }
