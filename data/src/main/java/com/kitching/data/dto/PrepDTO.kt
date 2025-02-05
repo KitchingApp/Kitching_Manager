@@ -2,7 +2,11 @@ package com.kitching.data.dto
 
 import com.kitching.domain.entities.Prep
 
-data class PrepDTO(val id: String, val categoryId: String, val name: String) {
+data class PrepDTO(
+    val id: String = "",
+    val categoryId: String = "",
+    val name: String = ""
+) {
     fun toDomain(): Prep {
         return Prep(
             categoryId = categoryId,

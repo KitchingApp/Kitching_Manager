@@ -18,6 +18,7 @@ import com.kitching.app.ui.screen.categoryscreen.EmptyScreen
 import com.kitching.app.ui.screen.categoryscreen.SubdivisionItemForScreen
 import com.kitching.app.ui.screen.commondialog.BasicInputDialog
 import com.kitching.app.ui.theme.KitchingManagerTheme
+import com.kitching.app.ui.theme.NeutralGray0
 import com.kitching.app.util.hexToArgb
 
 data class OrderDTO(val categoryId: String, val orderId: String, val orderName: String)
@@ -34,10 +35,12 @@ fun OrderDetailScreen(
         ).filter { it.categoryId == categoryId }
 
         var showCreateDialog by remember { mutableStateOf(false) }
+        var showModifyDialog by remember { mutableStateOf(false) }
+        var showDeleteDialog by remember { mutableStateOf(false) }
 
         val textState = remember { mutableStateOf(TextFieldValue("")) }
-
-        val optionMenuIndex = remember { mutableStateOf<Int?>(null) }
+        val colorState = remember { mutableStateOf(NeutralGray0) }
+        val optionMenuId = remember { mutableStateOf<String>("") }
 
         commonState.topAppBarState.value = commonState.topAppBarState.value.copy(
             title = categoryName,
@@ -62,11 +65,12 @@ fun OrderDetailScreen(
                                 name = item.orderName
                             )
                         },
-                        onCardOptionBtnClick = { index ->
-                            optionMenuIndex.value = if (optionMenuIndex.value == index) null else index
+                        onCardOptionBtnClick = { itemId ->
+                            optionMenuId.value = if (optionMenuId.value == itemId) "" else itemId
                         },
-                        optionMenuIndex = optionMenuIndex,
-                        categoryId = categoryId
+                        optionMenuId = optionMenuId,
+                        onClickModify = {itemId, itemName ->  },
+                        onClickDelete = {}
                     )
                 }
                 if(showCreateDialog) {
