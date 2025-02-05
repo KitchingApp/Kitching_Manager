@@ -20,9 +20,16 @@ import com.kitching.app.ui.theme.NeutralGray800
 import com.kitching.app.ui.theme.PrimaryGreen300
 import com.kitching.app.util.crop
 
+/**
+ * Dropdown option menu: 수정, 삭제가 있는 드롭다운
+ *
+ * @param optionMenuId 선택된 옵션버튼의 아이템 ID(선택하지 않을 시 "")
+ * @param onClickModify 수정 버튼 클릭 시 액션
+ * @param onClickDelete 삭제 버튼 클릭 시 액션
+ */
 @Composable
 fun DropdownOptionMenu(
-    optionMenuIndex: MutableState<Int?>,
+    optionMenuId: MutableState<String>,
     onClickModify: () -> Unit,
     onClickDelete: () -> Unit
 ) {
@@ -31,7 +38,7 @@ fun DropdownOptionMenu(
             modifier = Modifier.padding(0.dp).crop(vertical = 8.dp),
             shape = RectangleShape,
             expanded = true,
-            onDismissRequest = { optionMenuIndex.value = null },
+            onDismissRequest = { optionMenuId.value = "" },
             containerColor = NeutralGray0
         ) {
             DropdownMenuItem(
