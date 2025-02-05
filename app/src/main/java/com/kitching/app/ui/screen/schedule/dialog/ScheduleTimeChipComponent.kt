@@ -8,6 +8,7 @@ import androidx.compose.material3.FilterChip
 import androidx.compose.material3.SelectableChipColors
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
@@ -18,39 +19,35 @@ import com.kitching.app.ui.theme.NeutralGray0
 import com.kitching.app.ui.theme.NeutralGray800
 import com.kitching.app.ui.theme.PrimaryGreen300
 import com.kitching.app.ui.theme.SecondaryLightGreen100
+import com.kitching.domain.entities.ScheduleTime
 
-@Preview
+//@Preview
 @Composable
-fun ScheduleTimeChipComponent() {
-    val selectedScheduleTime = remember {
-        mutableStateOf(
-            ScheduleTimeChipsDTO(
-                scheduleTimeId = "",
-                scheduleTimeName = ""
-            )
-        )
-    }
+fun ScheduleTimeChipComponent(
+    scheduleTimes: List<ScheduleTime>,
+    selectedScheduleTime: MutableState<ScheduleTime>
+) {
 
-    val scheduleTimeListMockData = listOf(
-        ScheduleTimeChipsDTO(
-            scheduleTimeId = "1",
-            scheduleTimeName = "오픈"
-        ),
-        ScheduleTimeChipsDTO(
-            scheduleTimeId = "2",
-            scheduleTimeName = "미들"
-        ),
-        ScheduleTimeChipsDTO(
-            scheduleTimeId = "3",
-            scheduleTimeName = "마감"
-        )
-    )
+//    val scheduleTimeListMockData = listOf(
+//        ScheduleTimeChipsDTO(
+//            scheduleTimeId = "1",
+//            scheduleTimeName = "오픈"
+//        ),
+//        ScheduleTimeChipsDTO(
+//            scheduleTimeId = "2",
+//            scheduleTimeName = "미들"
+//        ),
+//        ScheduleTimeChipsDTO(
+//            scheduleTimeId = "3",
+//            scheduleTimeName = "마감"
+//        )
+//    )
 
     Row(
         modifier = Modifier.width(240.dp),
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
-        scheduleTimeListMockData.forEach { scheduleTime ->
+        scheduleTimes.forEach { scheduleTime ->
             FilterChip(
                 onClick = {
                     selectedScheduleTime.value = scheduleTime

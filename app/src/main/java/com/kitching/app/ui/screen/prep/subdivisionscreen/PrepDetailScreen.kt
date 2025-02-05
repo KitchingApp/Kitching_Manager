@@ -168,6 +168,8 @@ fun PrepDetailScreen(
                     is AppResult.Failure -> {
                         /* 실패 화면 넣고싶음 */
                     }
+
+                    AppResult.Initial -> {}
                 }
 
             }

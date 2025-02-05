@@ -17,7 +17,6 @@ import com.kitching.app.ui.screen.prep.PrepTabScreen
 import com.kitching.app.ui.screen.recipe.RecipeTabScreen
 import com.kitching.app.ui.screen.schedule.ScheduleTabScreen
 
-@RequiresApi(Build.VERSION_CODES.UPSIDE_DOWN_CAKE)
 @Composable
 fun CustomNavHost(
     paddingValues: PaddingValues,

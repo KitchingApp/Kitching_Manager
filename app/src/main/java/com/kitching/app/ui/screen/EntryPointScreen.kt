@@ -22,7 +22,6 @@ import com.kitching.app.ui.screen.navigation.CustomNavigationBar
 import com.kitching.app.ui.screen.navigation.CustomNavigationDrawer
 import com.kitching.app.ui.screen.navigation.CustomTopAppBar
 
-@RequiresApi(Build.VERSION_CODES.UPSIDE_DOWN_CAKE)
 @Preview(showBackground = true)
 @Composable
 fun EntryPointScreen() {
