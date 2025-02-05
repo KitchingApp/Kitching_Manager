@@ -1,4 +1,4 @@
-package com.kitching.data.datasource
+package com.kitching.data.firebase
 
 const val COLLECTION_DEPARTMENT = "department"
 const val COLLECTION_NOTICE = "notice"

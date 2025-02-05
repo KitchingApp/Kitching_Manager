@@ -1,5 +1,6 @@
 package com.kitching.app.ui.item
 
+import android.util.Log
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
@@ -30,7 +31,14 @@ import com.kitching.app.ui.theme.ShadowColor
 import com.kitching.app.util.dropShadow
 import com.kitching.app.util.hexToArgb
 
-//@Preview
+/**
+ * Category Card Item 카테고리화 된 리스트에 공통으로 쓰이는 카드뷰
+ *
+ * @param cardText 카테고리명
+ * @param cardColor 카테고리의 색깔 Hex color code (ex. #B3F31C)
+ * @param onCardClick 카테고리 클릭시 액션
+ * @param onOptionBtnClick 카테고리 옵션 버튼 클릭시 액션
+ * */
 @Composable
 fun CategoryCardItem(
     cardText: String,
@@ -38,6 +46,8 @@ fun CategoryCardItem(
     onCardClick: () -> Unit,
     onOptionBtnClick: () -> Unit,
 ) {
+    Log.d("color", cardColor)
+
     Card(
         modifier = Modifier.fillMaxWidth().height(60.dp)
             .dropShadow(
