@@ -31,6 +31,8 @@ val subTextColor = Color(0xFF565656)
 
 val ShadowColor = Color(0x26000000)
 
+val BlueColor200 = Color(0xFF38A5E9)
+
 val CategoryColor1 = Color(0xFFFFE1E1)
 val CategoryColor2 = Color(0xFFD6F6FF)
 val CategoryColor3 = Color(0xFFFFECB7)

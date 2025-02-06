@@ -36,7 +36,7 @@ fun RecipeTabScreen(
         },
         actionIconInfo = ActionIconInfo.ADD,
         onClickActionIcon = {
-            Log.d("TopAppBar", "Action Icon Clicked in RecipeTabScreen")
+            commonState.navController.navigate("create")
         }
     )
 

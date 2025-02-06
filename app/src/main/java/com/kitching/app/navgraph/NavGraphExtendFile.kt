@@ -10,10 +10,23 @@ import com.kitching.app.ui.screen.recipe.innercontent.RecipeDetailScreen
 import com.kitching.app.ui.screen.recipe.innercontent.RecipeEditScreen
 import com.kitching.app.ui.screen.order.OrderDetailScreen
 import com.kitching.app.ui.screen.prep.subdivisionscreen.PrepDetailScreen
+import com.kitching.app.ui.screen.recipe.innercontent.RecipeCreateScreen
 
 fun NavGraphBuilder.sliceNavGraph(
     commonState: CommonState
 ) {
+    navigation(
+        startDestination = ScreenRouteDef.RecipeTab.routeName,
+        route = "recipe_create"
+    ) {
+        composable(
+            ScreenRouteDef.InnerContent.RecipeCreate.routeName,
+        ) { backStackEntry ->
+            RecipeCreateScreen(
+                commonState = commonState
+            )
+        }
+    }
     navigation(
         startDestination = ScreenRouteDef.RecipeTab.routeName,
         route = "recipe_detail"
