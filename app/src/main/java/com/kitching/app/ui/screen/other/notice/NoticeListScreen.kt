@@ -20,6 +20,7 @@ import com.kitching.app.navgraph.ScreenRouteDef
 import com.kitching.app.ui.factory.viewModelFactory
 import com.kitching.app.ui.item.NoticeItem
 import com.kitching.app.ui.model.NoticeViewModel
+import com.kitching.app.ui.screen.common.EmptyScreen
 import com.kitching.app.ui.theme.KitchingManagerTheme
 import com.kitching.app.ui.theme.NeutralGray0
 import com.kitching.domain.AppResult
@@ -70,10 +71,16 @@ fun NoticeListScreen(
 
                 is AppResult.Success -> {
                     val notices = (noticeListState as AppResult.Success).data
-                    LazyColumn {
-                        itemsIndexed(notices) { _, notice ->
-                            NoticeItem(notice = notice) {
-                                commonState.navController.navigate(ScreenRouteDef.InnerContent.NoticeDetail.routeName + "/${Json.encodeToString(notice)}")
+                    if(notices.isEmpty()) {
+                        EmptyScreen(
+                            message = "공지사항을 입력해주세요."
+                        )
+                    } else {
+                        LazyColumn {
+                            itemsIndexed(notices) { _, notice ->
+                                NoticeItem(notice = notice) {
+                                    commonState.navController.navigate(ScreenRouteDef.InnerContent.NoticeDetail.routeName + "/${Json.encodeToString(notice)}")
+                                }
                             }
                         }
                     }
