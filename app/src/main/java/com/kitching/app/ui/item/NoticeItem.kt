@@ -1,5 +1,6 @@
 package com.kitching.app.ui.item
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -11,22 +12,24 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import com.kitching.app.ui.screen.other.notice.NoticeDTO
 import com.kitching.app.ui.theme.Body1_m
 import com.kitching.app.ui.theme.Caption1_R
 import com.kitching.app.ui.theme.NeutralGray600
 import com.kitching.app.ui.theme.NeutralGray800
+import com.kitching.domain.entities.Notice
 
 //@Preview
 @Composable
 fun NoticeItem(
-    notice: NoticeDTO
+    notice: Notice,
+    onClick: () -> Unit
 ) {
     Column (
         modifier = Modifier
             .fillMaxWidth()
             .height(100.dp)
-            .padding(start = 20.dp, end = 20.dp),
+            .padding(start = 20.dp, end = 20.dp)
+            .clickable { onClick() },
         verticalArrangement = Arrangement.SpaceEvenly
     ) {
         Text(

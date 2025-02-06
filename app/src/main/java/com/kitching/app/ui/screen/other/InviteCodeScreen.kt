@@ -40,11 +40,10 @@ import com.kitching.app.ui.theme.SecondaryLightGreen500
 import com.kitching.app.ui.theme.ShadowColor
 import com.kitching.app.ui.theme.defaultPadding
 import com.kitching.app.util.dropShadow
-import kotlinx.coroutines.launch
 
 //@Preview
 @Composable
-fun InviteCode(
+fun InviteCodeScreen(
     commonState: CommonState
 ) {
     commonState.topAppBarState.value = commonState.topAppBarState.value.copy(

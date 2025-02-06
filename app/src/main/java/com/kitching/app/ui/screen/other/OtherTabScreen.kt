@@ -1,7 +1,6 @@
 package com.kitching.app.ui.screen.other
 
-import android.util.Log
-import com.kitching.app.R
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -12,10 +11,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import com.kitching.app.R
 import com.kitching.app.common.ActionIconInfo
 import com.kitching.app.common.CommonState
 import com.kitching.app.common.NavigationIconInfo.DRAWER
-import com.kitching.app.common.menuItems
+import com.kitching.app.navgraph.OtherMenuItem
+import com.kitching.app.navgraph.ScreenRouteDef
 import com.kitching.app.ui.item.OtherButtonItem
 import com.kitching.app.ui.item.ProfileSection
 import com.kitching.app.ui.theme.KitchingManagerTheme
@@ -54,11 +55,14 @@ fun OtherTabScreen(commonState: CommonState) {
 
                 Spacer(modifier = Modifier.height(32.dp))
 
-                menuItems.forEach { label ->
-                    OtherButtonItem(label = label, onClick = {
-                        Log.d("OtherTabScreen", "$label 클릭됨")
-                    })
-                    Spacer(modifier = Modifier.height(20.dp))
+                Column(
+                    verticalArrangement = Arrangement.spacedBy(20.dp)
+                ) {
+                    OtherMenuItem().renderOtherMenuItems().forEach { otherMenu ->
+                        OtherButtonItem(label = otherMenu.tabName) {
+                            commonState.navController.navigate(otherMenu.routeName)
+                        }
+                    }
                 }
             }
         }

@@ -1,6 +1,7 @@
 plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.kotlin.android)
+    alias(libs.plugins.kotlin.serialization)
 }
 
 android {
@@ -40,11 +41,11 @@ dependencies {
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.material)
-
     implementation(libs.firebase.firestore)
     implementation(libs.firebase.storage)
     implementation(libs.androidx.datastore.preferences)
     implementation(libs.androidx.datastore.preferences.core)
+    implementation(libs.androidx.navigation.compose)
     coreLibraryDesugaring(libs.desugar.jdk.libs)
 
     testImplementation(libs.junit)
