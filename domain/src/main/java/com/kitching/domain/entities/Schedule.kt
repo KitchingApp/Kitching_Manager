@@ -6,5 +6,5 @@ data class Schedule(
     val userName: String,
     val scheduleTimeName: String,
     val date: String,
-    val isFix: Boolean,
+    val fix: Boolean,
 )

@@ -18,7 +18,6 @@ import com.kitching.app.ui.theme.pretendard
 import java.time.LocalDateTime
 import java.time.ZoneId
 
-@RequiresApi(Build.VERSION_CODES.O)
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DatePickerModal(

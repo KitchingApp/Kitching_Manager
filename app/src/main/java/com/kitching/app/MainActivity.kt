@@ -11,7 +11,6 @@ import com.kitching.app.ui.screen.splash.SplashScreen
 import com.kitching.app.ui.theme.KitchingManagerTheme
 
 class MainActivity : ComponentActivity() {
-    @RequiresApi(Build.VERSION_CODES.UPSIDE_DOWN_CAKE)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()

@@ -3,16 +3,16 @@ package com.kitching.app.ui.model
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.kitching.data.repository.PrepRepositoryImpl
 import com.kitching.domain.AppResult
 import com.kitching.domain.entities.Prep
+import com.kitching.domain.repository.PrepRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
 class PrepViewModel(
-    private val prepRepository: PrepRepositoryImpl
+    private val prepRepository: PrepRepository
 ) : ViewModel() {
 
     private val _prepList = MutableStateFlow<AppResult<List<Prep>>>(AppResult.Loading)
