@@ -20,7 +20,6 @@ class ScheduleTimeDataSourceImpl(private val db: FirebaseFirestore = FirebaseFir
         name: String,
         startTime: String,
         endTime: String,
-        color: String
     ) = runCatching {
         db.collection(COLLECTION_SCHEDULE_TIME).add(
             ScheduleTimeDTO(
@@ -29,7 +28,6 @@ class ScheduleTimeDataSourceImpl(private val db: FirebaseFirestore = FirebaseFir
                 name = name,
                 startTime = startTime,
                 endTime = endTime,
-                color = color,
             )
         ).await().apply {
             update("id", id).await()
@@ -40,11 +38,10 @@ class ScheduleTimeDataSourceImpl(private val db: FirebaseFirestore = FirebaseFir
         scheduleTimeId: String,
         name: String,
         startTime: String,
-        endTime: String,
-        color: String
+        endTime: String
     ) = runCatching {
         db.collection(COLLECTION_SCHEDULE_TIME).document(scheduleTimeId)
-            .update("name", name, "startTime", startTime, "endTime", endTime, "color", color)
+            .update("name", name, "startTime", startTime, "endTime", endTime)
             .await()
     }.isSuccess
 

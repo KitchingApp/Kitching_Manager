@@ -1,20 +1,24 @@
 package com.kitching.app.ui.screen.other
 
-import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import com.kitching.app.R
 import com.kitching.app.common.ActionIconInfo
 import com.kitching.app.common.CommonState
 import com.kitching.app.common.NavigationIconInfo.DRAWER
+import com.kitching.app.navgraph.OtherMenuItem
+import com.kitching.app.navgraph.ScreenRouteDef
+import com.kitching.app.ui.item.OtherButtonItem
+import com.kitching.app.ui.item.ProfileSection
 import com.kitching.app.ui.theme.KitchingManagerTheme
 import kotlinx.coroutines.launch
 
@@ -29,10 +33,7 @@ fun OtherTabScreen(commonState: CommonState) {
                 commonState.scope.launch { commonState.topAppBarState.value.drawerState.open() }
             }
         },
-        actionIconInfo = ActionIconInfo.ADD,
-        onClickActionIcon = {
-            Log.d("TopAppBar", "Action Icon Clicked in OtherTabScreen")
-        }
+        actionIconInfo = ActionIconInfo.NULL
     )
     KitchingManagerTheme {
         Surface(
@@ -40,14 +41,29 @@ fun OtherTabScreen(commonState: CommonState) {
         ) {
             Column(
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(15.dp),
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.Center
+                    .fillMaxSize()
+                    .padding(horizontal = 20.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                Text(
-                    text = "Other Tab"
+                Spacer(modifier = Modifier.height(32.dp))
+
+                ProfileSection(
+                    imageRes = R.drawable.minsu_profile,
+                    name = "박민수",
+                    role = "관리자"
                 )
+
+                Spacer(modifier = Modifier.height(32.dp))
+
+                Column(
+                    verticalArrangement = Arrangement.spacedBy(20.dp)
+                ) {
+                    OtherMenuItem().renderOtherMenuItems().forEach { otherMenu ->
+                        OtherButtonItem(label = otherMenu.tabName) {
+                            commonState.navController.navigate(otherMenu.routeName)
+                        }
+                    }
+                }
             }
         }
     }

@@ -22,7 +22,6 @@ class PrepCategoryViewModel(
         viewModelScope.launch {
             prepCategoryRepository.getPrepCategory(teamId).collectLatest {
                 _prepCategory.value = it
-                Log.d("color - viewmodel", it.toString())
             }
         }
     }

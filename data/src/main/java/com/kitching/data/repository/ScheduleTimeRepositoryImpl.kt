@@ -32,7 +32,6 @@ class ScheduleTimeRepositoryImpl(private val scheduleTimeDataSource: ScheduleTim
     override fun createScheduleTime(
         teamId: String,
         name: String,
-        color: String,
         startTime: String,
         endTime: String
     ) = flow {
@@ -42,7 +41,6 @@ class ScheduleTimeRepositoryImpl(private val scheduleTimeDataSource: ScheduleTim
                 scheduleTimeDataSource.createScheduleTime(
                     teamId,
                     name,
-                    color,
                     startTime,
                     endTime
                 )
@@ -55,7 +53,6 @@ class ScheduleTimeRepositoryImpl(private val scheduleTimeDataSource: ScheduleTim
     override fun updateScheduleTime(
         scheduleTimeId: String,
         name: String,
-        color: String,
         startTime: String,
         endTime: String
     ) = flow {
@@ -65,7 +62,6 @@ class ScheduleTimeRepositoryImpl(private val scheduleTimeDataSource: ScheduleTim
                 scheduleTimeDataSource.updateScheduleTime(
                     scheduleTimeId,
                     name,
-                    color,
                     startTime,
                     endTime
                 )

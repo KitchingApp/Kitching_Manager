@@ -9,7 +9,6 @@ import com.kitching.app.ui.theme.H5
 import com.kitching.app.ui.theme.NeutralGray800
 import com.kitching.domain.AppResult
 import com.kitching.domain.entities.Member
-import com.kitching.domain.entities.MemberList
 import com.kitching.domain.entities.ScheduleTime
 import java.time.LocalDateTime
 
