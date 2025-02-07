@@ -2,6 +2,7 @@ package com.kitching.app.ui.factory
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import com.kitching.app.ui.model.MemberViewModel
 import com.kitching.app.ui.model.NoticeViewModel
 import com.kitching.app.ui.model.PrepCategoryViewModel
 import com.kitching.app.ui.model.PrepViewModel
@@ -42,6 +43,15 @@ val viewModelFactory = object : ViewModelProvider.Factory {
                 isAssignableFrom(StaffLevelViewModel::class.java) ->
                     StaffLevelViewModel(
                         repository = StaffLevelRepositoryImpl()
+                    )
+                isAssignableFrom(ScheduleTimeViewModel::class.java) ->
+                    ScheduleTimeViewModel(
+                        repository = ScheduleTimeRepositoryImpl()
+                    )
+                isAssignableFrom(MemberViewModel::class.java) ->
+                    MemberViewModel(
+                        userTeamRepository = UserTeamRepositoryImpl(),
+                        staffLevelRepository = StaffLevelRepositoryImpl()
                     )
 //                isAssignableFrom(DepartmentViewModel::class.java) ->
 //                    DepartmentViewModel()

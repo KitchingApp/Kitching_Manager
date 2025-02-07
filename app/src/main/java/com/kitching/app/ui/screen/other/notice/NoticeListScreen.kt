@@ -1,7 +1,5 @@
 package com.kitching.app.ui.screen.other.notice
 
-import android.util.Log
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
@@ -9,7 +7,6 @@ import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -26,16 +23,6 @@ import com.kitching.app.ui.theme.NeutralGray0
 import com.kitching.domain.AppResult
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
-import java.time.LocalDate
-
-data class NoticeDTO(
-    val date: LocalDate,
-    val noticeId: String,
-    val writerId: String,
-    val writerName: String,
-    val title: String,
-    val content: String
-)
 
 @Composable
 fun NoticeListScreen(

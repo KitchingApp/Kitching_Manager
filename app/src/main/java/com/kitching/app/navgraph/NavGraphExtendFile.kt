@@ -1,5 +1,6 @@
 package com.kitching.app.navgraph
 
+import android.util.Base64
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavType
 import androidx.navigation.compose.composable
@@ -10,13 +11,15 @@ import com.kitching.app.ui.screen.recipe.innercontent.RecipeDetailScreen
 import com.kitching.app.ui.screen.recipe.innercontent.RecipeEditScreen
 import com.kitching.app.ui.screen.order.OrderDetailScreen
 import com.kitching.app.ui.screen.other.InviteCodeScreen
-import com.kitching.app.ui.screen.other.MemberListScreen
+import com.kitching.app.ui.screen.other.memberlist.MemberListScreen
 import com.kitching.app.ui.screen.other.ScheduleTimeScreen
 import com.kitching.app.ui.screen.other.StaffLevelScreen
+import com.kitching.app.ui.screen.other.memberlist.MemberDetailScreen
 import com.kitching.app.ui.screen.other.notice.NoticeCreateOrModifyScreen
 import com.kitching.app.ui.screen.other.notice.NoticeDetailScreen
 import com.kitching.app.ui.screen.other.notice.NoticeListScreen
 import com.kitching.app.ui.screen.prep.subdivisionscreen.PrepDetailScreen
+import com.kitching.domain.entities.Member
 import com.kitching.domain.entities.Notice
 import kotlinx.serialization.json.Json
 
@@ -144,6 +147,18 @@ fun NavGraphBuilder.sliceNavGraph(
             ScreenRouteDef.InnerContent.MemberList.routeName
         ) {
             MemberListScreen(commonState = commonState)
+        }
+
+        composable(
+            route = ScreenRouteDef.InnerContent.MemberDetail.routeName + "/{member}",
+            arguments = listOf(navArgument("member") { type = NavType.StringType})
+        ) { backStackEntry ->
+            val encodedMember = backStackEntry.arguments?.getString("member") ?: ""
+            val decodedJson = String(Base64.decode(encodedMember, Base64.URL_SAFE or Base64.NO_WRAP))
+            MemberDetailScreen(
+                commonState = commonState,
+                member = Json.decodeFromString(decodedJson)
+            )
         }
     }
 }

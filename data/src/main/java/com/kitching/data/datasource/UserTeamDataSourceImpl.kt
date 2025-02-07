@@ -42,21 +42,12 @@ class UserTeamDataSourceImpl(private val db: FirebaseFirestore = FirebaseFiresto
         }
     }.isSuccess
 
-    override suspend fun updateMemberManagerState(
-        teamId: String,
-        userId: String,
+    override suspend fun updateMember(
+        userTeamId: String,
         staffLevelId: String,
         manager: Boolean
-    ): Boolean {
-        return runCatching {
-            db.collection(COLLECTION_USER_TEAM).whereEqualTo("teamId", teamId)
-                .whereEqualTo("userId", userId).get()
-                .await().documents.first().reference.update(
-                    "manager",
-                    manager,
-                    "staffLevelId",
-                    staffLevelId ?: ""
-                ).await()
-        }.isSuccess
-    }
+    ) = runCatching {
+        db.collection(COLLECTION_USER_TEAM).document(userTeamId)
+            .update("staffLevelId", staffLevelId, "manager", manager)
+    }.isSuccess
 }

@@ -63,8 +63,10 @@ fun ScheduleTabScreen(
     val selectedMember = remember {
         mutableStateOf(
             Member(
+                userTeamId = "",
                 userId = "",
                 userName = "",
+                userImage = "",
                 staffLevelId = "",
                 staffLevelName = "",
                 manager = false

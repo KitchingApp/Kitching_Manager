@@ -11,14 +11,14 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
 class ScheduleTimeViewModel(private val repository: ScheduleTimeRepository) : ViewModel() {
-    private var _scheduleTime =
+    private var _scheduleTimes =
         MutableStateFlow<AppResult<List<ScheduleTime>>>(AppResult.Initial)
-    val scheduleTime get() = _scheduleTime.asStateFlow()
+    val scheduleTimes get() = _scheduleTimes.asStateFlow()
 
     fun getScheduleTimes(teamId: String) {
         viewModelScope.launch {
             repository.getScheduleTimes(teamId).collectLatest {
-                _scheduleTime.value = it
+                _scheduleTimes.value = it
             }
         }
     }

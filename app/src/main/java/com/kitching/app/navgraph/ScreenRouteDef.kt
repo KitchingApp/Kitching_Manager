@@ -19,5 +19,6 @@ sealed class ScreenRouteDef(val routeName: String) {
         data object StaffLevel : ScreenRouteDef("StaffLevel")
         data object ScheduleTime : ScreenRouteDef("ScheduleTime")
         data object MemberList : ScreenRouteDef("MemberList")
+        data object MemberDetail : ScreenRouteDef("MemberDetail")
     }
 }
