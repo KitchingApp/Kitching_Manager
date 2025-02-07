@@ -30,12 +30,11 @@ class ScheduleTimeViewModel(private val repository: ScheduleTimeRepository) : Vi
     fun createScheduleTime(
         teamId: String,
         name: String,
-        color: String,
         startTime: String,
         endTime: String
     ) {
         viewModelScope.launch {
-            repository.createScheduleTime(teamId, name, color, startTime, endTime).collectLatest {
+            repository.createScheduleTime(teamId, name, startTime, endTime).collectLatest {
                 _scheduleTimeResult.value = it
             }
         }
@@ -44,12 +43,11 @@ class ScheduleTimeViewModel(private val repository: ScheduleTimeRepository) : Vi
     fun updateScheduleTime(
         scheduleTimeId: String,
         name: String,
-        color: String,
         startTime: String,
         endTime: String
     ) {
         viewModelScope.launch {
-            repository.updateScheduleTime(scheduleTimeId, name, color, startTime, endTime)
+            repository.updateScheduleTime(scheduleTimeId, name, startTime, endTime)
                 .collectLatest {
                     _scheduleTimeResult.value = it
                 }

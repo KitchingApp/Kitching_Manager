@@ -7,11 +7,13 @@ import com.kitching.app.ui.model.PrepCategoryViewModel
 import com.kitching.app.ui.model.PrepViewModel
 import com.kitching.app.ui.model.ScheduleTimeViewModel
 import com.kitching.app.ui.model.ScheduleViewModel
+import com.kitching.app.ui.model.StaffLevelViewModel
 import com.kitching.data.repository.NoticeRepositoryImpl
 import com.kitching.data.repository.PrepCategoryRepositoryImpl
 import com.kitching.data.repository.PrepRepositoryImpl
 import com.kitching.data.repository.ScheduleRepositoryImpl
 import com.kitching.data.repository.ScheduleTimeRepositoryImpl
+import com.kitching.data.repository.StaffLevelRepositoryImpl
 import com.kitching.data.repository.UserTeamRepositoryImpl
 
 @Suppress("UNCHECKED_CAST")
@@ -36,6 +38,10 @@ val viewModelFactory = object : ViewModelProvider.Factory {
                 isAssignableFrom(NoticeViewModel::class.java) ->
                     NoticeViewModel(
                         repository = NoticeRepositoryImpl()
+                    )
+                isAssignableFrom(StaffLevelViewModel::class.java) ->
+                    StaffLevelViewModel(
+                        repository = StaffLevelRepositoryImpl()
                     )
 //                isAssignableFrom(DepartmentViewModel::class.java) ->
 //                    DepartmentViewModel()
