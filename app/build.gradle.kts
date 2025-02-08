@@ -80,7 +80,6 @@ dependencies {
     implementation(libs.kotlinx.serialization.json)
     implementation(libs.coil.svg)
     implementation(libs.androidx.runtime.android)
-    coreLibraryDesugaring(libs.desugar.jdk.libs)
     implementation(libs.sdk.v2.user)
 
     testImplementation(libs.junit)

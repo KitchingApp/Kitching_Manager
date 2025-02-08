@@ -12,19 +12,51 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.kitching.app.ui.model.LoginViewModel
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.launch
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import com.kitching.app.ui.screen.splash.SplashScreen
+import com.kitching.domain.AppResult
 
-@Preview(showBackground = true)
 @Composable
-fun LoginMainScreen() {
+fun LoginMainScreen(
+    viewModel: LoginViewModel,
+    coroutineScope: CoroutineScope
+    ) {
+    val loginState by viewModel.loginState.collectAsState()
+    var destination by remember { mutableStateOf<String?>("") }
+
+    LaunchedEffect(loginState) {
+        if (loginState is AppResult.Success) {
+            coroutineScope.launch {
+                val userId = viewModel.dataStore.getUserId().toString()
+                viewModel.dataStore.saveUserId(userId)
+                destination = "select_team_screen"
+            }
+        } else {
+            destination = "splash_screen"
+        }
+    }
+
+    when(destination) {
+        "select_team_screen" -> SelectTeamScreen(viewModel, coroutineScope)
+        else -> SplashScreen()
+    }
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -59,7 +91,11 @@ fun LoginMainScreen() {
         Spacer(modifier = Modifier.height(200.dp))
 
         Surface(
-            onClick = { /* TODO: 버튼 클릭 동작 */ },
+            onClick = {
+                coroutineScope.launch {
+                    viewModel.performKakaoLogin()
+                }
+            },
             shape = RoundedCornerShape(6.dp),
             color = Color.Transparent, // 배경색 제거
             modifier = Modifier
