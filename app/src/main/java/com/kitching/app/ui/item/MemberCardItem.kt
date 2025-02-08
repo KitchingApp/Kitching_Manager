@@ -3,10 +3,12 @@ package com.kitching.app.ui.item
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -22,6 +24,7 @@ import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
 import com.kitching.app.common.CoilImageRequest
 import com.kitching.app.ui.theme.Body1_m
+import com.kitching.app.ui.theme.NeutralGray300
 import com.kitching.app.ui.theme.NeutralGray800
 import com.kitching.domain.entities.Member
 
@@ -32,8 +35,9 @@ fun MemberCardItem(
 ) {
     Card(
         modifier = Modifier
-            .fillMaxWidth()
-            .height(64.dp)
+            .width(320.dp)
+            .height(84.dp)
+            .padding(20.dp, 10.dp)
             .clickable { onCardClick() },
         colors = CardDefaults.cardColors().copy(
             containerColor = Color.Transparent,
@@ -45,7 +49,7 @@ fun MemberCardItem(
         Row(
             modifier = Modifier.fillMaxSize(),
             verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(20.dp)
+            horizontalArrangement = Arrangement.SpaceBetween
         ) {
             AsyncImage(
                 modifier = Modifier.size(64.dp).clip(RoundedCornerShape(20.dp)),
@@ -54,19 +58,30 @@ fun MemberCardItem(
                 contentDescription = null
             )
             Row(
+                modifier = Modifier.fillMaxHeight(),
+                verticalAlignment = Alignment.CenterVertically,
             ) {
                 Text(
-                    modifier = Modifier.weight(0.7f),
+                    modifier = Modifier.width(108.dp),
                     text = member.userName,
                     style = Body1_m,
                     textAlign = TextAlign.Center
                 )
-                Text(
-                    modifier = Modifier.weight(1f),
-                    text = member.staffLevelName ?: "",
-                    style = Body1_m,
-                    textAlign = TextAlign.Center
-                )
+                if(member.staffLevelName == "") {
+                    Text(
+                        modifier = Modifier.width(108.dp),
+                        text = "직급없음",
+                        style = Body1_m.copy(color = NeutralGray300),
+                        textAlign = TextAlign.Center
+                    )
+                } else {
+                    Text(
+                        modifier = Modifier.width(108.dp),
+                        text = member.staffLevelName,
+                        style = Body1_m,
+                        textAlign = TextAlign.Center
+                    )
+                }
             }
         }
     }
