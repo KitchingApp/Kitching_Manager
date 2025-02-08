@@ -79,8 +79,8 @@ fun ScheduleTabScreen(
             ScheduleTime(
                 scheduleTimeId = "",
                 scheduleTimeName = "",
-                startTime = LocalTime.now(),
-                endTime = LocalTime.now()
+                startTime = LocalTime.now().toString(),
+                endTime = LocalTime.now().toString()
             )
         )
     }

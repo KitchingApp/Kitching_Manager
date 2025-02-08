@@ -109,7 +109,7 @@ fun StaffLevelScreen(
                                         )
                                         if (optionMenuId.value == staffLevel.staffLevelId) {
                                             DropdownOptionMenu(
-                                                optionMenuId = optionMenuId,
+                                                onDismissRequest = { optionMenuId.value = "" },
                                                 onClickModify = {
                                                     showUpdateDialog = true
                                                 },

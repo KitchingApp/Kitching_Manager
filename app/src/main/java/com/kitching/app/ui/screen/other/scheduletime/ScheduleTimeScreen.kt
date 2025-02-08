@@ -1,4 +1,4 @@
-package com.kitching.app.ui.screen.other
+package com.kitching.app.ui.screen.other.scheduletime
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -16,15 +16,15 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.kitching.app.common.ActionIconInfo
 import com.kitching.app.common.CommonState
 import com.kitching.app.common.NavigationIconInfo
+import com.kitching.app.navgraph.ScreenRouteDef
 import com.kitching.app.ui.factory.viewModelFactory
-import com.kitching.app.ui.item.SubdivisionCardItem
+import com.kitching.app.ui.item.ScheduleTimeItem
 import com.kitching.app.ui.model.ScheduleTimeViewModel
 import com.kitching.app.ui.screen.common.EmptyScreen
 import com.kitching.app.ui.screen.commondialog.BasicConfirmDialog
@@ -33,7 +33,12 @@ import com.kitching.app.ui.screen.commondialog.DropdownOptionMenu
 import com.kitching.app.ui.theme.KitchingManagerTheme
 import com.kitching.app.ui.theme.NeutralGray0
 import com.kitching.app.ui.theme.defaultPadding
+import com.kitching.app.util.customFormat
 import com.kitching.domain.AppResult
+import com.kitching.domain.entities.ScheduleTime
+import kotlinx.serialization.encodeToString
+import kotlinx.serialization.json.Json
+import java.time.LocalTime
 
 //@Preview
 @Composable
@@ -43,13 +48,15 @@ fun ScheduleTimeScreen(
 ) {
     val teamId = "3uM01g5GSz8lC49JA6vq"
 
-    var showCreateDialog by remember { mutableStateOf(false) }
-    var showUpdateDialog by remember { mutableStateOf(false) }
+    val initScheduleTime = ScheduleTime(
+        scheduleTimeId = "",
+        scheduleTimeName = "",
+        startTime = "",
+        endTime = ""
+    )
+
     var showDeleteDialog by remember { mutableStateOf(false) }
-
-    val textInputState = remember { mutableStateOf(TextFieldValue("")) }
-
-    val optionMenuId = remember { mutableStateOf("") }
+    var selectedScheduleTime by remember { mutableStateOf(initScheduleTime) }
 
     val scheduleTimes by viewModel.scheduleTimes.collectAsStateWithLifecycle()
     val scheduleTimeResult by viewModel.scheduleTimeResult.collectAsStateWithLifecycle()
@@ -61,9 +68,15 @@ fun ScheduleTimeScreen(
         onClickNavIcon = { commonState.navController.popBackStack() },
         actionIconInfo = ActionIconInfo.ADD,
         onClickActionIcon = {
-            textInputState.value = TextFieldValue("")
-            optionMenuId.value = ""
-            showCreateDialog = true
+            selectedScheduleTime = ScheduleTime(
+                scheduleTimeId = "",
+                scheduleTimeName = "",
+                startTime = LocalTime.now().customFormat(),
+                endTime = LocalTime.now().customFormat()
+            )
+            commonState.navController.navigate(
+                ScreenRouteDef.InnerContent.ScheduleTimeCreateOrUpdate.routeName + "/${""}"
+            )
         }
     )
 
@@ -99,19 +112,22 @@ fun ScheduleTimeScreen(
                                         modifier = Modifier.fillMaxWidth(),
                                         horizontalAlignment = Alignment.End
                                     ) {
-                                        SubdivisionCardItem(
-                                            cardText = scheduleTime.scheduleTimeName,
+                                        ScheduleTimeItem(
+                                            scheduleTimeName = scheduleTime.scheduleTimeName,
+                                            startTime = scheduleTime.startTime,
+                                            endTime = scheduleTime.endTime,
                                             onOptionBtnClick = {
-                                                textInputState.value =
-                                                    TextFieldValue(scheduleTime.scheduleTimeName)
-                                                optionMenuId.value = scheduleTime.scheduleTimeId
+                                                selectedScheduleTime = scheduleTime
                                             }
                                         )
-                                        if (optionMenuId.value == scheduleTime.scheduleTimeId) {
+                                        if (selectedScheduleTime.scheduleTimeId == scheduleTime.scheduleTimeId) {
                                             DropdownOptionMenu(
-                                                optionMenuId = optionMenuId,
+                                                onDismissRequest = { selectedScheduleTime = initScheduleTime },
                                                 onClickModify = {
-                                                    showUpdateDialog = true
+                                                    commonState.navController.navigate(
+                                                        ScreenRouteDef.InnerContent.ScheduleTimeCreateOrUpdate.routeName +
+                                                                "/${if (selectedScheduleTime.scheduleTimeId.isEmpty()) null else Json.encodeToString(selectedScheduleTime)}"
+                                                    )
                                                 },
                                                 onClickDelete = {
                                                     showDeleteDialog = true
@@ -127,59 +143,20 @@ fun ScheduleTimeScreen(
                     is AppResult.Failure -> {}
                 }
             }
-            if (showCreateDialog) {
-                BasicInputDialog(
-                    title = "직급 생성",
-                    textState = textInputState,
-                    placeHolder = "직급명을 입력해주세요",
-                    confirmText = "생성",
-                    onClickConfirm = {
-//                        viewModel.createScheduleTime(teamId, textInputState.value.text)
-                        viewModel.getScheduleTimes(teamId)
-                        showCreateDialog = false
-                        optionMenuId.value = ""
-                    },
-                    cancelText = "취소",
-                    onClickCancel = {
-                        optionMenuId.value = ""
-                        showCreateDialog = false
-                        optionMenuId.value = ""
-                    }
-                )
-            }
-            if (showUpdateDialog) {
-                BasicInputDialog(
-                    title = "직급 수정",
-                    textState = textInputState,
-                    placeHolder = "직급명을 입력해주세요",
-                    confirmText = "수정",
-                    onClickConfirm = {
-//                        viewModel.updateScheduleTime(optionMenuId.value, textInputState.value.text)
-                        viewModel.getScheduleTimes(teamId)
-                        showUpdateDialog = false
-                        optionMenuId.value = ""
-                    },
-                    cancelText = "취소",
-                    onClickCancel = {
-                        showUpdateDialog = false
-                        optionMenuId.value = ""
-                    }
-                )
-            }
             if (showDeleteDialog) {
                 BasicConfirmDialog(
-                    message = "직급을 삭제하시겠습니까?",
+                    message = "스케줄타임을 삭제하시겠습니까?",
                     confirmText = "삭제",
                     onClickConfirm = {
-                        viewModel.deleteScheduleTime(optionMenuId.value)
+                        viewModel.deleteScheduleTime(selectedScheduleTime.scheduleTimeId)
                         viewModel.getScheduleTimes(teamId)
                         showDeleteDialog = false
-                        optionMenuId.value = ""
+                        selectedScheduleTime = initScheduleTime
                     },
                     cancelText = "취소",
                     onClickCancel = {
                         showDeleteDialog = false
-                        optionMenuId.value = ""
+                        selectedScheduleTime = initScheduleTime
                     }
                 )
             }
