@@ -1,6 +1,5 @@
 package com.kitching.app.ui.screen.recipe
 
-import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -11,19 +10,28 @@ import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.kitching.app.common.ActionIconInfo
 import com.kitching.app.common.CommonState
 import com.kitching.app.common.NavigationIconInfo
+import com.kitching.app.ui.factory.viewModelFactory
 import com.kitching.app.ui.item.RecipeItem
+import com.kitching.app.ui.model.RecipeViewModel
 import com.kitching.app.ui.theme.KitchingManagerTheme
+import com.kitching.domain.AppResult
+import com.kitching.domain.entities.Recipe
 import kotlinx.coroutines.launch
 
 @Composable
 fun RecipeTabScreen(
     commonState: CommonState,
+    viewModel: RecipeViewModel = viewModel(factory = viewModelFactory)
 ) {
     commonState.topAppBarState.value = commonState.topAppBarState.value.copy(
         navIconInfo = NavigationIconInfo.DRAWER,
@@ -40,23 +48,39 @@ fun RecipeTabScreen(
         }
     )
 
+    LaunchedEffect(Unit) {
+        val teamId = "3uM01g5GSz8lC49JA6vq"
+
+        viewModel.getRecipesByTeamId(teamId)
+    }
+
+    val recipeListState by viewModel.recipeList.collectAsStateWithLifecycle()
+
     KitchingManagerTheme {
         Surface(
             modifier = Modifier.fillMaxSize()
         ) {
-            Column(
-                modifier = Modifier.fillMaxSize().padding(10.dp),
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                LazyVerticalGrid(
-                    columns = GridCells.Fixed(2),
-                    contentPadding = PaddingValues(10.dp),
-                    horizontalArrangement = Arrangement.spacedBy(20.dp),
-                    verticalArrangement = Arrangement.spacedBy(20.dp),
-                    modifier = Modifier.fillMaxSize()
-                ) {
-                    items(dummyRecipes) { recipe ->
-                        RecipeItem(recipe = recipe, commonState = commonState)
+            when (recipeListState) {
+                is AppResult.Initial -> {}
+                is AppResult.Loading -> {}
+                is AppResult.Failure -> {}
+                is AppResult.Success -> {
+                    val recipes = (recipeListState as AppResult.Success<List<Recipe>>).data
+                    Column(
+                        modifier = Modifier.fillMaxSize().padding(10.dp),
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        LazyVerticalGrid(
+                            columns = GridCells.Fixed(2),
+                            contentPadding = PaddingValues(10.dp),
+                            horizontalArrangement = Arrangement.spacedBy(20.dp),
+                            verticalArrangement = Arrangement.spacedBy(20.dp),
+                            modifier = Modifier.fillMaxSize()
+                        ) {
+                            items(recipes) { recipe ->
+                                RecipeItem(recipe = recipe, commonState = commonState)
+                            }
+                        }
                     }
                 }
             }
