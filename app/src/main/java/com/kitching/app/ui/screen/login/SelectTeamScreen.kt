@@ -1,5 +1,6 @@
 package com.kitching.app.ui.screen.login
 
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -20,9 +21,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.setValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -32,7 +30,6 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.kitching.app.R
 import com.kitching.app.ui.item.TeamListItem
 import com.kitching.app.ui.model.LoginViewModel
-import com.kitching.app.ui.screen.EntryPointScreen
 import com.kitching.app.ui.theme.H3_m
 import com.kitching.app.ui.theme.PrimaryGreen300
 import com.kitching.domain.AppResult
@@ -43,22 +40,15 @@ import kotlinx.coroutines.launch
 @Composable
 fun SelectTeamScreen(
     viewModel: LoginViewModel,
-    coroutineScope: CoroutineScope
+    coroutineScope: CoroutineScope,
+    onNavigateToCreateTeam: () -> Unit,
+    onNavigateToMain: () -> Unit
 ) {
     val teamListState by viewModel.teamList.collectAsStateWithLifecycle()
-    var selectTeam by remember { mutableStateOf(false) }
-    var createTeam by remember { mutableStateOf(false) }
-
-    if (selectTeam) {
-        EntryPointScreen()
-    }
-
-    if (createTeam) {
-        CreateTeamScreen(viewModel, coroutineScope)
-    }
 
     LaunchedEffect(Unit) {
         val userId = viewModel.dataStore.getUserId().toString()
+        Log.d("userId", userId)
         viewModel.getTeamList(userId)
     }
 
@@ -104,7 +94,7 @@ fun SelectTeamScreen(
                                 onClick = {
                                     coroutineScope.launch {
                                         viewModel.dataStore.saveTeamId(team.teamId)
-                                        selectTeam = true
+                                        onNavigateToMain()
                                     }
                                 }
                             )
@@ -117,7 +107,7 @@ fun SelectTeamScreen(
 
         Button(
             onClick = {
-                createTeam = true
+                onNavigateToCreateTeam()
             },
             modifier = Modifier
                 .width(296.dp)

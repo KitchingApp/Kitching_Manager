@@ -1,5 +1,7 @@
 package com.kitching.app.ui.screen.login
 
+import android.annotation.SuppressLint
+import android.app.Activity
 import com.kitching.app.R
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Column
@@ -26,35 +28,27 @@ import com.kitching.app.ui.model.LoginViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
-import com.kitching.app.ui.screen.splash.SplashScreen
+import androidx.compose.ui.platform.LocalContext
 import com.kitching.domain.AppResult
 
+@SuppressLint("ContextCastToActivity")
 @Composable
 fun LoginMainScreen(
     viewModel: LoginViewModel,
-    coroutineScope: CoroutineScope
+    coroutineScope: CoroutineScope,
+    onNavigateToSelectTeam: () -> Unit
     ) {
     val loginState by viewModel.loginState.collectAsState()
-    var destination by remember { mutableStateOf<String?>("") }
+    val context = LocalContext.current as Activity
 
     LaunchedEffect(loginState) {
         if (loginState is AppResult.Success) {
             coroutineScope.launch {
                 val userId = viewModel.dataStore.getUserId().toString()
                 viewModel.dataStore.saveUserId(userId)
-                destination = "select_team_screen"
+                onNavigateToSelectTeam()
             }
-        } else {
-            destination = "splash_screen"
         }
-    }
-
-    when(destination) {
-        "select_team_screen" -> SelectTeamScreen(viewModel, coroutineScope)
-        else -> SplashScreen()
     }
 
     Column(
@@ -93,7 +87,7 @@ fun LoginMainScreen(
         Surface(
             onClick = {
                 coroutineScope.launch {
-                    viewModel.performKakaoLogin()
+                    viewModel.performKakaoLogin(context)
                 }
             },
             shape = RoundedCornerShape(6.dp),
@@ -104,7 +98,7 @@ fun LoginMainScreen(
             Image(
                 painter = painterResource(id = R.drawable.kakao_login_img),
                 contentDescription = "Login with Kakao",
-                modifier = Modifier.fillMaxSize()
+                modifier = Modifier.fillMaxSize(),
             )
         }
     }

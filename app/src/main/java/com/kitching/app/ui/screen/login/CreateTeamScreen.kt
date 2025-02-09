@@ -58,7 +58,9 @@ import kotlinx.coroutines.launch
 @Composable
 fun CreateTeamScreen(
     viewModel: LoginViewModel,
-    coroutineScope: CoroutineScope
+    coroutineScope: CoroutineScope,
+    onNavigateBack: () -> Unit,
+    onTeamCreated: () -> Unit
 ) {
     val navigationIconInfo = NavigationIconInfo.BACK
 
@@ -70,12 +72,6 @@ fun CreateTeamScreen(
 
     val onTeamNameChangeChange = { inputText: String ->
         teamName = inputText
-    }
-
-    var createTeamState by remember { mutableStateOf(false) }
-
-    if (createTeamState) {
-        SelectTeamScreen(viewModel, coroutineScope)
     }
 
     Scaffold(
@@ -96,7 +92,7 @@ fun CreateTeamScreen(
                     }
                 },
                 navigationIcon = {
-                    IconButton(onClick = {  }) {
+                    IconButton(onClick = onNavigateBack) {
                         Icon(
                             imageVector = ImageVector.vectorResource(navigationIconInfo.icon),
                             contentDescription = navigationIconInfo.description,
@@ -197,7 +193,7 @@ fun CreateTeamScreen(
                     coroutineScope.launch {
                         val userId = viewModel.dataStore.getUserId().toString()
                         viewModel.createTeam(userId, teamName, selectedTeamSize?.value ?: 0)
-                        createTeamState = true
+                        onTeamCreated()
                     }
                 },
                 modifier = Modifier

@@ -1,5 +1,6 @@
 package com.kitching.app.ui.model
 
+import android.app.Activity
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.kakao.sdk.auth.model.OAuthToken
@@ -22,12 +23,10 @@ class LoginViewModel(
     private val teamRepository: TeamRepository,
     val dataStore: PreferencesDataStore,
 ) : ViewModel() {
-    private val context = KitchingApplication.getInstance()
-
     private val _loginState = MutableStateFlow<AppResult<Unit>>(AppResult.Initial)
     val loginState: StateFlow<AppResult<Unit>> = _loginState
 
-    suspend fun performKakaoLogin() {
+    suspend fun performKakaoLogin(context: Activity) {
         _loginState.value = AppResult.Loading
         if (UserApiClient.instance.isKakaoTalkLoginAvailable(context)) {
             UserApiClient.instance.loginWithKakaoTalk(context) { token, error ->
