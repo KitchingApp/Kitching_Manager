@@ -11,5 +11,5 @@ interface UserTeamDataSource {
 
     suspend fun createUserTeams(userId: String, teamId: String, staffLevelId: String, manager: Boolean = true): Boolean
 
-    suspend fun updateMemberManagerState(teamId: String, userId: String, staffLevelId: String, manager: Boolean): Boolean
+    suspend fun updateMember(userTeamId: String, staffLevelId: String, manager: Boolean): Boolean
 }

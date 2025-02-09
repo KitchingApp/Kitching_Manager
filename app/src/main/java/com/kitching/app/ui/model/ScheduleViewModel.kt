@@ -28,8 +28,6 @@ class ScheduleViewModel(
         viewModelScope.launch {
             scheduleRepository.getSchedules(teamId, dateString).collectLatest {
                 _schedules.value = it
-                Log.d("scheduleviewmodel", dateString)
-                Log.d("scheduleviewmodel", it.toString())
             }
         }
     }
@@ -64,7 +62,6 @@ class ScheduleViewModel(
         viewModelScope.launch {
             scheduleRepository.deleteSchedule(scheduleId)
                 .collectLatest {
-                    Log.d("deleteSchedule", "deleteSchedule: $scheduleId")
                     _scheduleResult.value = it
                 }
         }

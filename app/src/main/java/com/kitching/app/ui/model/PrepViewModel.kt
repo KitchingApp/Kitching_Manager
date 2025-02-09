@@ -22,7 +22,6 @@ class PrepViewModel(
         viewModelScope.launch {
             prepRepository.getPrepList(categoryId).collectLatest {
                 _prepList.value = it
-                Log.d("PrepViewModel", _prepList.value.toString())
             }
         }
     }

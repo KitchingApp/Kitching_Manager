@@ -7,9 +7,9 @@ import kotlinx.coroutines.tasks.await
 
 class StaffLevelDataSourceImpl(private val db: FirebaseFirestore = FirebaseFirestore.getInstance()) :
     StaffLevelDataSource {
-    override suspend fun getStaffLevel(staffLevelId: String) =
+    override suspend fun getStaffLevel(staffLevelId: String): StaffLevelDTO =
         db.collection(COLLECTION_STAFF_LEVEL).document(staffLevelId).get().await()
-            .toObject(StaffLevelDTO::class.java)
+            .toObject(StaffLevelDTO::class.java) ?: StaffLevelDTO("", "")
 
     override suspend fun getStaffLevels(teamId: String): List<StaffLevelDTO> =
         db.collection(COLLECTION_STAFF_LEVEL).whereEqualTo("teamId", teamId)

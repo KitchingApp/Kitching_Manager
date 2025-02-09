@@ -1,10 +1,11 @@
 package com.kitching.domain.entities
 
-import java.time.LocalTime
+import kotlinx.serialization.Serializable
 
+@Serializable
 data class ScheduleTime(
     val scheduleTimeId: String,
     val scheduleTimeName: String,
-    val startTime: LocalTime,
-    val endTime: LocalTime,
+    val startTime: String,
+    val endTime: String,
 )

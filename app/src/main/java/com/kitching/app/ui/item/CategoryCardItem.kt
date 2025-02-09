@@ -46,8 +46,6 @@ fun CategoryCardItem(
     onCardClick: () -> Unit,
     onOptionBtnClick: () -> Unit,
 ) {
-    Log.d("color", cardColor)
-
     Card(
         modifier = Modifier.fillMaxWidth().height(60.dp)
             .dropShadow(

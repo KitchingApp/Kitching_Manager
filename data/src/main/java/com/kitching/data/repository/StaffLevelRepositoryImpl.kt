@@ -12,15 +12,15 @@ import kotlinx.coroutines.flow.flow
 class StaffLevelRepositoryImpl(
     private val staffLevelDataSource: StaffLevelDataSource = StaffLevelDataSourceImpl()
 ) : StaffLevelRepository {
-    override fun getStaffLevels(departmentId: String): Flow<AppResult<List<StaffLevel>>> =
+    override fun getStaffLevels(teamId: String): Flow<AppResult<List<StaffLevel>>> =
         flow {
             emit(AppResult.Loading)
-            val staffLevels = staffLevelDataSource.getStaffLevels(departmentId)
+            val staffLevels = staffLevelDataSource.getStaffLevels(teamId)
             if (staffLevels.isEmpty()) emit(AppResult.Success(emptyList()))
             else emit(AppResult.Success(staffLevels.map {
                 StaffLevel(
-                    staffLevelId = it.id,
-                    staffLevelName = it.name
+                    staffLevelId = it.id ?: "",
+                    staffLevelName = it.name ?: ""
                 )
             }))
         }.catch {
@@ -28,11 +28,11 @@ class StaffLevelRepositoryImpl(
         }
 
     override fun createStaffLevel(
-        departmentId: String,
+        teamId: String,
         name: String
     ) = flow {
         emit(AppResult.Loading)
-        emit(AppResult.Success(staffLevelDataSource.createStaffLevel(departmentId, name)))
+        emit(AppResult.Success(staffLevelDataSource.createStaffLevel(teamId, name)))
     }.catch {
         emit(AppResult.Failure(it))
     }
