@@ -19,8 +19,8 @@ class StaffLevelRepositoryImpl(
             if (staffLevels.isEmpty()) emit(AppResult.Success(emptyList()))
             else emit(AppResult.Success(staffLevels.map {
                 StaffLevel(
-                    staffLevelId = it.id,
-                    staffLevelName = it.name
+                    staffLevelId = it.id ?: "",
+                    staffLevelName = it.name ?: ""
                 )
             }))
         }.catch {

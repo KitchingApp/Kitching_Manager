@@ -93,7 +93,7 @@ fun CategoryScreen(
                     )
                     if (optionMenuId.value == category.categoryId) {
                         DropdownOptionMenu(
-                            optionMenuId = optionMenuId,
+                            onDismissRequest = { optionMenuId.value = "" },
                             onClickModify = {
                                 onClickModify(category.categoryId, category.categoryName, category.categoryColor)
                             },

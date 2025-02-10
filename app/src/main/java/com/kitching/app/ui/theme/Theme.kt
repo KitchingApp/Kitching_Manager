@@ -18,9 +18,9 @@ private val DarkColorScheme = darkColorScheme(
 )
 
 private val LightColorScheme = lightColorScheme(
-    primary = Purple40,
-    secondary = PurpleGrey40,
-    tertiary = Pink40,
+    primary = PrimaryGreen300,
+    secondary = SecondaryLightGreen500,
+    tertiary = SecondaryLightGreen100,
     surface = Color.White
 
     /* Other default colors to override
@@ -36,7 +36,7 @@ private val LightColorScheme = lightColorScheme(
 
 @Composable
 fun KitchingManagerTheme(
-    darkTheme: Boolean = isSystemInDarkTheme(),
+    darkTheme: Boolean = false,
     // Dynamic color is available on Android 12+
     dynamicColor: Boolean = false,
     content: @Composable () -> Unit

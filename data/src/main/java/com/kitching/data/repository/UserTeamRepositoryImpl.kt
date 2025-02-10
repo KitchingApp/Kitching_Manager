@@ -27,8 +27,8 @@ class UserTeamRepositoryImpl(
                     userId = it.userId,
                     userName = user.userName,
                     userImage = user.userImage,
-                    staffLevelId = it.staffLevelId,
-                    staffLevelName = staffLevelDataSource.getStaffLevel(it.staffLevelId)?.name ?: "",
+                    staffLevelId = it.staffLevelId ?: "",
+                    staffLevelName = if(it.staffLevelId == "") "" else staffLevelDataSource.getStaffLevel(it.staffLevelId).name,
                     manager = it.manager
                 )
             }

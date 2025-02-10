@@ -21,8 +21,8 @@ class ScheduleTimeRepositoryImpl(private val scheduleTimeDataSource: ScheduleTim
                 ScheduleTime(
                     scheduleTimeId = it.id,
                     scheduleTimeName = it.name,
-                    startTime = LocalTime.parse(it.startTime),
-                    endTime = LocalTime.parse(it.endTime)
+                    startTime = it.startTime,
+                    endTime = it.endTime
                 )
             }))
         }.catch {

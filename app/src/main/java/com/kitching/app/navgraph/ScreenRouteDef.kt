@@ -18,6 +18,7 @@ sealed class ScreenRouteDef(val routeName: String) {
         data object NoticeCreateOrUpdate : ScreenRouteDef("NoticeCreateOrUpdate")
         data object StaffLevel : ScreenRouteDef("StaffLevel")
         data object ScheduleTime : ScreenRouteDef("ScheduleTime")
+        data object ScheduleTimeCreateOrUpdate : ScreenRouteDef("ScheduleTimeCreateOrUpdate")
         data object MemberList : ScreenRouteDef("MemberList")
         data object MemberDetail : ScreenRouteDef("MemberDetail")
     }
