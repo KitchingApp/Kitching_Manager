@@ -3,6 +3,7 @@ package com.kitching.app.ui.factory
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.kitching.app.common.KitchingApplication
+import com.kitching.app.ui.model.InviteCodeViewModel
 import com.kitching.app.ui.model.LoginViewModel
 import com.kitching.app.ui.model.MemberViewModel
 import com.kitching.app.ui.model.NoticeViewModel
@@ -69,6 +70,10 @@ val viewModelFactory = object : ViewModelProvider.Factory {
                 isAssignableFrom(OrderCategoryViewModel::class.java) ->
                     OrderCategoryViewModel(
                         orderCategoryRepository = OrderCategoryRepositoryImpl()
+                    )
+                isAssignableFrom(InviteCodeViewModel::class.java) ->
+                    InviteCodeViewModel(
+                        teamRepository = TeamRepositoryImpl()
                     )
 //                isAssignableFrom(DepartmentViewModel::class.java) ->
 //                    DepartmentViewModel()
