@@ -77,21 +77,11 @@ val viewModelFactory = object : ViewModelProvider.Factory {
                     InviteCodeViewModel(
                         teamRepository = TeamRepositoryImpl()
                     )
-//                isAssignableFrom(DepartmentViewModel::class.java) ->
-//                    DepartmentViewModel()
-//                isAssignableFrom(RecipeViewModel::class.java) ->
-//                    RecipeViewModel()
-//                isAssignableFrom(NoticeViewModel::class.java) ->
-//                    NoticeViewModel()
-//                isAssignableFrom(OrderViewModel::class.java) ->
-//                    OrderViewModel()
                 isAssignableFrom(RecipeViewModel::class.java) ->
                     RecipeViewModel(
                         recipeRepository = RecipeRepositoryImpl(),
                         dataStore = PreferencesDataStore(context = KitchingApplication.getInstance())
                     )
-//                isAssignableFrom(TeamViewModel::class.java) ->
-//                    TeamViewModel()
                 isAssignableFrom(LoginViewModel::class.java) ->
                     LoginViewModel(
                         loginRepository = LoginRepositoryImpl(),
