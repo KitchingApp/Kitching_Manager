@@ -58,7 +58,6 @@ fun PrepDetailScreen(
         val colorState = remember { mutableStateOf(NeutralGray0) }
         val optionMenuId = remember { mutableStateOf<String>("") }
 
-        var teamId by remember { mutableStateOf("") }
         val prepState by viewModel.prepList.collectAsState()
         val prepResultState by viewModel.prepResult.collectAsState()
 
@@ -72,7 +71,6 @@ fun PrepDetailScreen(
         )
 
         LaunchedEffect(Unit) {
-            teamId = PreferencesDataStore(KitchingApplication.getInstance()).getTeamId() ?: ""
             viewModel.getPrepList(categoryId)
         }
 
@@ -88,7 +86,7 @@ fun PrepDetailScreen(
                 ) {
                     val preps = (prepState as AppResult.Success).data
                     if (preps.isEmpty()) {
-                        EmptyScreen("세부 프렙을 추가해주세요")
+                        EmptyScreen("프렙을 추가해주세요")
                     } else {
                         CategorySubDivisionScreen(
                             itemList = preps.map { item ->
@@ -106,7 +104,6 @@ fun PrepDetailScreen(
                                 optionMenuId.value = itemId
                                 textState.value = TextFieldValue(itemName)
                                 showModifyDialog = true
-
                             },
                             onClickDelete = { itemId ->
                                 optionMenuId.value = itemId
@@ -116,7 +113,7 @@ fun PrepDetailScreen(
                     }
                     if (showCreateDialog) {
                         BasicInputDialog(
-                            title = "세부 프렙 목록 추가",
+                            title = "프렙 추가",
                             confirmText = "생성",
                             onClickConfirm = {
                                 viewModel.createPrep(
@@ -129,18 +126,16 @@ fun PrepDetailScreen(
                             },
                             cancelText = "취소",
                             onClickCancel = {
-                                viewModel.updatePrep(optionMenuId.value, textState.value.text)
-                                viewModel.getPrepList(categoryId)
                                 optionMenuId.value = ""
                                 showCreateDialog = false
                             },
                             textState = textState,
-                            placeHolder = "세부 프렙을 입력해주세요"
+                            placeHolder = "프렙명을 입력해주세요"
                         )
                     }
                     if (showModifyDialog) {
                         BasicInputDialog(
-                            title = "세부 프렙 목록 수정",
+                            title = "프렙 수정",
                             confirmText = "수정",
                             onClickConfirm = {
                                 viewModel.updatePrep(optionMenuId.value, textState.value.text)
@@ -151,12 +146,12 @@ fun PrepDetailScreen(
                             cancelText = "취소",
                             onClickCancel = { showModifyDialog = false },
                             textState = textState,
-                            placeHolder = "세부 프렙을 입력해주세요"
+                            placeHolder = "프렙명을 입력해주세요"
                         )
                     }
                     if (showDeleteDialog) {
                         BasicConfirmDialog(
-                            message = "세부 프렙 목록을\n삭제하시겠습니까?",
+                            message = "프렙을 삭제하시겠습니까?",
                             confirmText = "삭제",
                             onClickConfirm = {
                                 viewModel.deletePrep(optionMenuId.value)

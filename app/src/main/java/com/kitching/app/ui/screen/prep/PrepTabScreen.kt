@@ -65,6 +65,11 @@ fun PrepTabScreen(
     // 프렙 카테고리 생성, 수정, 삭제 상태
     val prepResultState by viewModel.prepCategoryResult.collectAsStateWithLifecycle()
 
+    LaunchedEffect(Unit) {
+        teamId = PreferencesDataStore(KitchingApplication.getInstance()).getTeamId() ?: ""
+        viewModel.getPrepCategory(teamId)
+    }
+
     commonState.topAppBarState.value = commonState.topAppBarState.value.copy(
         title = "Kitching",
         containerColor = NeutralGray0,
@@ -82,11 +87,6 @@ fun PrepTabScreen(
         },
     )
 
-    LaunchedEffect(Unit) {
-        teamId = PreferencesDataStore(KitchingApplication.getInstance()).getTeamId() ?: ""
-        viewModel.getPrepCategory(teamId)
-    }
-
     KitchingManagerTheme {
         Surface(
             modifier = Modifier.fillMaxSize()
@@ -98,7 +98,6 @@ fun PrepTabScreen(
                 failContent = {}
             ) {
                 val categories = (prepCategoryState as AppResult.Success).data
-                Log.d("mm - prepCategorySuccess", categories.toString())
                 if (categories.isEmpty()) {
                     EmptyScreen("프렙 카테고리를 추가해주세요")
                 } else {
