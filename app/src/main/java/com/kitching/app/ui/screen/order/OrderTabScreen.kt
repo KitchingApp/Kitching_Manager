@@ -1,5 +1,6 @@
 package com.kitching.app.ui.screen.order
 
+import android.util.Log
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
@@ -91,7 +92,7 @@ fun OrderTabScreen(
                 failContent = {}
             ) {
                 val categories = (orderCategoryState as AppResult.Success).data
-                if(categories.isEmpty()) {
+                if (categories.isEmpty()) {
                     EmptyScreen("발주 카테고리를 추가해주세요")
                 } else {
                     CategoryScreen(
@@ -104,8 +105,10 @@ fun OrderTabScreen(
                             )
                         },
                         onCardClick = { categoryId, categoryName, categoryColor ->
-                            val encodedColor =
-                                URLEncoder.encode(categoryColor, StandardCharsets.UTF_8.toString())
+                            val encodedColor = URLEncoder.encode(
+                                categoryColor,
+                                StandardCharsets.UTF_8.toString()
+                            )
                             commonState.navController.navigate("${ScreenRouteDef.InnerContent.OrderDetail.routeName}/${categoryId}/${categoryName}/${encodedColor}")
                         },
                         onCardOptionBtnClick = { categoryId ->
@@ -124,7 +127,7 @@ fun OrderTabScreen(
                             showDeleteDialog = true
                         },
                     )
-                    if(showCreateDialog) {
+                    if (showCreateDialog) {
                         // state 초기화
                         textState.value = TextFieldValue("")
                         colorState.value = NeutralGray0
@@ -140,7 +143,7 @@ fun OrderTabScreen(
                             onClickCancel = { showCreateDialog = false }
                         )
                     }
-                    if(showModifyDialog) {
+                    if (showModifyDialog) {
                         ColorInputDialog(
                             title = "발주 카테고리 수정",
                             placeHolder = "카테고리명을 입력해주세요",
