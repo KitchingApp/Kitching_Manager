@@ -9,7 +9,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material3.Divider
-import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -22,20 +21,16 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import com.kitching.app.ui.screen.recipe.Ingredient
 import com.kitching.app.ui.theme.Caption1_R
 import com.kitching.app.ui.theme.NeutralGray500
 import com.kitching.app.ui.theme.PrimaryGreen50
-
+import com.kitching.domain.entities.Ingredient
 
 @Composable
 fun EditIngredientsTable(
     ingredients: List<Ingredient>,
     onIngredientsChange: (List<Ingredient>) -> Unit
 ) {
-
-    var updatedIngredients by remember { mutableStateOf(ingredients) }
-
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -57,7 +52,7 @@ fun EditIngredientsTable(
 
         Divider(color = NeutralGray500, thickness = 1.dp)
 
-        updatedIngredients.forEachIndexed { index, ingredient ->
+        ingredients.forEachIndexed { index, ingredient ->
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -68,10 +63,11 @@ fun EditIngredientsTable(
                 BasicTextField(
                     value = ingredient.once.toString(),
                     onValueChange = { value ->
-                        updatedIngredients = updatedIngredients.toMutableList().apply {
-                            this[index] = this[index].copy(once = value.toIntOrNull() ?: 0)
+                        val newValue = value.toIntOrNull() ?: 0
+                        val updated = ingredients.toMutableList().apply {
+                            this[index] = this[index].copy(once = newValue)
                         }
-                        onIngredientsChange(updatedIngredients)
+                        onIngredientsChange(updated)
                     },
                     modifier = Modifier
                         .weight(1f),
@@ -81,10 +77,11 @@ fun EditIngredientsTable(
                 BasicTextField(
                     value = ingredient.twice.toString(),
                     onValueChange = { value ->
-                        updatedIngredients = updatedIngredients.toMutableList().apply {
-                            this[index] = this[index].copy(twice = value.toIntOrNull() ?: 0)
+                        val newValue = value.toIntOrNull() ?: 0
+                        val updated = ingredients.toMutableList().apply {
+                            this[index] = this[index].copy(twice = newValue)
                         }
-                        onIngredientsChange(updatedIngredients)
+                        onIngredientsChange(updated)
                     },
                     modifier = Modifier
                         .weight(1f),
@@ -92,12 +89,12 @@ fun EditIngredientsTable(
                 )
 
                 BasicTextField(
-                    value = ingredient.each,
+                    value = ingredient.unit,
                     onValueChange = { value ->
-                        updatedIngredients = updatedIngredients.toMutableList().apply {
-                            this[index] = this[index].copy(each = value)
+                        val updated = ingredients.toMutableList().apply {
+                            this[index] = this[index].copy(unit = value)
                         }
-                        onIngredientsChange(updatedIngredients)
+                        onIngredientsChange(updated)
                     },
                     modifier = Modifier
                         .weight(1f),
@@ -105,12 +102,12 @@ fun EditIngredientsTable(
                 )
 
                 BasicTextField(
-                    value = ingredient.name,
+                    value = ingredient.ingredientName,
                     onValueChange = { value ->
-                        updatedIngredients = updatedIngredients.toMutableList().apply {
-                            this[index] = this[index].copy(name = value)
+                        val updated = ingredients.toMutableList().apply {
+                            this[index] = this[index].copy(ingredientName = value)
                         }
-                        onIngredientsChange(updatedIngredients)
+                        onIngredientsChange(updated)
                     },
                     modifier = Modifier
                         .weight(2f),

@@ -19,11 +19,13 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.kitching.app.common.ActionIconInfo
 import com.kitching.app.common.CommonState
+import com.kitching.app.common.KitchingApplication
 import com.kitching.app.common.NavigationIconInfo
 import com.kitching.app.ui.factory.viewModelFactory
 import com.kitching.app.ui.item.RecipeItem
 import com.kitching.app.ui.model.RecipeViewModel
 import com.kitching.app.ui.theme.KitchingManagerTheme
+import com.kitching.app.util.PreferencesDataStore
 import com.kitching.domain.AppResult
 import com.kitching.domain.entities.Recipe
 import kotlinx.coroutines.launch
@@ -49,8 +51,7 @@ fun RecipeTabScreen(
     )
 
     LaunchedEffect(Unit) {
-        val teamId = "3uM01g5GSz8lC49JA6vq"
-
+        val teamId = PreferencesDataStore(KitchingApplication.getInstance()).getTeamId().toString()
         viewModel.getRecipesByTeamId(teamId)
     }
 

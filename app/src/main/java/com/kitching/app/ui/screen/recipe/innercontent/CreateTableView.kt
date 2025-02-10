@@ -24,7 +24,6 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import com.kitching.app.ui.screen.recipe.Ingredient
 import com.kitching.app.ui.theme.BlueColor200
 import com.kitching.app.ui.theme.Body1_m
 import com.kitching.app.ui.theme.Caption1_R
@@ -34,6 +33,7 @@ import com.kitching.app.ui.theme.NeutralGray500
 import com.kitching.app.ui.theme.NeutralGray800
 import com.kitching.app.ui.theme.PrimaryGreen300
 import com.kitching.app.ui.theme.PrimaryGreen50
+import com.kitching.domain.entities.Ingredient
 
 @Composable
 fun CreateIngredientsTable(
@@ -83,8 +83,8 @@ fun CreateIngredientsTable(
                 listOf(
                     ingredient.once.takeIf { it > -1 }?.toString() ?: "",
                     ingredient.twice.takeIf { it > -1 }?.toString() ?: "",
-                    ingredient.each,
-                    ingredient.name
+                    ingredient.unit,
+                    ingredient.ingredientName
                 ).forEachIndexed { columnIndex, value ->
                     BasicTextField(
                         value = value,
@@ -93,8 +93,8 @@ fun CreateIngredientsTable(
                                 this[index] = when (columnIndex) {
                                     0 -> this[index].copy(once = newValue.toIntOrNull() ?: -1)
                                     1 -> this[index].copy(twice = newValue.toIntOrNull() ?: -1)
-                                    2 -> this[index].copy(each = newValue)
-                                    else -> this[index].copy(name = newValue)
+                                    2 -> this[index].copy(unit = newValue)
+                                    else -> this[index].copy(ingredientName = newValue)
                                 }
                             }
                             onIngredientsChange(updatedList)

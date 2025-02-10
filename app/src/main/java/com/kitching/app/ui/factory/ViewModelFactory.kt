@@ -3,7 +3,6 @@ package com.kitching.app.ui.factory
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.kitching.app.common.KitchingApplication
-import com.kitching.app.common.KitchingApplication
 import com.kitching.app.ui.model.LoginViewModel
 import com.kitching.app.ui.model.MemberViewModel
 import com.kitching.app.ui.model.NoticeViewModel
@@ -14,7 +13,6 @@ import com.kitching.app.ui.model.ScheduleTimeViewModel
 import com.kitching.app.ui.model.ScheduleViewModel
 import com.kitching.app.util.PreferencesDataStore
 import com.kitching.app.ui.model.StaffLevelViewModel
-import com.kitching.app.util.PreferencesDataStore
 import com.kitching.data.repository.LoginRepositoryImpl
 import com.kitching.data.repository.NoticeRepositoryImpl
 import com.kitching.data.repository.PrepCategoryRepositoryImpl
