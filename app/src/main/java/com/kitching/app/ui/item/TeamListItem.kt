@@ -2,6 +2,7 @@ package com.kitching.app.ui.item
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -24,10 +25,10 @@ import com.kitching.app.ui.theme.NeutralGray0
 import com.kitching.app.ui.theme.NeutralGray300
 import com.kitching.app.ui.theme.PrimaryGreen300
 
-@Preview
 @Composable
 fun TeamListItem(
-    teamName: String = "팀 이름"
+    teamName: String,
+    onClick: () -> Unit = {}
 ) {
     Box(
         modifier = Modifier
@@ -35,6 +36,7 @@ fun TeamListItem(
             .clip(RoundedCornerShape(8.dp))
             .border(width = 2.dp, color = NeutralGray300, shape = RoundedCornerShape(8.dp))
             .background(color = NeutralGray0, shape = RoundedCornerShape(8.dp))
+            .clickable { onClick() }
     ) {
         Row(
             modifier = Modifier

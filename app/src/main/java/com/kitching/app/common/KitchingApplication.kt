@@ -7,6 +7,8 @@ import coil3.SingletonImageLoader
 import coil3.disk.DiskCache
 import coil3.disk.directory
 import coil3.memory.MemoryCache
+import com.kakao.sdk.common.KakaoSdk
+import com.kitching.app.BuildConfig
 
 //Default Memory Size = 0.15 ~ 0.2
 const val COIL_MEMORY_CACHE_SIZE_PERCENT = 0.1
@@ -19,6 +21,7 @@ class KitchingApplication : Application(), SingletonImageLoader.Factory {
     override fun onCreate() {
         super.onCreate()
         kitchingApplication = this
+        KakaoSdk.init(this, BuildConfig.KAKAO_APP_KEY)
     }
 
     companion object {
