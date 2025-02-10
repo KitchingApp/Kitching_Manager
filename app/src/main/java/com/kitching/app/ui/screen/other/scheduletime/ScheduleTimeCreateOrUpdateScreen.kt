@@ -22,14 +22,18 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.rememberTimePickerState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.kitching.app.common.ActionIconInfo
 import com.kitching.app.common.CommonState
@@ -46,8 +50,10 @@ import com.kitching.app.ui.theme.NeutralGray400
 import com.kitching.app.ui.theme.NeutralGray800
 import com.kitching.app.ui.theme.PrimaryGreen300
 import com.kitching.app.ui.theme.defaultPadding
+import com.kitching.app.util.PreferencesDataStore
 import com.kitching.domain.entities.ScheduleTime
 import java.time.LocalTime
+import java.util.Locale
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -56,8 +62,6 @@ fun ScheduleTimeCreateOrUpdateScreen(
     scheduleTime: ScheduleTime?,
     viewModel: ScheduleTimeViewModel = viewModel(factory = viewModelFactory)
 ) {
-    val teamId = "3uM01g5GSz8lC49JA6vq"
-
     val textState =
         remember { mutableStateOf(TextFieldValue(scheduleTime?.scheduleTimeName ?: "")) }
 
@@ -80,6 +84,13 @@ fun ScheduleTimeCreateOrUpdateScreen(
         )),
         is24Hour = false
     )
+
+    var teamId by remember { mutableStateOf("") }
+    val scheduleTimeResult by viewModel.scheduleTimeResult.collectAsStateWithLifecycle()
+
+    LaunchedEffect(Unit) {
+        teamId = PreferencesDataStore().getTeamId()
+    }
 
     commonState.topAppBarState.value = commonState.topAppBarState.value.copy(
         title = if (scheduleTime == null) "스케줄타임 생성" else "스케줄타임 수정",
@@ -171,15 +182,15 @@ fun ScheduleTimeCreateOrUpdateScreen(
                                 viewModel.createScheduleTime(
                                     teamId = teamId,
                                     name = textState.value.text,
-                                    startTime = String.format("%02d:%02d", startTimeState.hour, startTimeState.minute),
-                                    endTime = String.format("%02d:%02d", endTimeState.hour, endTimeState.minute)
+                                    startTime = String.format(Locale.KOREA,"%02d:%02d", startTimeState.hour, startTimeState.minute),
+                                    endTime = String.format(Locale.KOREA, "%02d:%02d", endTimeState.hour, endTimeState.minute)
                                 )
                             } else {
                                 viewModel.updateScheduleTime(
                                     scheduleTimeId = scheduleTime.scheduleTimeId,
                                     name = textState.value.text,
-                                    startTime = String.format("%02d:%02d", startTimeState.hour, startTimeState.minute),
-                                    endTime = String.format("%02d:%02d", endTimeState.hour, endTimeState.minute)
+                                    startTime = String.format(Locale.KOREA, "%02d:%02d", startTimeState.hour, startTimeState.minute),
+                                    endTime = String.format(Locale.KOREA, "%02d:%02d", endTimeState.hour, endTimeState.minute)
                                 )
                             }
                             commonState.navController.navigate(ScreenRouteDef.InnerContent.ScheduleTime.routeName)

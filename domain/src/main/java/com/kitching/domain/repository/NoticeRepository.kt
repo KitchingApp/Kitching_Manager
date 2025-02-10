@@ -12,4 +12,6 @@ interface NoticeRepository {
     fun updateNotice(noticeId: String,title: String, content: String): Flow<AppResult<Boolean>>
 
     fun deleteNotice(noticeId: String): Flow<AppResult<Boolean>>
+
+    fun getUserName(userId: String): Flow<AppResult<String>>
 }

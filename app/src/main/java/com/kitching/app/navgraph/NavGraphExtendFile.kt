@@ -126,10 +126,9 @@ fun NavGraphBuilder.sliceNavGraph(
         }
 
         composable(
-            route = ScreenRouteDef.InnerContent.NoticeCreateOrUpdate.routeName + "/{notice}" +"/{writerName}",
+            route = ScreenRouteDef.InnerContent.NoticeCreateOrUpdate.routeName + "/{notice}",
             arguments = listOf(
-                navArgument("notice") { type = NavType.StringType; nullable },
-                navArgument("writerName") { type = NavType.StringType }
+                navArgument("notice") { type = NavType.StringType; nullable }
             )
         ) { backStackEntry ->
             val json = backStackEntry.arguments?.getString("notice")
@@ -140,8 +139,7 @@ fun NavGraphBuilder.sliceNavGraph(
             }
             NoticeCreateOrModifyScreen(
                 commonState = commonState,
-                notice = notice,
-                writerName = backStackEntry.arguments?.getString("writerName") ?: ""
+                notice = notice
             )
         }
 

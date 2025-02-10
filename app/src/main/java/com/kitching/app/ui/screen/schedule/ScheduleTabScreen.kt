@@ -1,5 +1,6 @@
 package com.kitching.app.ui.screen.schedule
 
+import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -20,16 +21,19 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.kitching.app.common.ActionIconInfo
 import com.kitching.app.common.CommonState
+import com.kitching.app.common.KitchingApplication
 import com.kitching.app.common.NavigationIconInfo
 import com.kitching.app.navgraph.ScheduleTabItem
 import com.kitching.app.ui.factory.viewModelFactory
 import com.kitching.app.ui.model.ScheduleViewModel
+import com.kitching.app.ui.screen.common.ResultConditionScreen
 import com.kitching.app.ui.screen.commondialog.BasicConfirmDialog
 import com.kitching.app.ui.screen.schedule.dialog.DatePickerModal
 import com.kitching.app.ui.screen.schedule.dialog.ScheduleCreateDialog
 import com.kitching.app.ui.screen.schedule.dialog.ScheduleRejectDialog
 import com.kitching.app.ui.theme.KitchingManagerTheme
 import com.kitching.app.ui.theme.PrimaryGreen300
+import com.kitching.app.util.PreferencesDataStore
 import com.kitching.domain.AppResult
 import com.kitching.domain.entities.Member
 import com.kitching.domain.entities.ScheduleTime
@@ -44,7 +48,6 @@ fun ScheduleTabScreen(
     commonState: CommonState,
     viewModel: ScheduleViewModel = viewModel(factory = viewModelFactory)
 ) {
-    val teamId = "3uM01g5GSz8lC49JA6vq"
 
     var showDatePickerDialog by remember { mutableStateOf(false) }
     var showCreateDialog by remember { mutableStateOf(false) }
@@ -91,12 +94,14 @@ fun ScheduleTabScreen(
         pageCount = { tabItems.size }
     )
 
+    var teamId by remember { mutableStateOf("") }
     val schedulesState by viewModel.schedules.collectAsStateWithLifecycle()
     val scheduleResultState by viewModel.scheduleResult.collectAsStateWithLifecycle()
-    val allMembers by viewModel.members.collectAsStateWithLifecycle()
-    val scheduleTimes by viewModel.scheduleTimes.collectAsStateWithLifecycle()
+    val allMembersState by viewModel.members.collectAsStateWithLifecycle()
+    val scheduleTimesState by viewModel.scheduleTimes.collectAsStateWithLifecycle()
 
     LaunchedEffect(Unit) {
+        teamId = PreferencesDataStore(KitchingApplication.getInstance()).getTeamId() ?: ""
         viewModel.getSchedules(teamId, selectedDateTime.value.toLocalDate().toString())
         viewModel.getMembers(teamId)
         viewModel.getScheduleTimes(teamId)
@@ -115,7 +120,7 @@ fun ScheduleTabScreen(
         actionIconInfo = ActionIconInfo.ADD,
         onClickActionIcon = {
             showCreateDialog = true
-        },
+        }
     )
 
     KitchingManagerTheme {
@@ -127,7 +132,17 @@ fun ScheduleTabScreen(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Top
             ) {
-                if (schedulesState is AppResult.Success) {
+                ResultConditionScreen(
+                    loadingCondition =
+                    (schedulesState is AppResult.Loading || scheduleResultState is AppResult.Loading || allMembersState is AppResult.Loading || scheduleTimesState is AppResult.Loading),
+                    successCondition =
+                    (schedulesState is AppResult.Success && allMembersState is AppResult.Success && scheduleTimesState is AppResult.Success),
+                    failCondition =
+                    (schedulesState is AppResult.Failure || scheduleResultState is AppResult.Failure || allMembersState is AppResult.Failure || scheduleTimesState is AppResult.Failure),
+                    failContent = {
+//                        EmptyScreen("FAIL")
+                    }
+                ) {
                     DateSelector(
                         selectedDateTime = selectedDateTime.value,
                         onDateChange = { newDate ->
@@ -171,26 +186,23 @@ fun ScheduleTabScreen(
                             )
                         }
                     }
-                }
-
-                if (showDatePickerDialog) {
-                    DatePickerModal(
-                        selectedDateTime = selectedDateTime.value,
-                        onDismissRequest = { showDatePickerDialog = false },
-                        onClickConfirm = { selectedDateMillis ->
-                            if (selectedDateMillis !== null) {
-                                selectedDateTime.value =
-                                    LocalDateTime.ofInstant(
-                                        Instant.ofEpochMilli(selectedDateMillis),
-                                        ZoneId.systemDefault()
-                                    )
-                            }
-                            showDatePickerDialog = false
-                        },
-                        onClickCancel = { showDatePickerDialog = false }
-                    )
-                }
-                if(scheduleTimes is AppResult.Success && allMembers is AppResult.Success) {
+                    if (showDatePickerDialog) {
+                        DatePickerModal(
+                            selectedDateTime = selectedDateTime.value,
+                            onDismissRequest = { showDatePickerDialog = false },
+                            onClickConfirm = { selectedDateMillis ->
+                                if (selectedDateMillis !== null) {
+                                    selectedDateTime.value =
+                                        LocalDateTime.ofInstant(
+                                            Instant.ofEpochMilli(selectedDateMillis),
+                                            ZoneId.systemDefault()
+                                        )
+                                }
+                                showDatePickerDialog = false
+                            },
+                            onClickCancel = { showDatePickerDialog = false }
+                        )
+                    }
                     if (showCreateDialog) {
                         ScheduleCreateDialog(
                             isExpanded = isExpanded,
@@ -202,7 +214,7 @@ fun ScheduleTabScreen(
                                 }
                             },
                             selectedDateTime = selectedDateTime.value,
-                            members = (allMembers as AppResult.Success<List<Member>>).data,
+                            members = (allMembersState as AppResult.Success<List<Member>>).data,
                             onClickConfirm = {
                                 viewModel.createSchedule(
                                     teamId = teamId,
@@ -214,35 +226,34 @@ fun ScheduleTabScreen(
                                 viewModel.getSchedules(teamId, selectedDateTime.value.toLocalDate().toString())
                             },
                             selectedMember = selectedMember,
-                            scheduleTimes = (scheduleTimes as AppResult.Success<List<ScheduleTime>>).data,
+                            scheduleTimes = (scheduleTimesState as AppResult.Success<List<ScheduleTime>>).data,
                             selectedScheduleTimes = selectedScheduleTime
                         )
                     }
-                }
-                if (showDeleteDialog) {
-                    BasicConfirmDialog(
-                        message = "스케줄을 삭제하시겠습니까?",
-                        confirmText = "삭제",
-                        onClickConfirm = {
-                            viewModel.deleteSchedule(targetScheduleId)
-                            viewModel.getSchedules(teamId, selectedDateTime.value.toLocalDate().toString())
-                        },
-                        cancelText = "취소",
-                        onClickCancel = { showDeleteDialog = false }
-                    )
-                }
-                if(showRejectDialog) {
-                    ScheduleRejectDialog(
-                        rejectReasonState = rejectReasonState,
-                        onClickReject = {
-                            viewModel.deleteSchedule(targetScheduleId)
-                            viewModel.getSchedules(teamId, selectedDateTime.value.toLocalDate().toString())
-                        },
-                        onClickCancel = { showRejectDialog = false }
-                    )
+                    if (showDeleteDialog) {
+                        BasicConfirmDialog(
+                            message = "스케줄을 삭제하시겠습니까?",
+                            confirmText = "삭제",
+                            onClickConfirm = {
+                                viewModel.deleteSchedule(targetScheduleId)
+                                viewModel.getSchedules(teamId, selectedDateTime.value.toLocalDate().toString())
+                            },
+                            cancelText = "취소",
+                            onClickCancel = { showDeleteDialog = false }
+                        )
+                    }
+                    if(showRejectDialog) {
+                        ScheduleRejectDialog(
+                            rejectReasonState = rejectReasonState,
+                            onClickReject = {
+                                viewModel.deleteSchedule(targetScheduleId)
+                                viewModel.getSchedules(teamId, selectedDateTime.value.toLocalDate().toString())
+                            },
+                            onClickCancel = { showRejectDialog = false }
+                        )
+                    }
                 }
             }
-
         }
     }
 }

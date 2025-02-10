@@ -3,9 +3,12 @@ package com.kitching.app.ui.factory
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.kitching.app.common.KitchingApplication
+import com.kitching.app.ui.model.InviteCodeViewModel
 import com.kitching.app.ui.model.LoginViewModel
 import com.kitching.app.ui.model.MemberViewModel
 import com.kitching.app.ui.model.NoticeViewModel
+import com.kitching.app.ui.model.OrderCategoryViewModel
+import com.kitching.app.ui.model.OrderViewModel
 import com.kitching.app.ui.model.PrepCategoryViewModel
 import com.kitching.app.ui.model.PrepViewModel
 import com.kitching.app.ui.model.RecipeViewModel
@@ -15,6 +18,8 @@ import com.kitching.app.util.PreferencesDataStore
 import com.kitching.app.ui.model.StaffLevelViewModel
 import com.kitching.data.repository.LoginRepositoryImpl
 import com.kitching.data.repository.NoticeRepositoryImpl
+import com.kitching.data.repository.OrderCategoryRepositoryImpl
+import com.kitching.data.repository.OrderRepositoryImpl
 import com.kitching.data.repository.PrepCategoryRepositoryImpl
 import com.kitching.data.repository.PrepRepositoryImpl
 import com.kitching.data.repository.RecipeRepositoryImpl
@@ -45,7 +50,7 @@ val viewModelFactory = object : ViewModelProvider.Factory {
                     )
                 isAssignableFrom(NoticeViewModel::class.java) ->
                     NoticeViewModel(
-                        repository = NoticeRepositoryImpl()
+                        noticeRepository = NoticeRepositoryImpl()
                     )
                 isAssignableFrom(StaffLevelViewModel::class.java) ->
                     StaffLevelViewModel(
@@ -60,8 +65,22 @@ val viewModelFactory = object : ViewModelProvider.Factory {
                         userTeamRepository = UserTeamRepositoryImpl(),
                         staffLevelRepository = StaffLevelRepositoryImpl()
                     )
+                isAssignableFrom(OrderViewModel::class.java) ->
+                    OrderViewModel(
+                        orderRepository = OrderRepositoryImpl()
+                    )
+                isAssignableFrom(OrderCategoryViewModel::class.java) ->
+                    OrderCategoryViewModel(
+                        orderCategoryRepository = OrderCategoryRepositoryImpl()
+                    )
+                isAssignableFrom(InviteCodeViewModel::class.java) ->
+                    InviteCodeViewModel(
+                        teamRepository = TeamRepositoryImpl()
+                    )
 //                isAssignableFrom(DepartmentViewModel::class.java) ->
 //                    DepartmentViewModel()
+//                isAssignableFrom(RecipeViewModel::class.java) ->
+//                    RecipeViewModel()
 //                isAssignableFrom(NoticeViewModel::class.java) ->
 //                    NoticeViewModel()
 //                isAssignableFrom(OrderViewModel::class.java) ->
