@@ -47,14 +47,21 @@ import androidx.compose.ui.unit.dp
 import com.kitching.app.common.NavigationIconInfo
 import com.kitching.app.common.TeamSize
 import com.kitching.app.common.teamSizeList
+import com.kitching.app.ui.model.LoginViewModel
 import com.kitching.app.ui.theme.Body1_m
 import com.kitching.app.ui.theme.H3_m
 import com.kitching.app.ui.theme.PrimaryGreen300
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
-@Preview(showBackground = true)
 @Composable
-fun CreateTeamScreen() {
+fun CreateTeamScreen(
+    viewModel: LoginViewModel,
+    coroutineScope: CoroutineScope,
+    onNavigateBack: () -> Unit,
+    onTeamCreated: () -> Unit
+) {
     val navigationIconInfo = NavigationIconInfo.BACK
 
     var teamName by remember { mutableStateOf("") }
@@ -85,7 +92,7 @@ fun CreateTeamScreen() {
                     }
                 },
                 navigationIcon = {
-                    IconButton(onClick = {  }) {
+                    IconButton(onClick = onNavigateBack) {
                         Icon(
                             imageVector = ImageVector.vectorResource(navigationIconInfo.icon),
                             contentDescription = navigationIconInfo.description,
@@ -182,7 +189,13 @@ fun CreateTeamScreen() {
             Spacer(modifier = Modifier.height(68.dp))
 
             Button(
-                onClick = {  },
+                onClick = {
+                    coroutineScope.launch {
+                        val userId = viewModel.dataStore.getUserId().toString()
+                        viewModel.createTeam(userId, teamName, selectedTeamSize?.value ?: 0)
+                        onTeamCreated()
+                    }
+                },
                 modifier = Modifier
                     .width(296.dp)
                     .height(76.dp)

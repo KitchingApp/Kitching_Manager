@@ -17,7 +17,11 @@ val PrimaryGreen200 = Color(0xFF8BDDAB)
 val PrimaryGreen50 = Color(0xFFE3F7EA)
 
 val SecondaryLightGreen100 = Color(0xFFE8FCC3)
+val SecondaryLightGreen500 = Color(0xFFB3F31C)
 
+val subColor2 = Color(0xFF3E825B)
+
+val NeutralGray50 = Color(0xFFF8F8F9)
 val NeutralGray100 = Color(0xFFEEEFEF)
 val NeutralGray200 = Color(0xFFE4E5E6)
 val NeutralGray300 = Color(0xFFCCCED1)
@@ -36,5 +40,3 @@ val CategoryColor3 = Color(0xFFFFECB7)
 val CategoryColor4 = Color(0xFFBEFDC0)
 val CategoryColor5 = Color(0xFFD3BDFF)
 val CategoryColor6 = Color(0xFFEEEEEE)
-
-val linearGradientColor = listOf(Color(0xFF4AE08B), Color(0xFFADFFB0))

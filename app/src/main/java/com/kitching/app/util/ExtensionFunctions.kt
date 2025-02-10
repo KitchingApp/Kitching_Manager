@@ -12,6 +12,9 @@ import androidx.compose.ui.graphics.drawscope.drawIntoCanvas
 import androidx.compose.ui.layout.layout
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import java.time.LocalTime
+import java.time.format.DateTimeFormatter
+import java.util.Locale
 
 /** DropShadow 그림자 효과 주기 */
 fun Modifier.dropShadow(
@@ -58,3 +61,10 @@ fun Modifier.crop(
         placeable.placeRelative(-horizontal.toPx().toInt(), -vertical.toPx().toInt())
     }
 }
+
+/**
+ * Custom format
+ *
+ * LocalTime을 a HH:mm 형식으로 변환(ex. PM 09:00)
+ */
+fun LocalTime.customFormat(): String = this.format(DateTimeFormatter.ofPattern("a HH:mm").withLocale(Locale.US))

@@ -45,3 +45,5 @@ val teamSizeList = listOf(
     TeamSize("100명", 100),
     TeamSize("200명", 200),
 )
+
+val menuItems = listOf("초대코드", "공지사항", "직급 관리", "스케줄타임", "멤버관리")
