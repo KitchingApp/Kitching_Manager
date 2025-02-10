@@ -10,25 +10,27 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
-class NoticeViewModel(private val repository: NoticeRepository) : ViewModel() {
+class NoticeViewModel(
+    private val noticeRepository: NoticeRepository
+) : ViewModel() {
 
-    private val _notices = MutableStateFlow<AppResult<List<Notice>>>(AppResult.Loading)
+    private val _notices = MutableStateFlow<AppResult<List<Notice>>>(AppResult.Initial)
     val notices get() = _notices.asStateFlow()
 
     fun getNotices(teamId: String) {
         viewModelScope.launch {
-            repository.getNotices(teamId).collectLatest {
+            noticeRepository.getNotices(teamId).collectLatest {
                 _notices.value = it
             }
         }
     }
 
-    private val _noticeResult = MutableStateFlow<AppResult<Boolean>>(AppResult.Success(true))
+    private val _noticeResult = MutableStateFlow<AppResult<Boolean>>(AppResult.Initial)
     val noticeResult get() = _noticeResult.asStateFlow()
 
     fun createNotice(userId: String, teamId: String, title: String, content: String) {
         viewModelScope.launch {
-            repository.createNotice(userId, teamId, title, content).collectLatest {
+            noticeRepository.createNotice(userId, teamId, title, content).collectLatest {
                 _noticeResult.value = it
             }
         }
@@ -36,7 +38,7 @@ class NoticeViewModel(private val repository: NoticeRepository) : ViewModel() {
 
     fun updateNotice(noticeId: String, title: String, content: String) {
         viewModelScope.launch {
-            repository.updateNotice(noticeId, title, content).collectLatest {
+            noticeRepository.updateNotice(noticeId, title, content).collectLatest {
                 _noticeResult.value = it
             }
         }
@@ -44,8 +46,19 @@ class NoticeViewModel(private val repository: NoticeRepository) : ViewModel() {
 
     fun deleteNotice(noticeId: String) {
         viewModelScope.launch {
-            repository.deleteNotice(noticeId).collectLatest {
+            noticeRepository.deleteNotice(noticeId).collectLatest {
                 _noticeResult.value = it
+            }
+        }
+    }
+
+    private val _userName = MutableStateFlow<AppResult<String>>(AppResult.Initial)
+    val userName get() = _userName.asStateFlow()
+
+    fun getUserName(userId: String) {
+        viewModelScope.launch {
+            noticeRepository.getUserName(userId).collectLatest {
+                _userName.value = it
             }
         }
     }

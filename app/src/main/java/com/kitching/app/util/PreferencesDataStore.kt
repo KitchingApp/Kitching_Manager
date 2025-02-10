@@ -21,7 +21,7 @@ class PreferencesDataStore(private val context: Context = KitchingApplication.ge
         context.dataStore.edit { preferences -> preferences[TEAM_ID] = teamId }
     }
 
-    suspend fun getTeamId(): String? = context.dataStore.data.first()[TEAM_ID]
+    suspend fun getTeamId(): String = context.dataStore.data.first()[TEAM_ID] ?: ""
 
     suspend fun clearTeamId() {
         context.dataStore.edit { preferences -> preferences.remove(TEAM_ID) }
@@ -31,7 +31,7 @@ class PreferencesDataStore(private val context: Context = KitchingApplication.ge
         context.dataStore.edit { preferences -> preferences[USER_ID] = userId }
     }
 
-    suspend fun getUserId(): String? = context.dataStore.data.first()[USER_ID]
+    suspend fun getUserId(): String = context.dataStore.data.first()[USER_ID] ?: ""
 
     suspend fun clearUserId() {
         context.dataStore.edit { preferences -> preferences.remove(USER_ID) }

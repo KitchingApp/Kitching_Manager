@@ -30,6 +30,7 @@ data class TopAppBarState(
     val onClickActionIcon: () -> Unit = {}
 )
 
+/** 네비게이션 컨트롤러, 앱바 상태, 코루틴 스코프를 갖는 data class */
 data class CommonState(
     val navController: NavHostController,
     var topAppBarState: MutableState<TopAppBarState>,

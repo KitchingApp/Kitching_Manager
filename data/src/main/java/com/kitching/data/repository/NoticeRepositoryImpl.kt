@@ -58,9 +58,16 @@ class NoticeRepositoryImpl(
         emit(AppResult.Failure(it))
     }
 
-    override fun deleteNotice(noticeId: String): Flow<AppResult<Boolean>> = flow {
+    override fun deleteNotice(noticeId: String) = flow {
         emit(AppResult.Loading)
         emit(AppResult.Success(noticeDataSource.deleteNotice(noticeId)))
+    }.catch {
+        emit(AppResult.Failure(it))
+    }
+
+    override fun getUserName(userId: String) = flow {
+        emit(AppResult.Loading)
+        emit(AppResult.Success(userDataSource.getUser(userId).userName))
     }.catch {
         emit(AppResult.Failure(it))
     }

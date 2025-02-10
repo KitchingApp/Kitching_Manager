@@ -7,6 +7,9 @@ import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -18,25 +21,33 @@ import com.kitching.app.ui.factory.viewModelFactory
 import com.kitching.app.ui.item.NoticeItem
 import com.kitching.app.ui.model.NoticeViewModel
 import com.kitching.app.ui.screen.common.EmptyScreen
+import com.kitching.app.ui.screen.common.ResultConditionScreen
 import com.kitching.app.ui.theme.KitchingManagerTheme
 import com.kitching.app.ui.theme.NeutralGray0
+import com.kitching.app.util.PreferencesDataStore
 import com.kitching.domain.AppResult
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 
+/**
+ * Notice list screen
+ *
+ * @param commonState 네비게이션 컨트롤러, 앱바 상태, 코루틴 스코프를 갖는 data class
+ * @param viewModel
+ */
 @Composable
 fun NoticeListScreen(
     commonState: CommonState,
     viewModel: NoticeViewModel = viewModel(factory = viewModelFactory)
 ) {
-    val teamId = "3uM01g5GSz8lC49JA6vq"
-    val writerName = "채연"
+
+    var teamId by remember { mutableStateOf("") }
+    val noticeListState by viewModel.notices.collectAsStateWithLifecycle()
 
     LaunchedEffect(Unit) {
+        teamId = PreferencesDataStore().getTeamId()
         viewModel.getNotices(teamId)
     }
-
-    val noticeListState by viewModel.notices.collectAsStateWithLifecycle()
 
     commonState.topAppBarState.value = commonState.topAppBarState.value.copy(
         containerColor = NeutralGray0,
@@ -44,37 +55,37 @@ fun NoticeListScreen(
         navIconInfo = NavigationIconInfo.BACK,
         onClickNavIcon = { commonState.navController.popBackStack() },
         actionIconInfo = ActionIconInfo.ADD,
-        onClickActionIcon = { commonState.navController.navigate(ScreenRouteDef.InnerContent.NoticeCreateOrUpdate.routeName + "/" + "/$writerName") }
+        onClickActionIcon = { commonState.navController.navigate(ScreenRouteDef.InnerContent.NoticeCreateOrUpdate.routeName + "/") }
     )
 
     KitchingManagerTheme {
         Surface(
             modifier = Modifier.fillMaxSize()
         ) {
-            when (noticeListState) {
-                is AppResult.Loading -> {
-                    /* 인디케이터 */
-                }
-
-                is AppResult.Success -> {
-                    val notices = (noticeListState as AppResult.Success).data
-                    if(notices.isEmpty()) {
-                        EmptyScreen(
-                            message = "공지사항을 입력해주세요."
-                        )
-                    } else {
-                        LazyColumn {
-                            itemsIndexed(notices) { _, notice ->
-                                NoticeItem(notice = notice) {
-                                    commonState.navController.navigate(ScreenRouteDef.InnerContent.NoticeDetail.routeName + "/${Json.encodeToString(notice)}")
-                                }
+            ResultConditionScreen(
+                loadingCondition = noticeListState is AppResult.Loading,
+                successCondition = noticeListState is AppResult.Success,
+                failCondition = noticeListState is AppResult.Failure,
+                failContent = {}
+            ) {
+                val notices = (noticeListState as AppResult.Success).data
+                if (notices.isEmpty()) {
+                    EmptyScreen(
+                        message = "공지사항을 입력해주세요."
+                    )
+                } else {
+                    LazyColumn {
+                        itemsIndexed(notices) { _, notice ->
+                            NoticeItem(notice = notice) {
+                                commonState.navController.navigate(
+                                    ScreenRouteDef.InnerContent.NoticeDetail.routeName + "/${
+                                        Json.encodeToString(notice)
+                                    }"
+                                )
                             }
                         }
                     }
                 }
-
-                is AppResult.Failure -> {}
-                AppResult.Initial -> {}
             }
         }
     }
