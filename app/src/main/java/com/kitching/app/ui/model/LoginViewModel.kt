@@ -5,9 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.kakao.sdk.auth.model.OAuthToken
 import com.kakao.sdk.user.UserApiClient
-import com.kitching.app.common.KitchingApplication
 import com.kitching.app.util.PreferencesDataStore
-import com.kitching.data.dto.TeamDTO
 import com.kitching.domain.AppResult
 import com.kitching.domain.entities.Team
 import com.kitching.domain.repository.LoginRepository
@@ -65,7 +63,7 @@ class LoginViewModel(
         }
     }
 
-    private val _teamList = MutableStateFlow<AppResult<List<Team>>>(AppResult.Loading)
+    private val _teamList = MutableStateFlow<AppResult<List<Team>>>(AppResult.Initial)
     val teamList get() = _teamList.asStateFlow()
 
     fun getTeamList(userId: String) {

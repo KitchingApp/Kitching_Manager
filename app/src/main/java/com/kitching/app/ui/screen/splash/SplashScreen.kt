@@ -1,6 +1,5 @@
 package com.kitching.app.ui.screen.splash
 
-import android.util.Log
 import com.kitching.app.R
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box
@@ -23,12 +22,9 @@ fun SplashScreen(
     onNavigateToMain: () -> Unit,
     viewModel: LoginViewModel
 ) {
-    Log.e("SplashScreen", "Composable Called")
     LaunchedEffect(Unit) {
-        Log.e("SplashScreen", "LaunchedEffect Started")
-        delay(2000)
+        delay(1000)
         val userId = viewModel.dataStore.getUserId()
-        Log.e("SplashScreen", "$userId")
         if (userId.isNullOrEmpty()) {
             onNavigateToLogin()
         } else {

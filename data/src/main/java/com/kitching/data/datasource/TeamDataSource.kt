@@ -7,4 +7,6 @@ interface TeamDataSource {
 
     /** return: teamId */
     suspend fun createTeam(ownerId: String, inviteCode: String, teamName: String, teamAmount: Int): String
+
+    suspend fun getTeamList(teamId: String): List<TeamDTO>
 }

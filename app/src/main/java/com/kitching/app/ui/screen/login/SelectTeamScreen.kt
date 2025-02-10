@@ -1,6 +1,5 @@
 package com.kitching.app.ui.screen.login
 
-import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -48,7 +47,6 @@ fun SelectTeamScreen(
 
     LaunchedEffect(Unit) {
         val userId = viewModel.dataStore.getUserId().toString()
-        Log.d("userId", userId)
         viewModel.getTeamList(userId)
     }
 
@@ -60,7 +58,7 @@ fun SelectTeamScreen(
             contentDescription = "Kitching name img",
             modifier = Modifier
                 .align(Alignment.TopStart)
-                .padding(start = 28.dp, top = 16.dp)
+                .padding(start = 28.dp, top = 30.dp)
                 .size(width = 149.dp, height = 43.dp)
         )
     }
@@ -76,7 +74,7 @@ fun SelectTeamScreen(
             modifier = Modifier
                 .fillMaxWidth()
                 .weight(1f, false)
-                .heightIn(max = 600.dp)
+                .heightIn(max = 550.dp)
         ) {
             when (teamListState) {
                 is AppResult.Initial -> {}
@@ -85,9 +83,7 @@ fun SelectTeamScreen(
                 is AppResult.Success -> {
                     val teamList = (teamListState as AppResult.Success<List<Team>>).data
 
-                    LazyColumn(
-                        modifier = Modifier.fillMaxSize()
-                    ) {
+                    LazyColumn(modifier = Modifier.fillMaxSize()) {
                         items(teamList) { team ->
                             TeamListItem(
                                 teamName = team.teamName,

@@ -17,20 +17,19 @@ class TeamRepositoryImpl(
 ) : TeamRepository {
     override fun getTeamsByUserId(userId: String) = flow {
         emit(AppResult.Loading)
-        val teams = userTeamDataSource.getUserTeams(userId)
-        if (teams.isEmpty()) emit(AppResult.Success(emptyList()))
-        else emit(AppResult.Success(teams.map {
-            val team = teamDataSource.getTeam(it.id)
-            if (team !== null) {
+
+        val userTeams = userTeamDataSource.getUserTeams(userId)
+
+        val teamList = userTeams.flatMap { userTeamDTO ->
+            teamDataSource.getTeamList(userTeamDTO.teamId).map { dto ->
                 Team(
-                    teamId = it.id,
-                    teamName = team.teamName,
-                    teamAmount = team.teamAmount
+                    teamId = dto.id,
+                    teamName = dto.teamName,
+                    teamAmount = dto.teamAmount
                 )
-            } else {
-                throw Exception()
             }
-        }))
+        }
+        emit(AppResult.Success(teamList))
     }.catch {
         emit(AppResult.Failure(it))
     }
@@ -58,7 +57,6 @@ class TeamRepositoryImpl(
     ) = flow {
         emit(AppResult.Loading)
         val inviteCode = UUID.randomUUID().toString().replace("-", "")
-        val teamId =
             emit(
                 AppResult.Success(
                     userTeamDataSource.createUserTeams(
