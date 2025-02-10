@@ -18,27 +18,37 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.kitching.app.R
 import com.kitching.app.ui.item.TeamListItem
+import com.kitching.app.ui.model.LoginViewModel
 import com.kitching.app.ui.theme.H3_m
 import com.kitching.app.ui.theme.PrimaryGreen300
+import com.kitching.domain.AppResult
+import com.kitching.domain.entities.Team
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.launch
 
-@Preview(showBackground = true)
 @Composable
-fun SelectTeamScreen() {
-    val dummyTeams = listOf(
-        "팀 1",
-        "팀 2",
-        "팀 3",
-        "팀 4",
-        "팀 5"
-    )
+fun SelectTeamScreen(
+    viewModel: LoginViewModel,
+    coroutineScope: CoroutineScope,
+    onNavigateToCreateTeam: () -> Unit,
+    onNavigateToMain: () -> Unit
+) {
+    val teamListState by viewModel.teamList.collectAsStateWithLifecycle()
+
+    LaunchedEffect(Unit) {
+        val userId = viewModel.dataStore.getUserId().toString()
+        viewModel.getTeamList(userId)
+    }
 
     Box(
         modifier = Modifier.fillMaxSize()
@@ -48,7 +58,7 @@ fun SelectTeamScreen() {
             contentDescription = "Kitching name img",
             modifier = Modifier
                 .align(Alignment.TopStart)
-                .padding(start = 28.dp, top = 16.dp)
+                .padding(start = 28.dp, top = 30.dp)
                 .size(width = 149.dp, height = 43.dp)
         )
     }
@@ -64,20 +74,37 @@ fun SelectTeamScreen() {
             modifier = Modifier
                 .fillMaxWidth()
                 .weight(1f, false)
-                .heightIn(max = 600.dp)
+                .heightIn(max = 550.dp)
         ) {
-            LazyColumn(
-                modifier = Modifier.fillMaxSize()
-            ) {
-                items(dummyTeams) { teamName ->
-                    TeamListItem(teamName = teamName)
-                    Spacer(modifier = Modifier.height(10.dp))
+            when (teamListState) {
+                is AppResult.Initial -> {}
+                is AppResult.Loading -> {}
+                is AppResult.Failure -> {}
+                is AppResult.Success -> {
+                    val teamList = (teamListState as AppResult.Success<List<Team>>).data
+
+                    LazyColumn(modifier = Modifier.fillMaxSize()) {
+                        items(teamList) { team ->
+                            TeamListItem(
+                                teamName = team.teamName,
+                                onClick = {
+                                    coroutineScope.launch {
+                                        viewModel.dataStore.saveTeamId(team.teamId)
+                                        onNavigateToMain()
+                                    }
+                                }
+                            )
+                            Spacer(modifier = Modifier.height(10.dp))
+                        }
+                    }
                 }
             }
         }
 
         Button(
-            onClick = {  },
+            onClick = {
+                onNavigateToCreateTeam()
+            },
             modifier = Modifier
                 .width(296.dp)
                 .height(76.dp)

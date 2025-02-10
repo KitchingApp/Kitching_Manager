@@ -15,7 +15,7 @@ class TeamDataSourceImpl(private val db: FirebaseFirestore = FirebaseFirestore.g
         ownerId: String,
         inviteCode: String,
         teamName: String,
-        teamAmount: Int
+        teamAmount: Int,
     ) = db.collection(COLLECTION_TEAM).add(
         TeamDTO(
             id = "",
@@ -27,4 +27,8 @@ class TeamDataSourceImpl(private val db: FirebaseFirestore = FirebaseFirestore.g
     ).await().apply {
         update("id", id).await()
     }.id
+
+    override suspend fun getTeamList(teamId: String): List<TeamDTO> =
+        db.collection(COLLECTION_TEAM).whereEqualTo("id", teamId).get().await()
+            .toObjects(TeamDTO::class.java)
 }
