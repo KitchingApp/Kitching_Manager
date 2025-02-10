@@ -27,32 +27,36 @@ import com.kitching.app.ui.factory.viewModelFactory
 import com.kitching.app.ui.item.SubdivisionCardItem
 import com.kitching.app.ui.model.StaffLevelViewModel
 import com.kitching.app.ui.screen.common.EmptyScreen
+import com.kitching.app.ui.screen.common.ResultConditionScreen
 import com.kitching.app.ui.screen.commondialog.BasicConfirmDialog
 import com.kitching.app.ui.screen.commondialog.BasicInputDialog
 import com.kitching.app.ui.screen.commondialog.DropdownOptionMenu
 import com.kitching.app.ui.theme.KitchingManagerTheme
 import com.kitching.app.ui.theme.NeutralGray0
 import com.kitching.app.ui.theme.defaultPadding
+import com.kitching.app.util.PreferencesDataStore
 import com.kitching.domain.AppResult
 
-//@Preview
 @Composable
 fun StaffLevelScreen(
     commonState: CommonState,
     viewModel: StaffLevelViewModel = viewModel(factory = viewModelFactory)
 ) {
-    val teamId = "3uM01g5GSz8lC49JA6vq"
-
     var showCreateDialog by remember { mutableStateOf(false) }
     var showUpdateDialog by remember { mutableStateOf(false) }
     var showDeleteDialog by remember { mutableStateOf(false) }
 
     val textInputState = remember { mutableStateOf(TextFieldValue("")) }
-
     val optionMenuId = remember { mutableStateOf("") }
 
-    val staffLevels by viewModel.staffLevelList.collectAsStateWithLifecycle()
-    val staffLevelResult by viewModel.staffLevelResult.collectAsStateWithLifecycle()
+    var teamId by remember { mutableStateOf("") }
+    val staffLevelsState by viewModel.staffLevelList.collectAsStateWithLifecycle()
+    val staffLevelResultState by viewModel.staffLevelResult.collectAsStateWithLifecycle()
+
+    LaunchedEffect(Unit) {
+        teamId = PreferencesDataStore().getTeamId()
+        viewModel.getStaffLevelList(teamId)
+    }
 
     commonState.topAppBarState.value = commonState.topAppBarState.value.copy(
         title = "직급관리",
@@ -67,10 +71,6 @@ fun StaffLevelScreen(
         }
     )
 
-    LaunchedEffect(Unit) {
-        viewModel.getStaffLevelList(teamId)
-    }
-
     KitchingManagerTheme {
         Surface(
             modifier = Modifier.fillMaxSize()
@@ -82,106 +82,105 @@ fun StaffLevelScreen(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Top
             ) {
-                when (staffLevels) {
-                    is AppResult.Initial -> {}
-                    is AppResult.Loading -> {}
-                    is AppResult.Success -> {
-                        val staffLevelData = (staffLevels as AppResult.Success).data
-                        if (staffLevelData.isEmpty()) {
-                            EmptyScreen("직급을 추가해주세요.")
-                        } else {
-                            LazyColumn(
-                                modifier = Modifier.weight(1f),
-                                verticalArrangement = Arrangement.spacedBy(12.dp),
-                            ) {
-                                items(staffLevelData) { staffLevel ->
-                                    Column(
-                                        modifier = Modifier.fillMaxWidth(),
-                                        horizontalAlignment = Alignment.End
-                                    ) {
-                                        SubdivisionCardItem(
-                                            cardText = staffLevel.staffLevelName,
-                                            onOptionBtnClick = {
-                                                textInputState.value =
-                                                    TextFieldValue(staffLevel.staffLevelName)
-                                                optionMenuId.value = staffLevel.staffLevelId
+                ResultConditionScreen(
+                    loadingCondition = staffLevelsState is AppResult.Loading || staffLevelResultState is AppResult.Loading,
+                    successCondition = staffLevelsState is AppResult.Success,
+                    failCondition = staffLevelsState is AppResult.Failure || staffLevelResultState is AppResult.Failure,
+                    failContent = {}
+                ) {
+                    val staffLevelData = (staffLevelsState as AppResult.Success).data
+                    if (staffLevelData.isEmpty()) {
+                        EmptyScreen("직급을 추가해주세요.")
+                    } else {
+                        LazyColumn(
+                            modifier = Modifier.weight(1f),
+                            verticalArrangement = Arrangement.spacedBy(12.dp),
+                        ) {
+                            items(staffLevelData) { staffLevel ->
+                                Column(
+                                    modifier = Modifier.fillMaxWidth(),
+                                    horizontalAlignment = Alignment.End
+                                ) {
+                                    SubdivisionCardItem(
+                                        cardText = staffLevel.staffLevelName,
+                                        onOptionBtnClick = {
+                                            textInputState.value =
+                                                TextFieldValue(staffLevel.staffLevelName)
+                                            optionMenuId.value = staffLevel.staffLevelId
+                                        }
+                                    )
+                                    if (optionMenuId.value == staffLevel.staffLevelId) {
+                                        DropdownOptionMenu(
+                                            onDismissRequest = { optionMenuId.value = "" },
+                                            onClickModify = {
+                                                showUpdateDialog = true
+                                            },
+                                            onClickDelete = {
+                                                showDeleteDialog = true
                                             }
                                         )
-                                        if (optionMenuId.value == staffLevel.staffLevelId) {
-                                            DropdownOptionMenu(
-                                                onDismissRequest = { optionMenuId.value = "" },
-                                                onClickModify = {
-                                                    showUpdateDialog = true
-                                                },
-                                                onClickDelete = {
-                                                    showDeleteDialog = true
-                                                }
-                                            )
-                                        }
                                     }
                                 }
                             }
                         }
                     }
-
-                    is AppResult.Failure -> {}
+                    if (showCreateDialog) {
+                        BasicInputDialog(
+                            title = "직급 생성",
+                            textState = textInputState,
+                            placeHolder = "직급명을 입력해주세요",
+                            confirmText = "생성",
+                            onClickConfirm = {
+                                viewModel.createStaffLevel(teamId, textInputState.value.text)
+                                viewModel.getStaffLevelList(teamId)
+                                showCreateDialog = false
+                                optionMenuId.value = ""
+                            },
+                            cancelText = "취소",
+                            onClickCancel = {
+                                optionMenuId.value = ""
+                                showCreateDialog = false
+                                optionMenuId.value = ""
+                            }
+                        )
+                    }
+                    if (showUpdateDialog) {
+                        BasicInputDialog(
+                            title = "직급 수정",
+                            textState = textInputState,
+                            placeHolder = "직급명을 입력해주세요",
+                            confirmText = "수정",
+                            onClickConfirm = {
+                                viewModel.updateStaffLevel(optionMenuId.value, textInputState.value.text)
+                                viewModel.getStaffLevelList(teamId)
+                                showUpdateDialog = false
+                                optionMenuId.value = ""
+                            },
+                            cancelText = "취소",
+                            onClickCancel = {
+                                showUpdateDialog = false
+                                optionMenuId.value = ""
+                            }
+                        )
+                    }
+                    if (showDeleteDialog) {
+                        BasicConfirmDialog(
+                            message = "직급을 삭제하시겠습니까?",
+                            confirmText = "삭제",
+                            onClickConfirm = {
+                                viewModel.deleteStaffLevel(optionMenuId.value)
+                                viewModel.getStaffLevelList(teamId)
+                                showDeleteDialog = false
+                                optionMenuId.value = ""
+                            },
+                            cancelText = "취소",
+                            onClickCancel = {
+                                showDeleteDialog = false
+                                optionMenuId.value = ""
+                            }
+                        )
+                    }
                 }
-            }
-            if (showCreateDialog) {
-                BasicInputDialog(
-                    title = "직급 생성",
-                    textState = textInputState,
-                    placeHolder = "직급명을 입력해주세요",
-                    confirmText = "생성",
-                    onClickConfirm = {
-                        viewModel.createStaffLevel(teamId, textInputState.value.text)
-                            viewModel.getStaffLevelList(teamId)
-                            showCreateDialog = false
-                            optionMenuId.value = ""
-                    },
-                    cancelText = "취소",
-                    onClickCancel = {
-                        optionMenuId.value = ""
-                        showCreateDialog = false
-                        optionMenuId.value = ""
-                    }
-                )
-            }
-            if (showUpdateDialog) {
-                BasicInputDialog(
-                    title = "직급 수정",
-                    textState = textInputState,
-                    placeHolder = "직급명을 입력해주세요",
-                    confirmText = "수정",
-                    onClickConfirm = {
-                        viewModel.updateStaffLevel(optionMenuId.value, textInputState.value.text)
-                            viewModel.getStaffLevelList(teamId)
-                            showUpdateDialog = false
-                            optionMenuId.value = ""
-                    },
-                    cancelText = "취소",
-                    onClickCancel = {
-                        showUpdateDialog = false
-                        optionMenuId.value = ""
-                    }
-                )
-            }
-            if (showDeleteDialog) {
-                BasicConfirmDialog(
-                    message = "직급을 삭제하시겠습니까?",
-                    confirmText = "삭제",
-                    onClickConfirm = {
-                        viewModel.deleteStaffLevel(optionMenuId.value)
-                        viewModel.getStaffLevelList(teamId)
-                        showDeleteDialog = false
-                        optionMenuId.value = ""
-                    },
-                    cancelText = "취소",
-                    onClickCancel = {
-                        showDeleteDialog = false
-                        optionMenuId.value = ""
-                    }
-                )
             }
         }
     }
