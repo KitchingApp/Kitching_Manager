@@ -43,7 +43,8 @@ class TeamRepositoryImpl(
                     Team(
                         teamId = team.id,
                         teamName = team.teamName,
-                        teamAmount = team.teamAmount
+                        teamAmount = team.teamAmount,
+                        inviteCode = team.inviteCode
                     )
                 )
             )

@@ -10,7 +10,7 @@ class UserDataSourceImpl(private val db: FirebaseFirestore = FirebaseFirestore.g
     UserDataSource {
     override suspend fun getUser(userId: String) =
         db.collection(COLLECTION_USER).document(userId).get().await()
-            .toObject(UserDTO::class.java)
+            .toObject(UserDTO::class.java) ?: throw Throwable("User Not Exist")
 
     override suspend fun checkAndSaveUser(
         userId: String,

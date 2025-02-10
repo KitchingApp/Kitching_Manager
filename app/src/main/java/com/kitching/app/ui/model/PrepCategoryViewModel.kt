@@ -15,7 +15,7 @@ class PrepCategoryViewModel(
     private val prepCategoryRepository: PrepCategoryRepository
 ) : ViewModel() {
 
-    private val _prepCategory = MutableStateFlow<AppResult<List<PrepCategory>>>(AppResult.Loading)
+    private val _prepCategory = MutableStateFlow<AppResult<List<PrepCategory>>>(AppResult.Initial)
     val prepCategories get() = _prepCategory.asStateFlow()
 
     fun getPrepCategory(teamId: String) {
@@ -26,7 +26,7 @@ class PrepCategoryViewModel(
         }
     }
 
-    private val _prepCategoryResult = MutableStateFlow<AppResult<Boolean>>(AppResult.Loading)
+    private val _prepCategoryResult = MutableStateFlow<AppResult<Boolean>>(AppResult.Initial)
     val prepCategoryResult get() = _prepCategoryResult.asStateFlow()
 
     fun createPrepCategory(teamId: String, categoryName: String, color: String) {

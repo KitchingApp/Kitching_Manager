@@ -17,7 +17,7 @@ class OrderCategoryViewModel(
     private val _orderCategories = MutableStateFlow<AppResult<List<OrderCategory>>>(AppResult.Initial)
     val orderCategories get() = _orderCategories.asStateFlow()
 
-    fun getPrepCategory(teamId: String) {
+    fun getOrderCategory(teamId: String) {
         viewModelScope.launch {
             orderCategoryRepository.getOrderCategory(teamId).collectLatest {
                 _orderCategories.value = it
@@ -29,16 +29,16 @@ class OrderCategoryViewModel(
     val orderCategoryResult get() = _orderCategoryResult
         .asStateFlow()
 
-    fun createPrepCategory(teamId: String, categoryName: String, color: String) {
+    fun createOrderCategory(teamId: String, categoryName: String, color: String) {
         viewModelScope.launch {
             orderCategoryRepository.createOrderCategory(teamId, categoryName, color).collectLatest {
                 _orderCategoryResult.value = it
-                getPrepCategory(teamId)
+                getOrderCategory(teamId)
             }
         }
     }
 
-    fun updatePrepCategory(categoryId: String, categoryName: String, color: String) {
+    fun updateOrderCategory(categoryId: String, categoryName: String, color: String) {
         viewModelScope.launch {
             orderCategoryRepository.updateOrderCategory(categoryId, categoryName, color).collectLatest {
                 _orderCategoryResult.value = it
@@ -46,7 +46,7 @@ class OrderCategoryViewModel(
         }
     }
 
-    fun deletePrepCategory(categoryId: String) {
+    fun deleteOrderCategory(categoryId: String) {
         viewModelScope.launch {
             orderCategoryRepository.deleteOrderCategory(categoryId).collectLatest {
                 _orderCategoryResult.value = it

@@ -1,6 +1,5 @@
 package com.kitching.app.ui.model
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.kitching.domain.AppResult
@@ -15,7 +14,7 @@ class PrepViewModel(
     private val prepRepository: PrepRepository
 ) : ViewModel() {
 
-    private val _prepList = MutableStateFlow<AppResult<List<Prep>>>(AppResult.Loading)
+    private val _prepList = MutableStateFlow<AppResult<List<Prep>>>(AppResult.Initial)
     val prepList get() = _prepList.asStateFlow()
 
     fun getPrepList(categoryId: String) {
@@ -26,7 +25,7 @@ class PrepViewModel(
         }
     }
 
-    private val _prepResult = MutableStateFlow<AppResult<Boolean>>(AppResult.Loading)
+    private val _prepResult = MutableStateFlow<AppResult<Boolean>>(AppResult.Initial)
     val prepResult get() = _prepResult.asStateFlow()
 
     fun createPrep(categoryId: String, name: String) {

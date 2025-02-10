@@ -37,6 +37,7 @@ import com.kitching.app.common.CommonState
 import com.kitching.app.common.NavigationIconInfo
 import com.kitching.app.ui.factory.viewModelFactory
 import com.kitching.app.ui.model.MemberViewModel
+import com.kitching.app.ui.screen.common.ResultConditionScreen
 import com.kitching.app.ui.theme.Body1
 import com.kitching.app.ui.theme.H2_m
 import com.kitching.app.ui.theme.H5
@@ -46,24 +47,36 @@ import com.kitching.app.ui.theme.NeutralGray300
 import com.kitching.app.ui.theme.NeutralGray800
 import com.kitching.app.ui.theme.PrimaryGreen300
 import com.kitching.app.ui.theme.defaultPadding
+import com.kitching.app.util.PreferencesDataStore
 import com.kitching.domain.AppResult
 import com.kitching.domain.entities.Member
 import com.kitching.domain.entities.StaffLevel
 
+/**
+ * Member detail screen
+ *
+ * @param commonState 네비게이션 컨트롤러, 앱바 상태, 코루틴 스코프를 갖는 data class
+ * @param member
+ * @param viewModel
+ */
 @Composable
 fun MemberDetailScreen(
     commonState: CommonState,
     member: Member,
     viewModel: MemberViewModel = viewModel(factory = viewModelFactory)
 ) {
-    val teamId = "3uM01g5GSz8lC49JA6vq"
-
     var isManager by remember { mutableStateOf(member.manager) }
     val selectedStaffLevel = remember { mutableStateOf(StaffLevel(staffLevelId = member.staffLevelId, staffLevelName = member.staffLevelName)) }
     val isExpended = remember { mutableStateOf(false) }
 
-    val staffLevels by viewModel.staffLevels.collectAsStateWithLifecycle()
-    val memberResult by viewModel.memberResult.collectAsStateWithLifecycle()
+    var teamId by remember { mutableStateOf("") }
+    val staffLevelsState by viewModel.staffLevels.collectAsStateWithLifecycle()
+    val memberResultState by viewModel.memberResult.collectAsStateWithLifecycle()
+
+    LaunchedEffect(Unit) {
+        teamId = PreferencesDataStore().getTeamId()
+        viewModel.getStaffLevels(teamId)
+    }
 
     commonState.topAppBarState.value = commonState.topAppBarState.value.copy(
         title = "멤버수정",
@@ -73,15 +86,16 @@ fun MemberDetailScreen(
         actionIconInfo = ActionIconInfo.NULL
     )
 
-    LaunchedEffect(Unit) {
-        viewModel.getStaffLevels(teamId)
-    }
-
     KitchingManagerTheme {
         Surface(
             modifier = Modifier.fillMaxSize()
         ) {
-            if(staffLevels is AppResult.Success) {
+            ResultConditionScreen(
+                loadingCondition = staffLevelsState is AppResult.Loading || memberResultState is AppResult.Loading,
+                successCondition = staffLevelsState is AppResult.Success,
+                failCondition = staffLevelsState is AppResult.Failure || memberResultState is AppResult.Failure,
+                failContent = {}
+            ) {
                 Column(
                     modifier = Modifier
                         .fillMaxSize()
@@ -114,7 +128,7 @@ fun MemberDetailScreen(
                         }
                     }
                     StaffLevelDropdownComponent(
-                        staffLevels = (staffLevels as AppResult.Success).data,
+                        staffLevels = (staffLevelsState as AppResult.Success).data,
                         selectedStaffLevel = selectedStaffLevel,
                         isExpanded = isExpended
                     )
@@ -144,7 +158,7 @@ fun MemberDetailScreen(
                         modifier = Modifier.width(162.dp).height(40.dp),
                         onClick = {
                             viewModel.updateMember(member.userTeamId, selectedStaffLevel.value.staffLevelId, isManager)
-                            if(memberResult is AppResult.Success) {
+                            if(memberResultState is AppResult.Success) {
                                 commonState.navController.popBackStack()
                             }
                         },
