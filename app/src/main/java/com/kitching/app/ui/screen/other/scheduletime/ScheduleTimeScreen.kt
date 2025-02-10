@@ -27,12 +27,13 @@ import com.kitching.app.ui.factory.viewModelFactory
 import com.kitching.app.ui.item.ScheduleTimeItem
 import com.kitching.app.ui.model.ScheduleTimeViewModel
 import com.kitching.app.ui.screen.common.EmptyScreen
+import com.kitching.app.ui.screen.common.ResultConditionScreen
 import com.kitching.app.ui.screen.commondialog.BasicConfirmDialog
-import com.kitching.app.ui.screen.commondialog.BasicInputDialog
 import com.kitching.app.ui.screen.commondialog.DropdownOptionMenu
 import com.kitching.app.ui.theme.KitchingManagerTheme
 import com.kitching.app.ui.theme.NeutralGray0
 import com.kitching.app.ui.theme.defaultPadding
+import com.kitching.app.util.PreferencesDataStore
 import com.kitching.app.util.customFormat
 import com.kitching.domain.AppResult
 import com.kitching.domain.entities.ScheduleTime
@@ -40,26 +41,23 @@ import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import java.time.LocalTime
 
-//@Preview
 @Composable
 fun ScheduleTimeScreen(
     commonState: CommonState,
     viewModel: ScheduleTimeViewModel = viewModel(factory = viewModelFactory)
 ) {
-    val teamId = "3uM01g5GSz8lC49JA6vq"
-
-    val initScheduleTime = ScheduleTime(
-        scheduleTimeId = "",
-        scheduleTimeName = "",
-        startTime = "",
-        endTime = ""
-    )
 
     var showDeleteDialog by remember { mutableStateOf(false) }
-    var selectedScheduleTime by remember { mutableStateOf(initScheduleTime) }
+    var selectedScheduleTime by remember { mutableStateOf(ScheduleTime()) }
 
+    var teamId by remember { mutableStateOf("") }
     val scheduleTimes by viewModel.scheduleTimes.collectAsStateWithLifecycle()
     val scheduleTimeResult by viewModel.scheduleTimeResult.collectAsStateWithLifecycle()
+
+    LaunchedEffect(Unit) {
+        teamId = PreferencesDataStore().getTeamId()
+        viewModel.getScheduleTimes(teamId)
+    }
 
     commonState.topAppBarState.value = commonState.topAppBarState.value.copy(
         title = "스케줄타임",
@@ -80,10 +78,6 @@ fun ScheduleTimeScreen(
         }
     )
 
-    LaunchedEffect(Unit) {
-        viewModel.getScheduleTimes(teamId)
-    }
-
     KitchingManagerTheme {
         Surface(
             modifier = Modifier.fillMaxSize()
@@ -95,70 +89,69 @@ fun ScheduleTimeScreen(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Top
             ) {
-                when (scheduleTimes) {
-                    is AppResult.Initial -> {}
-                    is AppResult.Loading -> {}
-                    is AppResult.Success -> {
-                        val scheduleTimeData = (scheduleTimes as AppResult.Success).data
-                        if (scheduleTimeData.isEmpty()) {
-                            EmptyScreen("스케줄타임을 추가해주세요.")
-                        } else {
-                            LazyColumn(
-                                modifier = Modifier.weight(1f),
-                                verticalArrangement = Arrangement.spacedBy(12.dp),
-                            ) {
-                                items(scheduleTimeData) { scheduleTime ->
-                                    Column(
-                                        modifier = Modifier.fillMaxWidth(),
-                                        horizontalAlignment = Alignment.End
-                                    ) {
-                                        ScheduleTimeItem(
-                                            scheduleTimeName = scheduleTime.scheduleTimeName,
-                                            startTime = scheduleTime.startTime,
-                                            endTime = scheduleTime.endTime,
-                                            onOptionBtnClick = {
-                                                selectedScheduleTime = scheduleTime
+                ResultConditionScreen(
+                    loadingCondition = scheduleTimes is AppResult.Loading || scheduleTimeResult is AppResult.Loading,
+                    successCondition = scheduleTimes is AppResult.Success,
+                    failCondition = scheduleTimes is AppResult.Failure || scheduleTimeResult is AppResult.Failure,
+                    failContent = {}
+                ) {
+                    val scheduleTimeData = (scheduleTimes as AppResult.Success).data
+                    if (scheduleTimeData.isEmpty()) {
+                        EmptyScreen("스케줄타임을 추가해주세요.")
+                    } else {
+                        LazyColumn(
+                            modifier = Modifier.weight(1f),
+                            verticalArrangement = Arrangement.spacedBy(12.dp),
+                        ) {
+                            items(scheduleTimeData) { scheduleTime ->
+                                Column(
+                                    modifier = Modifier.fillMaxWidth(),
+                                    horizontalAlignment = Alignment.End
+                                ) {
+                                    ScheduleTimeItem(
+                                        scheduleTimeName = scheduleTime.scheduleTimeName,
+                                        startTime = scheduleTime.startTime,
+                                        endTime = scheduleTime.endTime,
+                                        onOptionBtnClick = {
+                                            selectedScheduleTime = scheduleTime
+                                        }
+                                    )
+                                    if (selectedScheduleTime.scheduleTimeId == scheduleTime.scheduleTimeId) {
+                                        DropdownOptionMenu(
+                                            onDismissRequest = { selectedScheduleTime = ScheduleTime() },
+                                            onClickModify = {
+                                                commonState.navController.navigate(
+                                                    ScreenRouteDef.InnerContent.ScheduleTimeCreateOrUpdate.routeName +
+                                                            "/${if (selectedScheduleTime.scheduleTimeId.isEmpty()) null else Json.encodeToString(selectedScheduleTime)}"
+                                                )
+                                            },
+                                            onClickDelete = {
+                                                showDeleteDialog = true
                                             }
                                         )
-                                        if (selectedScheduleTime.scheduleTimeId == scheduleTime.scheduleTimeId) {
-                                            DropdownOptionMenu(
-                                                onDismissRequest = { selectedScheduleTime = initScheduleTime },
-                                                onClickModify = {
-                                                    commonState.navController.navigate(
-                                                        ScreenRouteDef.InnerContent.ScheduleTimeCreateOrUpdate.routeName +
-                                                                "/${if (selectedScheduleTime.scheduleTimeId.isEmpty()) null else Json.encodeToString(selectedScheduleTime)}"
-                                                    )
-                                                },
-                                                onClickDelete = {
-                                                    showDeleteDialog = true
-                                                }
-                                            )
-                                        }
                                     }
                                 }
                             }
                         }
                     }
-
-                    is AppResult.Failure -> {}
-                }
-            }
-            if (showDeleteDialog) {
-                BasicConfirmDialog(
-                    message = "스케줄타임을 삭제하시겠습니까?",
-                    confirmText = "삭제",
-                    onClickConfirm = {
-                        viewModel.deleteScheduleTime(selectedScheduleTime.scheduleTimeId)
-                        viewModel.getScheduleTimes(teamId)
-                        showDeleteDialog = false
-                        selectedScheduleTime = initScheduleTime
-                    },
-                    cancelText = "취소",
-                    onClickCancel = {
-                        showDeleteDialog = false
-                        selectedScheduleTime = initScheduleTime
+                    if (showDeleteDialog) {
+                        BasicConfirmDialog(
+                            message = "스케줄타임을 삭제하시겠습니까?",
+                            confirmText = "삭제",
+                            onClickConfirm = {
+                                viewModel.deleteScheduleTime(selectedScheduleTime.scheduleTimeId)
+                                viewModel.getScheduleTimes(teamId)
+                                showDeleteDialog = false
+                                selectedScheduleTime = ScheduleTime()
+                            },
+                            cancelText = "취소",
+                            onClickCancel = {
+                                showDeleteDialog = false
+                                selectedScheduleTime = ScheduleTime()
+                            }
+                        )
                     }
-                )
+                }
             }
         }
     }
