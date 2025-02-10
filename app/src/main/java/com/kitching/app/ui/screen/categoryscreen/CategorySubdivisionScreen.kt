@@ -47,7 +47,7 @@ fun CategorySubDivisionScreen(
                     )
                     if (optionMenuId.value == item.id) {
                         DropdownOptionMenu(
-                            optionMenuId = optionMenuId,
+                            onDismissRequest = { optionMenuId.value = "" },
                             onClickModify = { onClickModify(item.id, item.name) },
                             onClickDelete = { onClickDelete(item.id) }
                         )

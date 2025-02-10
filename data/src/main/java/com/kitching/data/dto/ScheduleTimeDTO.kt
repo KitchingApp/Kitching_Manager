@@ -6,5 +6,4 @@ data class ScheduleTimeDTO(
     val name: String = "",
     val startTime: String = "",
     val endTime: String = "",
-    val color: String = "",
 )

@@ -6,4 +6,11 @@ import kotlinx.coroutines.flow.Flow
 
 interface UserTeamRepository {
     fun getAllMembers(teamId: String): Flow<AppResult<List<Member>>>
+
+    fun updateMember(
+        userTeamId: String,
+        staffLevelId: String,
+        manager: Boolean
+    ): Flow<AppResult<Boolean>>
+
 }
