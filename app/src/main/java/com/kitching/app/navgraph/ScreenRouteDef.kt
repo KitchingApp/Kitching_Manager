@@ -8,6 +8,7 @@ sealed class ScreenRouteDef(val routeName: String) {
     data object OtherTab: ScreenRouteDef("Other")
 
     sealed interface InnerContent{
+        data object RecipeCreate : ScreenRouteDef("create")
         data object RecipeDetail : ScreenRouteDef("detail")
         data object RecipeEdit : ScreenRouteDef("detail/edit")
         data object PrepDetail : ScreenRouteDef("PrepDetail")

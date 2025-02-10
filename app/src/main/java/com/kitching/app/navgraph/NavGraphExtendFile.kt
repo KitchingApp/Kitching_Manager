@@ -7,6 +7,8 @@ import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import androidx.navigation.navigation
 import com.kitching.app.common.CommonState
+import com.kitching.app.ui.screen.recipe.innercontent.RecipeDetailScreen
+import com.kitching.app.ui.screen.recipe.innercontent.RecipeEditScreen
 import com.kitching.app.ui.screen.order.OrderDetailScreen
 import com.kitching.app.ui.screen.other.InviteCodeScreen
 import com.kitching.app.ui.screen.other.StaffLevelScreen
@@ -18,8 +20,7 @@ import com.kitching.app.ui.screen.other.notice.NoticeListScreen
 import com.kitching.app.ui.screen.other.scheduletime.ScheduleTimeCreateOrUpdateScreen
 import com.kitching.app.ui.screen.other.scheduletime.ScheduleTimeScreen
 import com.kitching.app.ui.screen.prep.subdivisionscreen.PrepDetailScreen
-import com.kitching.app.ui.screen.recipe.innercontent.RecipeDetailScreen
-import com.kitching.app.ui.screen.recipe.innercontent.RecipeEditScreen
+import com.kitching.app.ui.screen.recipe.innercontent.RecipeCreateScreen
 import com.kitching.domain.entities.Notice
 import com.kitching.domain.entities.ScheduleTime
 import kotlinx.serialization.json.Json
@@ -27,6 +28,18 @@ import kotlinx.serialization.json.Json
 fun NavGraphBuilder.sliceNavGraph(
     commonState: CommonState
 ) {
+    navigation(
+        startDestination = ScreenRouteDef.RecipeTab.routeName,
+        route = "recipe_create"
+    ) {
+        composable(
+            ScreenRouteDef.InnerContent.RecipeCreate.routeName,
+        ) { backStackEntry ->
+            RecipeCreateScreen(
+                commonState = commonState
+            )
+        }
+    }
     navigation(
         startDestination = ScreenRouteDef.RecipeTab.routeName,
         route = "recipe_detail"

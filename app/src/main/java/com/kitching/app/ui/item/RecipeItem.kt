@@ -1,6 +1,5 @@
 package com.kitching.app.ui.item
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
@@ -18,13 +17,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import coil3.compose.AsyncImage
 import com.kitching.app.common.CommonState
-import com.kitching.app.ui.screen.recipe.Recipe
 import com.kitching.app.ui.theme.Caption1_R
+import com.kitching.domain.entities.Recipe
 
 @Composable
 fun RecipeItem(recipe: Recipe, commonState: CommonState) {
@@ -33,7 +31,7 @@ fun RecipeItem(recipe: Recipe, commonState: CommonState) {
             .size(width = 150.dp, height = 188.dp)
             .clip(RoundedCornerShape(8.dp))
             .background(Color.White, RoundedCornerShape(8.dp))
-            .clickable { commonState.navController.navigate("detail/${recipe.id}") },
+            .clickable { commonState.navController.navigate("detail/${recipe.recipeId}") },
         elevation = CardDefaults.cardElevation(defaultElevation = 10.dp)
     ) {
         Column(
@@ -42,17 +40,16 @@ fun RecipeItem(recipe: Recipe, commonState: CommonState) {
                 .background(Color.White, RoundedCornerShape(8.dp)),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Image(
-                painter = painterResource(id = recipe.picture),
-                contentDescription = "${recipe.name} Img",
+            AsyncImage(
+                model = recipe.picture,
+                contentDescription = "${recipe.recipeName} 이미지",
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(160.dp),
-                contentScale = ContentScale.FillBounds
+                    .height(150.dp)
             )
 
             Text(
-                text = recipe.name,
+                text = recipe.recipeName,
                 style = Caption1_R,
                 textAlign = TextAlign.Center,
                 modifier = Modifier.padding(8.dp)

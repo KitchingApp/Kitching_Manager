@@ -11,16 +11,18 @@ import com.kitching.app.ui.model.OrderCategoryViewModel
 import com.kitching.app.ui.model.OrderViewModel
 import com.kitching.app.ui.model.PrepCategoryViewModel
 import com.kitching.app.ui.model.PrepViewModel
+import com.kitching.app.ui.model.RecipeViewModel
 import com.kitching.app.ui.model.ScheduleTimeViewModel
 import com.kitching.app.ui.model.ScheduleViewModel
-import com.kitching.app.ui.model.StaffLevelViewModel
 import com.kitching.app.util.PreferencesDataStore
+import com.kitching.app.ui.model.StaffLevelViewModel
 import com.kitching.data.repository.LoginRepositoryImpl
 import com.kitching.data.repository.NoticeRepositoryImpl
 import com.kitching.data.repository.OrderCategoryRepositoryImpl
 import com.kitching.data.repository.OrderRepositoryImpl
 import com.kitching.data.repository.PrepCategoryRepositoryImpl
 import com.kitching.data.repository.PrepRepositoryImpl
+import com.kitching.data.repository.RecipeRepositoryImpl
 import com.kitching.data.repository.ScheduleRepositoryImpl
 import com.kitching.data.repository.ScheduleTimeRepositoryImpl
 import com.kitching.data.repository.StaffLevelRepositoryImpl
@@ -75,12 +77,11 @@ val viewModelFactory = object : ViewModelProvider.Factory {
                     InviteCodeViewModel(
                         teamRepository = TeamRepositoryImpl()
                     )
-//                isAssignableFrom(DepartmentViewModel::class.java) ->
-//                    DepartmentViewModel()
-//                isAssignableFrom(RecipeViewModel::class.java) ->
-//                    RecipeViewModel()
-//                isAssignableFrom(TeamViewModel::class.java) ->
-//                    TeamViewModel()
+                isAssignableFrom(RecipeViewModel::class.java) ->
+                    RecipeViewModel(
+                        recipeRepository = RecipeRepositoryImpl(),
+                        dataStore = PreferencesDataStore(context = KitchingApplication.getInstance())
+                    )
                 isAssignableFrom(LoginViewModel::class.java) ->
                     LoginViewModel(
                         loginRepository = LoginRepositoryImpl(),
