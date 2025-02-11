@@ -41,7 +41,12 @@ class RecipeViewModel(
     private val _updateResult = MutableStateFlow<AppResult<Boolean>>(AppResult.Initial)
     val updateResult get() = _updateResult.asStateFlow()
 
-    fun updateRecipe(recipeId: String, name: String, steps: List<String>, ingredients: List<Ingredient>) {
+    fun updateRecipe(
+        recipeId: String,
+        name: String,
+        steps: List<String>,
+        ingredients: List<Ingredient>,
+    ) {
         viewModelScope.launch {
             recipeRepository.updateRecipe(recipeId, name, steps, ingredients).collectLatest {
                 _updateResult.value = it
@@ -49,41 +54,8 @@ class RecipeViewModel(
         }
     }
 
-    private val _uploadImageResult = MutableStateFlow<AppResult<String>>(AppResult.Initial)
-    val uploadImageResult get() = _uploadImageResult.asStateFlow()
-
-    private val _saveRecipeResult = MutableStateFlow<AppResult<String>>(AppResult.Initial)
-    val saveRecipeResult get() = _saveRecipeResult.asStateFlow()
-
-    private val _saveIngredientsResult = MutableStateFlow<AppResult<Boolean>>(AppResult.Initial)
-    val saveIngredientsResult get() = _saveIngredientsResult.asStateFlow()
-
-    /** ByteArray로 받은 이미지를 업로드 */
-    fun uploadImage(imageData: ByteArray, imageName: String) {
-        viewModelScope.launch {
-            recipeRepository.uploadImage(imageData, imageName).collectLatest {
-                _uploadImageResult.value = it
-            }
-        }
-    }
-
-    /** 레시피 저장 */
-    fun saveRecipe(name: String, picture: String, steps: List<String>, teamId: String) {
-        viewModelScope.launch {
-            recipeRepository.saveRecipe(name, picture, steps, teamId).collectLatest {
-                _saveRecipeResult.value = it
-            }
-        }
-    }
-
-    /** 재료 저장 */
-    fun saveIngredients(recipeId: String, ingredients: List<Map<String, String>>) {
-        viewModelScope.launch {
-            recipeRepository.saveIngredients(recipeId, ingredients).collectLatest {
-                _saveIngredientsResult.value = it
-            }
-        }
-    }
+    private val _createRecipeResult = MutableStateFlow<AppResult<Boolean>>(AppResult.Initial)
+    val createRecipeResult get() = _createRecipeResult.asStateFlow()
 
     fun createRecipe(
         imageData: ByteArray?,
@@ -91,42 +63,10 @@ class RecipeViewModel(
         recipeName: String,
         steps: List<String>,
         teamId: String,
-        ingredients: List<Ingredient>
+        ingredients: List<Ingredient>,
     ) {
         viewModelScope.launch {
-            // 1) 이미지 업로드
-            val pictureUrl = if (imageData != null) {
-                var tempUrl: String? = null
-
-                uploadImage(imageData, imageName)
-
-                val result = _uploadImageResult.value
-
-                when(result) {
-                    is AppResult.Success -> result.data
-                    else -> ""
-                }
-                tempUrl ?: ""
-            } else {
-                ""
-            }
-
-            // 2) 레시피 저장
-            var newRecipeId: String? = null
-
-            saveRecipe(recipeName, pictureUrl, steps, teamId) // <-- 개별 메서드
-
-            val result = _saveRecipeResult.value
-
-            when(result) {
-                is AppResult.Success -> newRecipeId = result.data
-                else -> {  }
-            }
-
-            val recipeId = newRecipeId ?: return@launch
-
-            // 3) 재료 저장
-            val ingredientMaps = ingredients.map { ing ->
+            val ingMapList = ingredients.map { ing ->
                 mapOf(
                     "id" to "",
                     "name" to ing.ingredientName,
@@ -136,7 +76,11 @@ class RecipeViewModel(
                 )
             }
 
-            saveIngredients(recipeId, ingredientMaps)
+            recipeRepository.createRecipe(
+                imageData, imageName, recipeName, steps, teamId, ingMapList
+            ).collectLatest {
+                _createRecipeResult.value = it
+            }
         }
     }
 }

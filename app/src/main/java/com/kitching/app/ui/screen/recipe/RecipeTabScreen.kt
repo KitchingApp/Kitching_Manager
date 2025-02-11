@@ -18,6 +18,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.kitching.app.common.ActionIconInfo
+import com.kitching.app.common.AppResultHandler
 import com.kitching.app.common.CommonState
 import com.kitching.app.common.KitchingApplication
 import com.kitching.app.common.NavigationIconInfo
@@ -61,12 +62,9 @@ fun RecipeTabScreen(
         Surface(
             modifier = Modifier.fillMaxSize()
         ) {
-            when (recipeListState) {
-                is AppResult.Initial -> {}
-                is AppResult.Loading -> {}
-                is AppResult.Failure -> {}
-                is AppResult.Success -> {
-                    val recipes = (recipeListState as AppResult.Success<List<Recipe>>).data
+            AppResultHandler(
+                state = recipeListState,
+                onSuccess = { recipes ->
                     Column(
                         modifier = Modifier.fillMaxSize().padding(10.dp),
                         horizontalAlignment = Alignment.CenterHorizontally
@@ -84,7 +82,7 @@ fun RecipeTabScreen(
                         }
                     }
                 }
-            }
+            )
         }
     }
 }

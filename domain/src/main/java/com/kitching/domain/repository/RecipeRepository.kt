@@ -17,17 +17,12 @@ interface RecipeRepository {
         ingredients: List<Ingredient>,
     ): Flow<AppResult<Boolean>>
 
-    fun uploadImage(imageData: ByteArray, imageName: String): Flow<AppResult<String>>
-
-    fun saveRecipe(
-        name: String,
-        picture: String,
+    fun createRecipe(
+        imageData: ByteArray?,
+        imageName: String,
+        recipeName: String,
         steps: List<String>,
         teamId: String,
-    ): Flow<AppResult<String>>
-
-    fun saveIngredients(
-        recipeId: String,
-        ingredients: List<Map<String, String>>,
+        ingredients: List<Map<String, String>>
     ): Flow<AppResult<Boolean>>
 }

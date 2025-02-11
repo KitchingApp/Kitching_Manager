@@ -91,27 +91,28 @@ class RecipeDataSourceImpl(
         }
     }.isSuccess
 
-    override suspend fun uploadImageToStorage(
-        imageData: ByteArray,
+    override suspend fun createRecipe(
+        imageData: ByteArray?,
         imageName: String,
-    ): Result<String> = runCatching {
-        val storageRef = storage.reference.child("recipeImage/$imageName")
-
-        storageRef.putBytes(imageData).await()
-
-        storageRef.downloadUrl.await().toString()
-    }
-
-    override suspend fun saveRecipe(
-        name: String,
-        picture: String,
+        recipeName: String,
         steps: List<String>,
         teamId: String,
-    ): Result<String> = runCatching {
+        ingredients: List<Map<String, String>>,
+    ): Boolean = runCatching {
+        // (1) 이미지 업로드
+        val pictureUrl = if (imageData != null) {
+            val storageRef = storage.reference.child("recipeImage/$imageName")
+            storageRef.putBytes(imageData).await()
+            storageRef.downloadUrl.await().toString()
+        } else {
+            ""
+        }
+
+        // (2) 레시피 생성
         val recipeData = mapOf(
             "id" to "",
-            "name" to name,
-            "picture" to picture,
+            "name" to recipeName,
+            "picture" to pictureUrl,
             "steps" to steps,
             "teamId" to teamId
         )
@@ -120,32 +121,29 @@ class RecipeDataSourceImpl(
             .add(recipeData)
             .await()
 
+        // 문서 id 필드 업데이트
         db.collection(COLLECTION_RECIPE)
             .document(recipeDocument.id)
             .update("id", recipeDocument.id)
             .await()
 
-        recipeDocument.id
-    }
+        val recipeId = recipeDocument.id
 
-    override suspend fun saveIngredients(
-        recipeId: String,
-        ingredients: List<Map<String, String>>,
-    ): Boolean = runCatching {
+        // (3) 재료 저장
         val ingredientCollection = db.collection(COLLECTION_RECIPE)
             .document(recipeId)
             .collection(COLLECTION_INGREDIENT)
 
         ingredients.forEach { ingredient ->
-            val ingredientData = ingredient.mapValues { (key, value) ->
+            val mapped = ingredient.mapValues { (key, value) ->
                 when (key) {
                     "once", "twice" -> value.toIntOrNull() ?: -1
                     else -> value
                 }
             }
-            val ingredientDocument = ingredientCollection.add(ingredientData).await()
-            ingredientCollection.document(ingredientDocument.id)
-                .update("id", ingredientDocument.id)
+            val ingredientDoc = ingredientCollection.add(mapped).await()
+            ingredientCollection.document(ingredientDoc.id)
+                .update("id", ingredientDoc.id)
                 .await()
         }
     }.isSuccess

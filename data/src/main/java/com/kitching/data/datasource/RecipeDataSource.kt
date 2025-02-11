@@ -15,17 +15,12 @@ interface RecipeDataSource {
         ingredients: List<IngredientDTO>,
     ): Boolean
 
-    suspend fun uploadImageToStorage(imageData: ByteArray, imageName: String): Result<String>
-
-    suspend fun saveRecipe(
-        name: String,
-        picture: String,
+    suspend fun createRecipe(
+        imageData: ByteArray?,
+        imageName: String,
+        recipeName: String,
         steps: List<String>,
         teamId: String,
-    ): Result<String>
-
-    suspend fun saveIngredients(
-        recipeId: String,
-        ingredients: List<Map<String, String>>,
+        ingredients: List<Map<String, String>>
     ): Boolean
 }

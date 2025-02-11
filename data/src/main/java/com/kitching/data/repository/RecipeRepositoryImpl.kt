@@ -59,50 +59,20 @@ class RecipeRepositoryImpl(
         emit(AppResult.Failure(e))
     }
 
-    override fun uploadImage(
-        imageData: ByteArray,
+    override fun createRecipe(
+        imageData: ByteArray?,
         imageName: String,
-    ): Flow<AppResult<String>> = flow {
-        emit(AppResult.Loading)
-        val result = recipeDataSource.uploadImageToStorage(imageData, imageName)
-        result.fold(
-            onSuccess = { downloadUrl ->
-                emit(AppResult.Success(downloadUrl))
-            },
-            onFailure = { throwable ->
-                emit(AppResult.Failure(throwable))
-            }
-        )
-    }.catch { e ->
-        emit(AppResult.Failure(e))
-    }
-
-    override fun saveRecipe(
-        name: String,
-        picture: String,
+        recipeName: String,
         steps: List<String>,
         teamId: String,
-    ): Flow<AppResult<String>> = flow {
-        emit(AppResult.Loading)
-        val result = recipeDataSource.saveRecipe(name, picture, steps, teamId)
-        result.fold(
-            onSuccess = { recipeId ->
-                emit(AppResult.Success(recipeId))
-            },
-            onFailure = { throwable ->
-                emit(AppResult.Failure(throwable))
-            }
-        )
-    }.catch { e ->
-        emit(AppResult.Failure(e))
-    }
-
-    override fun saveIngredients(
-        recipeId: String,
         ingredients: List<Map<String, String>>,
     ): Flow<AppResult<Boolean>> = flow {
         emit(AppResult.Loading)
-        val isSuccess = recipeDataSource.saveIngredients(recipeId, ingredients)
+
+        val isSuccess = recipeDataSource.createRecipe(
+            imageData, imageName, recipeName, steps, teamId, ingredients
+        )
+
         if (isSuccess) {
             emit(AppResult.Success(true))
         } else {
