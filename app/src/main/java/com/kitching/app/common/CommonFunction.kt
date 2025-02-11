@@ -16,7 +16,9 @@ fun <T> AppResultHandler(
     onSuccess: @Composable (T) -> Unit
 ) {
     when (state) {
-        is AppResult.Initial, AppResult.Loading -> {
+        is AppResult.Initial -> {}
+
+        is AppResult.Loading -> {
             ProgressIndicatorScreen()
         }
 
