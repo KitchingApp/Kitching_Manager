@@ -20,6 +20,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import coil3.compose.AsyncImage
 import com.kitching.app.common.ActionIconInfo
+import com.kitching.app.common.AppResultHandler
 import com.kitching.app.common.CommonState
 import com.kitching.app.common.NavigationIconInfo
 import com.kitching.app.ui.factory.viewModelFactory
@@ -57,13 +58,9 @@ fun RecipeDetailScreen(
         Surface(
             modifier = Modifier.fillMaxSize()
         ) {
-            when (recipeDetailState) {
-                is AppResult.Initial -> {}
-                is AppResult.Loading -> {}
-                is AppResult.Failure -> {}
-                is AppResult.Success -> {
-                    val recipeDetail = (recipeDetailState as AppResult.Success<Recipe>).data
-
+            AppResultHandler(
+                state = recipeDetailState,
+                onSuccess = { recipeDetail ->
                     LazyColumn(
                         modifier = Modifier
                             .fillMaxSize()
@@ -107,7 +104,7 @@ fun RecipeDetailScreen(
                         }
                     }
                 }
-            }
+            )
         }
     }
 }

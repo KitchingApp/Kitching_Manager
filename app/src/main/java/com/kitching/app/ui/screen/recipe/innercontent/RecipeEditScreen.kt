@@ -1,13 +1,11 @@
 package com.kitching.app.ui.screen.recipe.innercontent
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -18,14 +16,13 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import coil3.compose.AsyncImage
 import com.kitching.app.common.ActionIconInfo
+import com.kitching.app.common.AppResultHandler
 import com.kitching.app.common.CommonState
 import com.kitching.app.common.NavigationIconInfo
 import com.kitching.app.common.showToast
@@ -78,22 +75,13 @@ fun RecipeEditScreen(
         }
     }
 
-    LaunchedEffect(updateState) {
-        if (updateState is AppResult.Success) {
-            showToast("레시피가 수정되었습니다!")
-            commonState.navController.popBackStack()
-        }
-    }
-
     KitchingManagerTheme {
         Surface(
             modifier = Modifier.fillMaxSize()
         ) {
-            when (recipeDetailState) {
-                is AppResult.Initial -> {}
-                is AppResult.Loading -> {}
-                is AppResult.Failure -> {}
-                is AppResult.Success -> {
+            AppResultHandler(
+                state = recipeDetailState,
+                onSuccess = {
                     LazyColumn(
                         modifier = Modifier
                             .fillMaxSize()
@@ -153,17 +141,15 @@ fun RecipeEditScreen(
                         }
                     }
                 }
-            }
-            if (updateState is AppResult.Loading) {
-                Box(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .background(Color.Black.copy(alpha = 0.3f)),
-                    contentAlignment = Alignment.Center
-                ) {
-                    CircularProgressIndicator()
+            )
+
+            AppResultHandler(
+                state = updateState,
+                onSuccess = {
+                    showToast("레시피가 수정되었습니다!")
+                    commonState.navController.popBackStack()
                 }
-            }
+            )
         }
     }
 }

@@ -41,6 +41,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import coil3.compose.AsyncImage
 import com.kitching.app.common.ActionIconInfo
+import com.kitching.app.common.AppResultHandler
 import com.kitching.app.common.CommonState
 import com.kitching.app.common.KitchingApplication
 import com.kitching.app.common.NavigationIconInfo
@@ -105,18 +106,10 @@ fun RecipeCreateScreen(
     )
 
     // ViewModel의 StateFlow 관찰 (로딩/성공/실패)
-    val uploadState by recipeViewModel.uploadImageResult.collectAsState()
-    val recipeState by recipeViewModel.saveRecipeResult.collectAsState()
-    val ingredientsState by recipeViewModel.saveIngredientsResult.collectAsState()
-
-    // (2) 재료 저장까지 성공하면 화면 닫기
-    LaunchedEffect(ingredientsState) {
-        if (ingredientsState is AppResult.Success) {
-            showToast("레시피가 성공적으로 등록되었습니다!")
-            commonState.navController.popBackStack()
-        }
-    }
-
+    // 해당 스테이트도 관찰해서 에러로 넘기는 로직 고민해보기
+//    val uploadImgState by recipeViewModel.uploadImageResult.collectAsState()
+//    val recipeState by recipeViewModel.saveRecipeResult.collectAsState()
+    val uploadState by recipeViewModel.saveIngredientsResult.collectAsState()
 
     val pickMedia = rememberLauncherForActivityResult(PickVisualMedia()) { uri ->
         if (uri != null) {
@@ -230,33 +223,16 @@ fun RecipeCreateScreen(
             }
             // (3) 로딩/에러 UI 표시
             // 어떤 단계에서 로딩인지 구분 필요하면 구분 가능
-            when {
-                uploadState is AppResult.Loading
-                        || recipeState is AppResult.Loading
-                        || ingredientsState is AppResult.Loading -> {
-                    // 하나라도 로딩이면 인디케이터 표시
-                    Box(
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .background(Color.Black.copy(alpha = 0.3f)),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        CircularProgressIndicator()
-                    }
+            AppResultHandler(
+                state = uploadState,
+                onFailure = { error ->
+                    showToast(error.message.toString())
+                },
+                onSuccess = {
+                    showToast("이미지 업로드 성공!")
+                    commonState.navController.popBackStack()
                 }
-                uploadState is AppResult.Failure -> {
-                    val error = (uploadState as AppResult.Failure).exception
-                    showToast("이미지 업로드 실패: ${error.message}")
-                }
-                recipeState is AppResult.Failure -> {
-                    val error = (recipeState as AppResult.Failure).exception
-                    showToast("레시피 저장 실패: ${error.message}")
-                }
-                ingredientsState is AppResult.Failure -> {
-                    val error = (ingredientsState as AppResult.Failure).exception
-                    showToast("재료 저장 실패: ${error.message}")
-                }
-            }
+            )
 
         }
     }
