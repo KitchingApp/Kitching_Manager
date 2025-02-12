@@ -12,6 +12,7 @@ enum class ActionIconInfo(val icon: Int, val description: String) {
     ADD(R.drawable.icon_add, "add button"),
     OPTION(R.drawable.icon_options, "option button"),
     CHECK(R.drawable.icon_check, "confirm button"),
+    EDIT(R.drawable.icon_edit, "confirm button"),
     NULL(R.drawable.icon_check, "no action")
 }
 

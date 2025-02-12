@@ -1,6 +1,5 @@
 package com.kitching.app.ui.screen.recipe.innercontent
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
@@ -13,8 +12,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -29,8 +26,7 @@ import com.kitching.app.ui.theme.H2
 import com.kitching.app.ui.theme.H4_m
 import com.kitching.app.ui.theme.KitchingManagerTheme
 import com.kitching.app.ui.theme.NeutralGray0
-import com.kitching.domain.AppResult
-import com.kitching.domain.entities.Recipe
+import com.kitching.app.ui.theme.PrimaryGreen300
 
 @Composable
 fun RecipeDetailScreen(
@@ -45,7 +41,7 @@ fun RecipeDetailScreen(
         onClickNavIcon = {
             commonState.navController.popBackStack()
         },
-        actionIconInfo = ActionIconInfo.CHECK,
+        actionIconInfo = ActionIconInfo.EDIT,
         onClickActionIcon = {
             commonState.navController.navigate("detail/edit/${recipeId}")
         }
