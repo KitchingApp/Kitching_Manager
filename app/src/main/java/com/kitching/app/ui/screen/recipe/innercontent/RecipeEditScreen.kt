@@ -30,6 +30,7 @@ import com.kitching.app.ui.factory.viewModelFactory
 import com.kitching.app.ui.model.RecipeViewModel
 import com.kitching.app.ui.theme.H4_m
 import com.kitching.app.ui.theme.KitchingManagerTheme
+import com.kitching.app.ui.theme.NeutralGray0
 import com.kitching.domain.AppResult
 import com.kitching.domain.entities.Ingredient
 
@@ -49,6 +50,8 @@ fun RecipeEditScreen(
     }
 
     commonState.topAppBarState.value = commonState.topAppBarState.value.copy(
+        title = "레시피 수정",
+        containerColor = NeutralGray0,
         navIconInfo = NavigationIconInfo.BACK,
         onClickNavIcon = { commonState.navController.popBackStack() },
         actionIconInfo = ActionIconInfo.CHECK,

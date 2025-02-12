@@ -73,7 +73,7 @@ fun RecipeCreateScreen(
     }
 
     commonState.topAppBarState.value = commonState.topAppBarState.value.copy(
-        title = "레피시 추가",
+        title = "레시피 추가",
         containerColor = NeutralGray0,
         navIconInfo = NavigationIconInfo.BACK,
         onClickNavIcon = {
