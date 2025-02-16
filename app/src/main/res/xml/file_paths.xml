@@ -1,0 +1,6 @@
+<paths>
+    <!-- 캐시 디렉토리를 공유 가능하도록 설정 -->
+    <cache-path
+        name="cache"
+        path="." />
+</paths>

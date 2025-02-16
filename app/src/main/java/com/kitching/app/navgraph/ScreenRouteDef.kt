@@ -9,6 +9,7 @@ sealed class ScreenRouteDef(val routeName: String) {
 
     sealed interface InnerContent{
         data object RecipeCreate : ScreenRouteDef("create")
+        data object RecipeCreateUseExcel : ScreenRouteDef("UploadExcel")
         data object RecipeDetail : ScreenRouteDef("detail")
         data object RecipeEdit : ScreenRouteDef("detail/edit")
         data object PrepDetail : ScreenRouteDef("PrepDetail")
