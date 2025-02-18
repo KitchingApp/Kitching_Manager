@@ -19,7 +19,7 @@ android {
     compileSdk = 35
 
     defaultConfig {
-        applicationId = "com.kitching.app"
+        applicationId = "com.kitching.app.manager"
         minSdk = 26
         targetSdk = 35
         versionCode = 1

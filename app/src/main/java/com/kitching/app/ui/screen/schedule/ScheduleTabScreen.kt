@@ -1,6 +1,5 @@
 package com.kitching.app.ui.screen.schedule
 
-import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -43,6 +42,12 @@ import java.time.LocalDateTime
 import java.time.LocalTime
 import java.time.ZoneId
 
+/**
+ * Schedule tab screen
+ *
+ * @param commonState 네비게이션 컨트롤러, 앱바 상태, 코루틴 스코프를 갖는 data class
+ * @param viewModel
+ */
 @Composable
 fun ScheduleTabScreen(
     commonState: CommonState,
@@ -57,11 +62,11 @@ fun ScheduleTabScreen(
     /** 드롭다운 메뉴가 열려있는지 저장 */
     val isExpanded = remember { mutableStateOf(false) }
 
-    val selectedDateTime = remember { mutableStateOf(LocalDateTime.now()) }
+    var selectedDateTime by remember { mutableStateOf(LocalDateTime.now()) }
 
     var targetScheduleId by remember { mutableStateOf("") }
     val rejectReasonState = remember { mutableStateOf(TextFieldValue("")) }
-    
+
     /** 드롭다운에서 선택된 멤버 */
     val selectedMember = remember {
         mutableStateOf(
@@ -76,6 +81,7 @@ fun ScheduleTabScreen(
             )
         )
     }
+
     /** 선택된 스케줄타임 */
     val selectedScheduleTime = remember {
         mutableStateOf(
@@ -100,9 +106,9 @@ fun ScheduleTabScreen(
     val allMembersState by viewModel.members.collectAsStateWithLifecycle()
     val scheduleTimesState by viewModel.scheduleTimes.collectAsStateWithLifecycle()
 
-    LaunchedEffect(Unit) {
-        teamId = PreferencesDataStore(KitchingApplication.getInstance()).getTeamId() ?: ""
-        viewModel.getSchedules(teamId, selectedDateTime.value.toLocalDate().toString())
+    LaunchedEffect(selectedDateTime) {
+        teamId = PreferencesDataStore(KitchingApplication.getInstance()).getTeamId()
+        viewModel.getSchedules(teamId, selectedDateTime.toLocalDate().toString())
         viewModel.getMembers(teamId)
         viewModel.getScheduleTimes(teamId)
     }
@@ -144,9 +150,9 @@ fun ScheduleTabScreen(
                     }
                 ) {
                     DateSelector(
-                        selectedDateTime = selectedDateTime.value,
+                        selectedDateTime = selectedDateTime,
                         onDateChange = { newDate ->
-                            selectedDateTime.value = newDate
+                            selectedDateTime = newDate
                         },
                         onClickDateBtn = {
                             showDatePickerDialog = true
@@ -169,30 +175,40 @@ fun ScheduleTabScreen(
                                 onDeleteClick = { scheduleId ->
                                     targetScheduleId = scheduleId
                                     showDeleteDialog = true
-                                    viewModel.getSchedules(teamId, selectedDateTime.value.toLocalDate().toString())
+                                    viewModel.getSchedules(
+                                        teamId,
+                                        selectedDateTime.toLocalDate().toString()
+                                    )
                                 }
                             )
+
                             1 -> AppliedScheduleScreen(
                                 scheduleList = (schedulesState as AppResult.Success).data.filter { !it.fix },
                                 onApplyClick = { scheduleId ->
                                     viewModel.applySchedule(scheduleId)
-                                    viewModel.getSchedules(teamId, selectedDateTime.value.toLocalDate().toString())
+                                    viewModel.getSchedules(
+                                        teamId,
+                                        selectedDateTime.toLocalDate().toString()
+                                    )
                                 },
                                 onRejectClick = { scheduleId ->
                                     targetScheduleId = scheduleId
                                     showRejectDialog = true
-                                    viewModel.getSchedules(teamId, selectedDateTime.value.toLocalDate().toString())
+                                    viewModel.getSchedules(
+                                        teamId,
+                                        selectedDateTime.toLocalDate().toString()
+                                    )
                                 }
                             )
                         }
                     }
                     if (showDatePickerDialog) {
                         DatePickerModal(
-                            selectedDateTime = selectedDateTime.value,
+                            selectedDateTime = selectedDateTime,
                             onDismissRequest = { showDatePickerDialog = false },
                             onClickConfirm = { selectedDateMillis ->
                                 if (selectedDateMillis !== null) {
-                                    selectedDateTime.value =
+                                    selectedDateTime =
                                         LocalDateTime.ofInstant(
                                             Instant.ofEpochMilli(selectedDateMillis),
                                             ZoneId.systemDefault()
@@ -213,17 +229,20 @@ fun ScheduleTabScreen(
                                     showCreateDialog = false
                                 }
                             },
-                            selectedDateTime = selectedDateTime.value,
+                            selectedDateTime = selectedDateTime,
                             members = (allMembersState as AppResult.Success<List<Member>>).data,
                             onClickConfirm = {
                                 viewModel.createSchedule(
                                     teamId = teamId,
-                                    dateString = selectedDateTime.value.toLocalDate().toString(),
+                                    dateString = selectedDateTime.toLocalDate().toString(),
                                     userId = selectedMember.value.userId,
                                     scheduleTimeId = selectedScheduleTime.value.scheduleTimeId,
                                     fix = true
                                 )
-                                viewModel.getSchedules(teamId, selectedDateTime.value.toLocalDate().toString())
+                                viewModel.getSchedules(
+                                    teamId,
+                                    selectedDateTime.toLocalDate().toString()
+                                )
                             },
                             selectedMember = selectedMember,
                             scheduleTimes = (scheduleTimesState as AppResult.Success<List<ScheduleTime>>).data,
@@ -236,18 +255,24 @@ fun ScheduleTabScreen(
                             confirmText = "삭제",
                             onClickConfirm = {
                                 viewModel.deleteSchedule(targetScheduleId)
-                                viewModel.getSchedules(teamId, selectedDateTime.value.toLocalDate().toString())
+                                viewModel.getSchedules(
+                                    teamId,
+                                    selectedDateTime.toLocalDate().toString()
+                                )
                             },
                             cancelText = "취소",
                             onClickCancel = { showDeleteDialog = false }
                         )
                     }
-                    if(showRejectDialog) {
+                    if (showRejectDialog) {
                         ScheduleRejectDialog(
                             rejectReasonState = rejectReasonState,
                             onClickReject = {
                                 viewModel.deleteSchedule(targetScheduleId)
-                                viewModel.getSchedules(teamId, selectedDateTime.value.toLocalDate().toString())
+                                viewModel.getSchedules(
+                                    teamId,
+                                    selectedDateTime.toLocalDate().toString()
+                                )
                             },
                             onClickCancel = { showRejectDialog = false }
                         )
