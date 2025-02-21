@@ -64,8 +64,8 @@ fun RecipeCreateScreen(
     var imageUri by remember { mutableStateOf<Uri?>(null) }
     var imgName by remember { mutableStateOf("") }
     var recipeName by remember { mutableStateOf("") }
-    var ingredients by remember { mutableStateOf(mutableListOf<Ingredient>(Ingredient("", "", -1, -1, ""))) }
-    var recipeSteps by remember { mutableStateOf(mutableListOf("")) }
+    var ingredients by remember { mutableStateOf(listOf<Ingredient>(Ingredient("", "", -1, -1, ""))) }
+    var recipeSteps by remember { mutableStateOf(listOf("")) }
     var teamId by remember { mutableStateOf("") }
 
     commonState.scope.launch {
@@ -199,7 +199,7 @@ fun RecipeCreateScreen(
                     CreateIngredientsTable(
                         ingredients = ingredients,
                         onIngredientsChange = { newList ->
-                            ingredients = newList as MutableList<Ingredient>
+                            ingredients = newList
                         }
                     )
                 }
