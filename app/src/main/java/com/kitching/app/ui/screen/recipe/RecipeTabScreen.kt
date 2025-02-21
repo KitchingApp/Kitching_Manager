@@ -32,6 +32,7 @@ import com.kitching.app.ui.item.RecipeItem
 import com.kitching.app.ui.model.RecipeViewModel
 import com.kitching.app.ui.screen.commondialog.RecipeCreateOptionMenu
 import com.kitching.app.ui.theme.KitchingManagerTheme
+import com.kitching.app.ui.theme.NeutralGray0
 import com.kitching.app.util.PreferencesDataStore
 import kotlinx.coroutines.launch
 
@@ -43,6 +44,8 @@ fun RecipeTabScreen(
     var showCreateOptionMenu by remember { mutableStateOf(false) }
 
     commonState.topAppBarState.value = commonState.topAppBarState.value.copy(
+        title = "Kitching",
+        containerColor = NeutralGray0,
         navIconInfo = NavigationIconInfo.DRAWER,
         onClickNavIcon = {
             if (commonState.topAppBarState.value.drawerState.isOpen) {
