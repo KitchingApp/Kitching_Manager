@@ -1,13 +1,12 @@
 package com.kitching.app.ui.screen.login
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -30,7 +29,9 @@ import com.kitching.app.R
 import com.kitching.app.ui.item.TeamListItem
 import com.kitching.app.ui.model.LoginViewModel
 import com.kitching.app.ui.theme.H3_m
+import com.kitching.app.ui.theme.KitchingManagerTheme
 import com.kitching.app.ui.theme.PrimaryGreen300
+import com.kitching.app.ui.theme.defaultPadding
 import com.kitching.domain.AppResult
 import com.kitching.domain.entities.Team
 import kotlinx.coroutines.CoroutineScope
@@ -46,44 +47,42 @@ fun SelectTeamScreen(
     val teamListState by viewModel.teamList.collectAsStateWithLifecycle()
 
     LaunchedEffect(Unit) {
-        val userId = viewModel.dataStore.getUserId().toString()
-        viewModel.getTeamList(userId)
+        viewModel.getTeamList(viewModel.dataStore.getUserId())
     }
 
-    Box(
-        modifier = Modifier.fillMaxSize()
-    ) {
-        Image(
-            painter = painterResource(R.drawable.kitching_name_logo),
-            contentDescription = "Kitching name img",
-            modifier = Modifier
-                .align(Alignment.TopStart)
-                .padding(start = 28.dp, top = 30.dp)
-                .size(width = 149.dp, height = 43.dp)
-        )
-    }
-
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(horizontal = 16.dp, vertical = 20.dp)
-            .padding(top = 100.dp),
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .weight(1f, false)
-                .heightIn(max = 550.dp)
-        ) {
-            when (teamListState) {
-                is AppResult.Initial -> {}
-                is AppResult.Loading -> {}
-                is AppResult.Failure -> {}
-                is AppResult.Success -> {
-                    val teamList = (teamListState as AppResult.Success<List<Team>>).data
-
-                    LazyColumn(modifier = Modifier.fillMaxSize()) {
+    KitchingManagerTheme {
+        when (teamListState) {
+            is AppResult.Initial -> {}
+            is AppResult.Loading -> {}
+            is AppResult.Failure -> {}
+            is AppResult.Success -> {
+                val teamList = (teamListState as AppResult.Success<List<Team>>).data
+                Column(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(defaultPadding),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.SpaceBetween
+                ) {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(bottom = defaultPadding),
+                        contentAlignment = Alignment.TopStart
+                    ) {
+                        Image(
+                            painter = painterResource(R.drawable.kitching_name_logo),
+                            contentDescription = "Kitching name img",
+                            modifier = Modifier
+                                .align(Alignment.TopStart)
+                                .padding(start = 28.dp, top = 30.dp)
+                                .size(width = 149.dp, height = 43.dp)
+                        )
+                    }
+                    LazyColumn(
+                        modifier = Modifier.weight(1f),
+                        verticalArrangement = Arrangement.spacedBy(12.dp),
+                    ) {
                         items(teamList) { team ->
                             TeamListItem(
                                 teamName = team.teamName,
@@ -94,31 +93,73 @@ fun SelectTeamScreen(
                                     }
                                 }
                             )
-                            Spacer(modifier = Modifier.height(10.dp))
                         }
                     }
+                    Button(
+                        onClick = {
+                            onNavigateToCreateTeam()
+                        },
+                        modifier = Modifier
+                            .width(296.dp)
+                            .height(76.dp)
+                            .padding(10.dp),
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = PrimaryGreen300,
+                            contentColor = Color.White
+                        ),
+                        shape = RoundedCornerShape(10.dp)
+                    ) {
+                        Text(
+                            text = "팀 생성",
+                            style = H3_m
+                        )
+                    }
+//                    Column(
+//                        modifier = Modifier
+//                            .fillMaxSize()
+//                            .padding(horizontal = 16.dp, vertical = 20.dp)
+//                            .padding(top = 100.dp),
+//                        horizontalAlignment = Alignment.CenterHorizontally
+//                    ) {
+//                        Box(
+//                            modifier = Modifier
+//                                .fillMaxWidth()
+//                                .weight(1f, false)
+//                                .heightIn(max = 550.dp)
+//                        ) {
+//                            val teamList = (teamListState as AppResult.Success<List<Team>>).data
+//
+//                            LazyColumn(modifier = Modifier.fillMaxSize()) {
+//                                items(teamList) { team ->
+//                                    TeamListItem(
+//                                        teamName = team.teamName,
+//                                        onClick = {
+//                                            coroutineScope.launch {
+//                                                viewModel.dataStore.saveTeamId(team.teamId)
+//                                                onNavigateToMain()
+//                                            }
+//                                        }
+//                                    )
+//                                    Spacer(modifier = Modifier.height(10.dp))
+//                                }
+//                            }
+//                        }
                 }
             }
         }
-
-        Button(
-            onClick = {
-                onNavigateToCreateTeam()
-            },
-            modifier = Modifier
-                .width(296.dp)
-                .height(76.dp)
-                .padding(10.dp),
-            colors = ButtonDefaults.buttonColors(
-                containerColor = PrimaryGreen300,
-                contentColor = Color.White
-            ),
-            shape = RoundedCornerShape(10.dp)
-        ) {
-            Text(
-                text = "팀 생성",
-                style = H3_m
-            )
-        }
     }
 }
+
+
+//    Box(
+//        modifier = Modifier.fillMaxSize()
+//    ) {
+//        Image(
+//            painter = painterResource(R.drawable.kitching_name_logo),
+//            contentDescription = "Kitching name img",
+//            modifier = Modifier
+//                .align(Alignment.TopStart)
+//                .padding(start = 28.dp, top = 30.dp)
+//                .size(width = 149.dp, height = 43.dp)
+//        )
+//    }

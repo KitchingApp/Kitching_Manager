@@ -7,6 +7,8 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -18,7 +20,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.kitching.app.R
 import com.kitching.app.ui.theme.NeutralGray0
@@ -32,7 +33,8 @@ fun TeamListItem(
 ) {
     Box(
         modifier = Modifier
-            .size(width = 344.dp, height = 60.dp)
+            .fillMaxWidth()
+            .height(60.dp)
             .clip(RoundedCornerShape(8.dp))
             .border(width = 2.dp, color = NeutralGray300, shape = RoundedCornerShape(8.dp))
             .background(color = NeutralGray0, shape = RoundedCornerShape(8.dp))

@@ -14,7 +14,7 @@ class StaffLevelViewModel(
     private val repository: StaffLevelRepository
 ) : ViewModel() {
 
-    private val _staffLevelList = MutableStateFlow<AppResult<List<StaffLevel>>>(AppResult.Loading)
+    private val _staffLevelList = MutableStateFlow<AppResult<List<StaffLevel>>>(AppResult.Initial)
     val staffLevelList get() = _staffLevelList.asStateFlow()
 
     fun getStaffLevelList(teamId: String) {
@@ -25,7 +25,7 @@ class StaffLevelViewModel(
         }
     }
 
-    private val _staffLevelResult = MutableStateFlow<AppResult<Boolean>>(AppResult.Loading)
+    private val _staffLevelResult = MutableStateFlow<AppResult<Boolean>>(AppResult.Initial)
     val staffLevelResult get() = _staffLevelResult.asStateFlow()
 
     fun createStaffLevel(teamId: String, name: String) {
