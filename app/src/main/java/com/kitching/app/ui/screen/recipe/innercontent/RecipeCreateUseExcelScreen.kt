@@ -2,16 +2,15 @@ package com.kitching.app.ui.screen.recipe.innercontent
 
 import android.content.Context
 import android.net.Uri
-import android.util.Log
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -65,9 +64,6 @@ fun RecipeCreateUseExcelScreen(
     var teamId by remember { mutableStateOf("") }
 
     val recipeCreateResultState by viewModel.createRecipeResult.collectAsStateWithLifecycle()
-
-    Log.d("recipe", selectedRecipes.toString())
-    Log.d("RecipeCreateUseExcelScreen", recipeCreateResultState.toString())
 
     LaunchedEffect(Unit) {
         teamId = PreferencesDataStore(commonState.navController.context).getTeamId()
@@ -139,7 +135,7 @@ fun RecipeCreateUseExcelScreen(
                 verticalArrangement = Arrangement.spacedBy(defaultPadding)
             ) {
                 Button(
-                    modifier = Modifier.size(150.dp, 70.dp),
+                    shape = RoundedCornerShape(16.dp),
                     onClick = {
                         pickFileLauncher.launch(
                             arrayOf(

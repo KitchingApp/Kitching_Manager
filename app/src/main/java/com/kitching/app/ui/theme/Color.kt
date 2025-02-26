@@ -2,6 +2,7 @@ package com.kitching.app.ui.theme
 
 import androidx.compose.ui.graphics.Color
 
+
 val Purple80 = Color(0xFFD0BCFF)
 val PurpleGrey80 = Color(0xFFCCC2DC)
 val Pink80 = Color(0xFFEFB8C8)
@@ -18,6 +19,9 @@ val PrimaryGreen50 = Color(0xFFE3F7EA)
 
 val SecondaryLightGreen100 = Color(0xFFE8FCC3)
 val SecondaryLightGreen500 = Color(0xFFB3F31C)
+
+val SecondaryRed600 = Color(0xFFEC696E)
+val SecondaryRed300 = Color(0xFFFB9397)
 
 val subColor2 = Color(0xFF3E825B)
 

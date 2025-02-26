@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.CardColors
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -17,18 +18,18 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
 import com.kitching.app.R
 import com.kitching.app.ui.screen.recipe.innercontent.RecipeSheetInfo
-import com.kitching.app.ui.theme.H3_m
+import com.kitching.app.ui.theme.Body1_m
+import com.kitching.app.ui.theme.Caption1_m
 import com.kitching.app.ui.theme.NeutralGray0
-import com.kitching.app.ui.theme.NeutralGray500
 import com.kitching.app.ui.theme.NeutralGray800
 import com.kitching.app.ui.theme.PrimaryGreen300
-import com.kitching.app.ui.theme.defaultPadding
+import com.kitching.app.ui.theme.SecondaryRed300
+import com.kitching.app.ui.theme.SecondaryRed600
 
 @Composable
 fun RecipeSheetInfoExpandableCardItem(
@@ -54,10 +55,10 @@ fun RecipeSheetInfoExpandableCardItem(
             disabledContentColor = NeutralGray800
         ),
         border = BorderStroke(
-            width = 2.dp,
+            width = 1.dp,
             color = if (isAvailable) {
                 if (isSelected) PrimaryGreen300 else NeutralGray800
-            } else NeutralGray500
+            } else SecondaryRed300
         ),
         onClick = {
             if (isAvailable) {
@@ -67,7 +68,8 @@ fun RecipeSheetInfoExpandableCardItem(
         }
     ) {
         Column(
-            modifier = Modifier.padding(defaultPadding)
+            modifier = Modifier.padding(10.dp),
+            verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
             Row(
                 modifier = Modifier.fillMaxWidth(),
@@ -76,89 +78,87 @@ fun RecipeSheetInfoExpandableCardItem(
             ) {
                 Text(
                     text = "${recipeSheetInfo.sheetName} - ${recipeSheetInfo.recipeName}",
-                    style = H3_m,
+                    style = Body1_m,
                     color = if (isAvailable) {
                         if (isSelected) PrimaryGreen300 else NeutralGray800
-                    } else NeutralGray500
+                    } else SecondaryRed600
                 )
-                if (isAvailable) {
-                    AsyncImage(
-                        modifier = Modifier.size(24.dp),
-                        model = (R.drawable.icon_check),
-                        contentDescription = "Checked recipe",
-                        colorFilter = ColorFilter.tint(if (isSelected) PrimaryGreen300 else NeutralGray800)
+                AsyncImage(
+                    modifier = Modifier.size(24.dp),
+                    model = when {
+                        isAvailable -> R.drawable.icon_check
+                        isExpanded -> R.drawable.icon_up
+                        else -> R.drawable.icon_down
+                    },
+                    contentDescription = when {
+                        isAvailable -> "Checked recipe"
+                        isExpanded -> "card expanded"
+                        else -> "card collapsed"
+                    },
+                    colorFilter = ColorFilter.tint(
+                        when {
+                            isAvailable -> if (isSelected) PrimaryGreen300 else NeutralGray800
+                            else -> SecondaryRed300
+                        }
                     )
-                } else {
-                    AsyncImage(
-                        modifier = Modifier.size(24.dp),
-                        model = if (isExpanded) R.drawable.icon_up else R.drawable.icon_down,
-                        contentDescription = if (isExpanded) "card expanded" else "card collapsed",
-                        colorFilter = ColorFilter.tint(NeutralGray500)
-                    )
-                }
+                )
             }
             if (!isAvailable) {
                 Text(
                     text = "업로드 할 수 없습니다.",
-                    color = NeutralGray500
+                    style = Caption1_m,
+                    color = SecondaryRed600
                 )
             }
             if (isExpanded) {
+                HorizontalDivider(
+                    modifier = Modifier.fillMaxWidth(),
+                    color = SecondaryRed300,
+                    thickness = 1.dp
+                )
                 Column(
                     modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(10.dp)
+                        .fillMaxWidth(),
+                    verticalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
-                    Row(verticalAlignment = Alignment.CenterVertically) {
-                        Text(
-                            text = "레시피 사진",
-                            color = if (recipeSheetInfo.imageData !== null) PrimaryGreen300 else Color.Red
-                        )
-                        AsyncImage(
-                            modifier = Modifier.size(24.dp),
-                            model = if (recipeSheetInfo.imageData !== null) R.drawable.baseline_check_circle_outline_24 else R.drawable.round_error_outline_24,
-                            contentDescription = if (recipeSheetInfo.imageData !== null) "no problem with image" else "problem with image",
-                            colorFilter = ColorFilter.tint(if (recipeSheetInfo.imageData !== null) PrimaryGreen300 else Color.Red)
-                        )
-                    }
-                    Row(verticalAlignment = Alignment.CenterVertically) {
-                        Text(
-                            text = "레시피 이름",
-                            color = if (recipeSheetInfo.recipeName.isNotEmpty()) PrimaryGreen300 else Color.Red
-                        )
-                        AsyncImage(
-                            modifier = Modifier.size(24.dp),
-                            model = if (recipeSheetInfo.recipeName.isNotEmpty()) R.drawable.baseline_check_circle_outline_24 else R.drawable.round_error_outline_24,
-                            colorFilter = ColorFilter.tint(if (recipeSheetInfo.recipeName.isNotEmpty()) PrimaryGreen300 else Color.Red),
-                            contentDescription = if (recipeSheetInfo.recipeName.isNotEmpty()) "no problem with name" else "problem with name"
-                        )
-                    }
-                    Row(verticalAlignment = Alignment.CenterVertically) {
-                        Text(
-                            text = "재료",
-                            color = if (recipeSheetInfo.ingredients.isNotEmpty()) PrimaryGreen300 else Color.Red
-                        )
-                        AsyncImage(
-                            modifier = Modifier.size(24.dp),
-                            model = if (recipeSheetInfo.ingredients.isNotEmpty()) R.drawable.baseline_check_circle_outline_24 else R.drawable.round_error_outline_24,
-                            colorFilter = ColorFilter.tint(if (recipeSheetInfo.ingredients.isNotEmpty()) PrimaryGreen300 else Color.Red),
-                            contentDescription = if (recipeSheetInfo.ingredients.isNotEmpty()) "no problem with ingredients" else "problem with ingredients"
-                        )
-                    }
-                    Row(verticalAlignment = Alignment.CenterVertically) {
-                        Text(
-                            text = "순서",
-                            color = if (recipeSheetInfo.recipeSteps.isNotEmpty()) PrimaryGreen300 else Color.Red
-                        )
-                        AsyncImage(
-                            modifier = Modifier.size(24.dp),
-                            model = if (recipeSheetInfo.recipeSteps.isNotEmpty()) R.drawable.baseline_check_circle_outline_24 else R.drawable.round_error_outline_24,
-                            colorFilter = ColorFilter.tint(if (recipeSheetInfo.recipeSteps.isNotEmpty()) PrimaryGreen300 else Color.Red),
-                            contentDescription = if (recipeSheetInfo.recipeSteps.isNotEmpty()) "no problem with recipe steps" else "problem with recipe steps"
-                        )
-                    }
+                    RecipeFormStateRow(
+                        correctCondition = recipeSheetInfo.imageData !== null,
+                        targetElement = "레시피 사진"
+                    )
+                    RecipeFormStateRow(
+                        correctCondition = recipeSheetInfo.recipeName.isNotEmpty(),
+                        targetElement = "레시피 이름"
+                    )
+                    RecipeFormStateRow(
+                        correctCondition = recipeSheetInfo.ingredients.isNotEmpty(),
+                        targetElement = "재료"
+                    )
+                    RecipeFormStateRow(
+                        correctCondition = recipeSheetInfo.recipeSteps.isNotEmpty(),
+                        targetElement = "순서"
+                    )
                 }
             }
         }
+    }
+}
+
+@Composable
+fun RecipeFormStateRow(correctCondition: Boolean, targetElement: String) {
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(4.dp)
+    ) {
+        Text(
+            text = targetElement,
+            style = Caption1_m,
+            color = if (correctCondition) PrimaryGreen300 else SecondaryRed600
+        )
+        AsyncImage(
+            modifier = Modifier.size(10.dp),
+            model = if (correctCondition) R.drawable.icon_check_circle else R.drawable.icon_error_circle,
+            colorFilter = ColorFilter.tint(if (correctCondition) PrimaryGreen300 else SecondaryRed600),
+            contentDescription = if (correctCondition) "${targetElement}에 문제가 없습니다" else "${targetElement}에 문제가 있습니다"
+        )
     }
 }
