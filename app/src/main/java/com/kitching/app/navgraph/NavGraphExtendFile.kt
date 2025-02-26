@@ -21,6 +21,7 @@ import com.kitching.app.ui.screen.other.scheduletime.ScheduleTimeCreateOrUpdateS
 import com.kitching.app.ui.screen.other.scheduletime.ScheduleTimeScreen
 import com.kitching.app.ui.screen.prep.subdivisionscreen.PrepDetailScreen
 import com.kitching.app.ui.screen.recipe.innercontent.RecipeCreateScreen
+import com.kitching.app.ui.screen.recipe.innercontent.RecipeCreateUseExcelScreen
 import com.kitching.domain.entities.Notice
 import com.kitching.domain.entities.ScheduleTime
 import kotlinx.serialization.json.Json
@@ -36,6 +37,13 @@ fun NavGraphBuilder.sliceNavGraph(
             ScreenRouteDef.InnerContent.RecipeCreate.routeName,
         ) { backStackEntry ->
             RecipeCreateScreen(
+                commonState = commonState
+            )
+        }
+        composable(
+            ScreenRouteDef.InnerContent.RecipeCreateUseExcel.routeName
+        ) { navBackStackEntry ->
+            RecipeCreateUseExcelScreen(
                 commonState = commonState
             )
         }
