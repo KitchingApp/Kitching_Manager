@@ -37,6 +37,9 @@ import com.kitching.app.ui.theme.KitchingManagerTheme
 import com.kitching.app.ui.theme.defaultPadding
 import com.kitching.app.util.PreferencesDataStore
 import com.kitching.domain.entities.Ingredient
+import org.apache.poi.hssf.usermodel.HSSFPatriarch
+import org.apache.poi.hssf.usermodel.HSSFPicture
+import org.apache.poi.hssf.usermodel.HSSFSheet
 import org.apache.poi.ss.usermodel.Sheet
 import org.apache.poi.ss.usermodel.Workbook
 import org.apache.poi.ss.usermodel.WorkbookFactory
@@ -220,9 +223,18 @@ fun getImageFromSheet(sheet: Sheet): ByteArray {
                 for (anchor in relation.getShapes()) {
                     if (anchor is XSSFPicture) {
                         val pictureData = anchor.pictureData
-                        images.add(pictureData.data) // 이미지 데이터를 ByteArray로 저장
+                        images.add(pictureData.data)
                     }
                 }
+            }
+        }
+    } else if(sheet is HSSFSheet) {
+        val patriarch: HSSFPatriarch = sheet.drawingPatriarch
+        val shapes = patriarch.children
+
+        shapes.forEach { shape ->
+            if (shape is HSSFPicture) {
+                return shape.pictureData.data
             }
         }
     }
