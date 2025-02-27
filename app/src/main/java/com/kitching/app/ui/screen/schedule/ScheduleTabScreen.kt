@@ -53,7 +53,6 @@ fun ScheduleTabScreen(
     commonState: CommonState,
     viewModel: ScheduleViewModel = viewModel(factory = viewModelFactory)
 ) {
-
     var showDatePickerDialog by remember { mutableStateOf(false) }
     var showCreateDialog by remember { mutableStateOf(false) }
     var showDeleteDialog by remember { mutableStateOf(false) }
@@ -145,8 +144,7 @@ fun ScheduleTabScreen(
                     (schedulesState is AppResult.Success && allMembersState is AppResult.Success && scheduleTimesState is AppResult.Success),
                     failCondition =
                     (schedulesState is AppResult.Failure || scheduleResultState is AppResult.Failure || allMembersState is AppResult.Failure || scheduleTimesState is AppResult.Failure),
-                    failContent = {
-//                        EmptyScreen("FAIL")
+                    onRetryBtnClick = {
                     }
                 ) {
                     DateSelector(
@@ -279,6 +277,7 @@ fun ScheduleTabScreen(
                     }
                 }
             }
+
         }
     }
 }

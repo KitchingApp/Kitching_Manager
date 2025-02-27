@@ -25,7 +25,6 @@ import com.kitching.app.ui.screen.common.ResultConditionScreen
 import com.kitching.app.ui.screen.commondialog.BasicConfirmDialog
 import com.kitching.app.ui.screen.commondialog.BasicInputDialog
 import com.kitching.app.ui.theme.KitchingManagerTheme
-import com.kitching.app.ui.theme.NeutralGray0
 import com.kitching.app.util.hexToArgb
 import com.kitching.domain.AppResult
 
@@ -43,7 +42,6 @@ fun OrderDetailScreen(
         var showDeleteDialog by remember { mutableStateOf(false) }
 
         val textState = remember { mutableStateOf(TextFieldValue("")) }
-        val colorState = remember { mutableStateOf(NeutralGray0) }
         val optionMenuId = remember { mutableStateOf<String>("") }
 
         val orderState by viewModel.orders.collectAsStateWithLifecycle()
@@ -70,7 +68,7 @@ fun OrderDetailScreen(
                     loadingCondition = (orderState is AppResult.Loading || orderResultState is AppResult.Loading),
                     successCondition = orderState is AppResult.Success,
                     failCondition = (orderState is AppResult.Failure || orderResultState is AppResult.Failure),
-                    failContent = {}
+                    onRetryBtnClick = {}
                 ) {
                     val orders = (orderState as AppResult.Success).data
                     if (orders.isEmpty()) {

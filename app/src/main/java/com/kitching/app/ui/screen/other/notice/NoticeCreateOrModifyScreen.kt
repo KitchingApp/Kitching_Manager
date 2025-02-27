@@ -1,6 +1,5 @@
 package com.kitching.app.ui.screen.other.notice
 
-import android.util.Log
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
@@ -101,7 +100,7 @@ fun NoticeCreateOrModifyScreen(
                 successCondition = if(notice == null) userNameResultState is AppResult.Success else true,
                 failCondition =
                 noticeResultState is AppResult.Failure && (if(notice == null) userNameResultState is AppResult.Failure else true),
-                failContent = {}
+                onRetryBtnClick = {}
             ) {
                 Box(
                     modifier = Modifier

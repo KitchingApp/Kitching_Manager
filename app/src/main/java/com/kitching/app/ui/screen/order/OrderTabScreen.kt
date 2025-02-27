@@ -1,6 +1,5 @@
 package com.kitching.app.ui.screen.order
 
-import android.util.Log
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
@@ -62,7 +61,7 @@ fun OrderTabScreen(
     val orderCategoryResultState by viewModel.orderCategoryResult.collectAsStateWithLifecycle()
 
     LaunchedEffect(Unit) {
-        teamId = PreferencesDataStore().getTeamId() ?: ""
+        teamId = PreferencesDataStore().getTeamId()
         viewModel.getOrderCategory(teamId)
     }
 
@@ -89,7 +88,7 @@ fun OrderTabScreen(
                 loadingCondition = (orderCategoryState is AppResult.Loading || orderCategoryResultState is AppResult.Loading),
                 successCondition = (orderCategoryState is AppResult.Success),
                 failCondition = (orderCategoryState is AppResult.Failure || orderCategoryResultState is AppResult.Failure),
-                failContent = {}
+                onRetryBtnClick = {}
             ) {
                 val categories = (orderCategoryState as AppResult.Success).data
                 if (categories.isEmpty()) {

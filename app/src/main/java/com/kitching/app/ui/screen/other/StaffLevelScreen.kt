@@ -86,7 +86,7 @@ fun StaffLevelScreen(
                     loadingCondition = staffLevelsState is AppResult.Loading || staffLevelResultState is AppResult.Loading,
                     successCondition = staffLevelsState is AppResult.Success,
                     failCondition = staffLevelsState is AppResult.Failure || staffLevelResultState is AppResult.Failure,
-                    failContent = {}
+                    onRetryBtnClick = {}
                 ) {
                     val staffLevelData = (staffLevelsState as AppResult.Success).data
                     if (staffLevelData.isEmpty()) {
