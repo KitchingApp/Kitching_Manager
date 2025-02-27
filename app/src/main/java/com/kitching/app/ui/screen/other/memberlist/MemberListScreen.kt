@@ -73,7 +73,7 @@ fun MemberListScreen(
                     loadingCondition = membersState is AppResult.Loading,
                     successCondition = membersState is AppResult.Success,
                     failCondition = membersState is AppResult.Failure,
-                    failContent = {}
+                    onRetryBtnClick = {}
                 ) {
                     val membersData = (membersState as AppResult.Success).data
                     LazyColumn(

@@ -93,7 +93,7 @@ fun ScheduleTimeScreen(
                     loadingCondition = scheduleTimes is AppResult.Loading || scheduleTimeResult is AppResult.Loading,
                     successCondition = scheduleTimes is AppResult.Success,
                     failCondition = scheduleTimes is AppResult.Failure || scheduleTimeResult is AppResult.Failure,
-                    failContent = {}
+                    onRetryBtnClick = {}
                 ) {
                     val scheduleTimeData = (scheduleTimes as AppResult.Success).data
                     if (scheduleTimeData.isEmpty()) {

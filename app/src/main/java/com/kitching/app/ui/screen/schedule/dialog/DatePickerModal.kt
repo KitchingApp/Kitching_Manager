@@ -1,7 +1,5 @@
 package com.kitching.app.ui.screen.schedule.dialog
 
-import android.os.Build
-import androidx.annotation.RequiresApi
 import androidx.compose.material3.DatePicker
 import androidx.compose.material3.DatePickerDefaults
 import androidx.compose.material3.DatePickerDialog
@@ -13,6 +11,8 @@ import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
+import com.kitching.app.ui.theme.NeutralGray0
+import com.kitching.app.ui.theme.NeutralGray800
 import com.kitching.app.ui.theme.PrimaryGreen300
 import com.kitching.app.ui.theme.pretendard
 import java.time.LocalDateTime
@@ -67,26 +67,26 @@ fun DatePickerModal(
         DatePicker(
             state = datePickerState,
             colors = DatePickerDefaults.colors(
-                containerColor = Color.White,
-                dividerColor = Color(0xFF6200EA), // 보라색
-                titleContentColor = Color(0xFF2962FF), // 파란색
-                headlineContentColor = Color(0xFFFF5722), // 주황색
-                weekdayContentColor = Color(0xFF4CAF50), // 녹색
-                subheadContentColor = Color(0xFFFFC107), // 노란색
-                navigationContentColor = Color(0xFF00BCD4), // 청록색
-                selectedDayContainerColor = Color(0xFF9C27B0), // 보라색 (짙은)
-                selectedDayContentColor = Color(0xFFFFFFFF), // 흰색
-                selectedYearContentColor = Color(0xFFFFFFFF), // 흰색
-                selectedYearContainerColor = Color(0xFF3F51B5), // 짙은 파란색
-                todayDateBorderColor = Color(0xFFFF9800), // 밝은 주황색
-                todayContentColor = Color(0xFF795548), // 갈색
+                containerColor = NeutralGray0,
+                dividerColor = Color.Transparent, // 보라색
+                titleContentColor = PrimaryGreen300, // 파란색
+                headlineContentColor = PrimaryGreen300, // 주황색
+                weekdayContentColor = PrimaryGreen300, // 녹색
+                subheadContentColor = PrimaryGreen300, // 노란색
+                navigationContentColor = PrimaryGreen300, // 청록색
+                selectedDayContainerColor = PrimaryGreen300, // 보라색 (짙은)
+                selectedDayContentColor = NeutralGray0, // 흰색
+                selectedYearContentColor = NeutralGray0, // 흰색
+                selectedYearContainerColor = PrimaryGreen300, // 짙은 파란색
+                todayDateBorderColor = PrimaryGreen300, // 밝은 주황색
+                todayContentColor = PrimaryGreen300, // 갈색
                 dateTextFieldColors = TextFieldDefaults.colors(
-                    focusedContainerColor = Color(0xFFF1F8E9), // 연한 녹색
-                    focusedIndicatorColor = Color(0xFFCDDC39), // 밝은 녹색
-                    focusedTextColor = Color(0xFF009688), // 진한 청록색
-                    focusedLabelColor = Color(0xFFE91E63), // 핑크색
-                    focusedPlaceholderColor = Color(0xFF607D8B), // 짙은 회색-파란색
-                    unfocusedContainerColor = Color(0xFFFFFDE7), // 연한 노란색
+                    focusedContainerColor = NeutralGray0, // 연한 녹색
+                    focusedIndicatorColor = NeutralGray800, // 밝은 녹색
+                    focusedTextColor = PrimaryGreen300, // 진한 청록색
+                    focusedLabelColor = PrimaryGreen300, // 핑크색
+                    focusedPlaceholderColor = PrimaryGreen300,
+                    unfocusedContainerColor = NeutralGray0, // 연한 노란색
                 )
             )
         )

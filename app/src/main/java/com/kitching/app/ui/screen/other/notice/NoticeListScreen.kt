@@ -66,7 +66,7 @@ fun NoticeListScreen(
                 loadingCondition = noticeListState is AppResult.Loading,
                 successCondition = noticeListState is AppResult.Success,
                 failCondition = noticeListState is AppResult.Failure,
-                failContent = {}
+                onRetryBtnClick = {}
             ) {
                 val notices = (noticeListState as AppResult.Success).data
                 if (notices.isEmpty()) {

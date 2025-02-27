@@ -88,7 +88,7 @@ fun NoticeDetailScreen(
                 loadingCondition = noticeResultState is AppResult.Loading,
                 successCondition = noticeResultState is AppResult.Success,
                 failCondition = noticeResultState is AppResult.Failure,
-                failContent = {}
+                onRetryBtnClick = {}
             ) {
                 Box(
                     modifier = Modifier

@@ -94,7 +94,7 @@ fun MemberDetailScreen(
                 loadingCondition = staffLevelsState is AppResult.Loading || memberResultState is AppResult.Loading,
                 successCondition = staffLevelsState is AppResult.Success,
                 failCondition = staffLevelsState is AppResult.Failure || memberResultState is AppResult.Failure,
-                failContent = {}
+                onRetryBtnClick = {}
             ) {
                 Column(
                     modifier = Modifier

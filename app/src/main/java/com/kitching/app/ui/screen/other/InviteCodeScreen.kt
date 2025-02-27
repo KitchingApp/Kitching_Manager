@@ -66,7 +66,7 @@ fun InviteCodeScreen(
     val teamState by viewModel.team.collectAsStateWithLifecycle()
 
     LaunchedEffect(Unit) {
-        teamId = PreferencesDataStore().getTeamId() ?: ""
+        teamId = PreferencesDataStore().getTeamId()
         viewModel.getTeam(teamId)
     }
 
@@ -86,7 +86,7 @@ fun InviteCodeScreen(
                 loadingCondition = teamState is AppResult.Loading,
                 successCondition = teamState is AppResult.Success,
                 failCondition = teamState is AppResult.Failure,
-                failContent = {}
+                onRetryBtnClick = {}
             ) {
                 val team = (teamState as AppResult.Success).data
 

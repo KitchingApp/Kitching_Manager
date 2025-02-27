@@ -15,19 +15,16 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.kitching.app.common.ActionIconInfo
 import com.kitching.app.common.CommonState
-import com.kitching.app.common.KitchingApplication
 import com.kitching.app.common.NavigationIconInfo
 import com.kitching.app.ui.factory.viewModelFactory
 import com.kitching.app.ui.model.PrepViewModel
 import com.kitching.app.ui.screen.categoryscreen.CategorySubDivisionScreen
-import com.kitching.app.ui.screen.common.EmptyScreen
 import com.kitching.app.ui.screen.categoryscreen.SubdivisionItemForScreen
+import com.kitching.app.ui.screen.common.EmptyScreen
 import com.kitching.app.ui.screen.common.ResultConditionScreen
 import com.kitching.app.ui.screen.commondialog.BasicConfirmDialog
 import com.kitching.app.ui.screen.commondialog.BasicInputDialog
 import com.kitching.app.ui.theme.KitchingManagerTheme
-import com.kitching.app.ui.theme.NeutralGray0
-import com.kitching.app.util.PreferencesDataStore
 import com.kitching.app.util.hexToArgb
 import com.kitching.domain.AppResult
 
@@ -55,7 +52,6 @@ fun PrepDetailScreen(
         var showDeleteDialog by remember { mutableStateOf(false) }
 
         val textState = remember { mutableStateOf(TextFieldValue("")) }
-        val colorState = remember { mutableStateOf(NeutralGray0) }
         val optionMenuId = remember { mutableStateOf<String>("") }
 
         val prepState by viewModel.prepList.collectAsState()
@@ -82,7 +78,7 @@ fun PrepDetailScreen(
                     loadingCondition = (prepState is AppResult.Loading || prepResultState is AppResult.Loading),
                     successCondition = (prepState is AppResult.Success),
                     failCondition = (prepState is AppResult.Failure),
-                    failContent = {}
+                    onRetryBtnClick = {}
                 ) {
                     val preps = (prepState as AppResult.Success).data
                     if (preps.isEmpty()) {
