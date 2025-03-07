@@ -1,6 +1,5 @@
 package com.kitching.data.datasource
 
-import android.util.Log
 import com.google.firebase.firestore.FirebaseFirestore
 import com.kitching.data.dto.ScheduleDTO
 import com.kitching.data.firebase.COLLECTION_SCHEDULE
@@ -15,6 +14,9 @@ class ScheduleDataSourceImpl(private val db: FirebaseFirestore = FirebaseFiresto
             .get()
             .await()
             .toObjects(ScheduleDTO::class.java)
+
+    override suspend fun getSchedule(scheduleId: String): ScheduleDTO  = db.collection(
+        COLLECTION_SCHEDULE).document(scheduleId).get().await().toObject(ScheduleDTO::class.java) ?: throw Throwable("cannot find schedule")
 
     override suspend fun createSchedule(
         teamId: String,

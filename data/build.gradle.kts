@@ -44,6 +44,9 @@ dependencies {
     implementation(libs.androidx.datastore.preferences)
     implementation(libs.androidx.datastore.preferences.core)
     implementation(libs.androidx.navigation.compose)
+    implementation(libs.moshi.kotlin)
+    implementation(libs.retrofit)
+    implementation(libs.retrofit2.converter.moshi)
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
