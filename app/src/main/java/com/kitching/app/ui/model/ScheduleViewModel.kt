@@ -1,12 +1,12 @@
 package com.kitching.app.ui.model
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.kitching.domain.AppResult
 import com.kitching.domain.entities.Member
 import com.kitching.domain.entities.Schedule
 import com.kitching.domain.entities.ScheduleTime
+import com.kitching.domain.repository.PushMessageRepository
 import com.kitching.domain.repository.ScheduleRepository
 import com.kitching.domain.repository.ScheduleTimeRepository
 import com.kitching.domain.repository.UserTeamRepository
@@ -18,7 +18,8 @@ import kotlinx.coroutines.launch
 class ScheduleViewModel(
     private val scheduleTimeRepository: ScheduleTimeRepository,
     private val userTeamRepository: UserTeamRepository,
-    private val scheduleRepository: ScheduleRepository
+    private val scheduleRepository: ScheduleRepository,
+    private val pushMessageRepository: PushMessageRepository
 ) :
     ViewModel() {
     private val _schedules = MutableStateFlow<AppResult<List<Schedule>>>(AppResult.Initial)
@@ -58,12 +59,25 @@ class ScheduleViewModel(
         }
     }
 
-    fun deleteSchedule(scheduleId: String, isReject: Boolean = false) {
+    fun deleteSchedule(scheduleId: String) {
         viewModelScope.launch {
             scheduleRepository.deleteSchedule(scheduleId)
                 .collectLatest {
                     _scheduleResult.value = it
                 }
+        }
+    }
+
+    private var _rejectPushMessageResult = MutableStateFlow<AppResult<Boolean>>(AppResult.Initial)
+    val rejectPushMessageResult get() = _rejectPushMessageResult.asStateFlow()
+
+    fun sendRejectPushMessage(teamId: String, schedule: Schedule, rejectReason: String) {
+        viewModelScope.launch {
+            pushMessageRepository.sendRejectPushMessage(
+                teamId = teamId,
+                schedule = schedule,
+                rejectReason = rejectReason
+            ).collectLatest { _rejectPushMessageResult.value = it }
         }
     }
 

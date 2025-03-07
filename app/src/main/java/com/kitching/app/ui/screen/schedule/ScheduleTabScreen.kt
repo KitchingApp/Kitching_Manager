@@ -35,6 +35,7 @@ import com.kitching.app.ui.theme.PrimaryGreen300
 import com.kitching.app.util.PreferencesDataStore
 import com.kitching.domain.AppResult
 import com.kitching.domain.entities.Member
+import com.kitching.domain.entities.Schedule
 import com.kitching.domain.entities.ScheduleTime
 import kotlinx.coroutines.launch
 import java.time.Instant
@@ -63,7 +64,18 @@ fun ScheduleTabScreen(
 
     var selectedDateTime by remember { mutableStateOf(LocalDateTime.now()) }
 
-    var targetScheduleId by remember { mutableStateOf("") }
+    var targetSchedule by remember {
+        mutableStateOf(
+            Schedule(
+                scheduleId = "",
+                userId = "",
+                userName = "",
+                date = "",
+                scheduleTimeName = "",
+                fix = false
+            )
+        )
+    }
     val rejectReasonState = remember { mutableStateOf(TextFieldValue("")) }
 
     /** 드롭다운에서 선택된 멤버 */
@@ -102,6 +114,7 @@ fun ScheduleTabScreen(
     var teamId by remember { mutableStateOf("") }
     val schedulesState by viewModel.schedules.collectAsStateWithLifecycle()
     val scheduleResultState by viewModel.scheduleResult.collectAsStateWithLifecycle()
+    val rejectPushMessageResultState by viewModel.rejectPushMessageResult.collectAsStateWithLifecycle()
     val allMembersState by viewModel.members.collectAsStateWithLifecycle()
     val scheduleTimesState by viewModel.scheduleTimes.collectAsStateWithLifecycle()
 
@@ -110,6 +123,17 @@ fun ScheduleTabScreen(
         viewModel.getSchedules(teamId, selectedDateTime.toLocalDate().toString())
         viewModel.getMembers(teamId)
         viewModel.getScheduleTimes(teamId)
+    }
+
+    LaunchedEffect(rejectPushMessageResultState) {
+        if (rejectPushMessageResultState is AppResult.Success) viewModel.deleteSchedule(targetSchedule.scheduleId)
+    }
+
+    LaunchedEffect(scheduleResultState) {
+        if (scheduleResultState is AppResult.Success) viewModel.getSchedules(
+            teamId,
+            selectedDateTime.toLocalDate().toString()
+        )
     }
 
     commonState.topAppBarState.value = commonState.topAppBarState.value.copy(
@@ -139,11 +163,11 @@ fun ScheduleTabScreen(
             ) {
                 ResultConditionScreen(
                     loadingCondition =
-                    (schedulesState is AppResult.Loading || scheduleResultState is AppResult.Loading || allMembersState is AppResult.Loading || scheduleTimesState is AppResult.Loading),
+                    (schedulesState is AppResult.Loading || scheduleResultState is AppResult.Loading || allMembersState is AppResult.Loading || scheduleTimesState is AppResult.Loading || rejectPushMessageResultState is AppResult.Loading),
                     successCondition =
                     (schedulesState is AppResult.Success && allMembersState is AppResult.Success && scheduleTimesState is AppResult.Success),
                     failCondition =
-                    (schedulesState is AppResult.Failure || scheduleResultState is AppResult.Failure || allMembersState is AppResult.Failure || scheduleTimesState is AppResult.Failure),
+                    (schedulesState is AppResult.Failure || scheduleResultState is AppResult.Failure || allMembersState is AppResult.Failure || scheduleTimesState is AppResult.Failure || rejectPushMessageResultState is AppResult.Failure),
                     onRetryBtnClick = {
                     }
                 ) {
@@ -171,12 +195,8 @@ fun ScheduleTabScreen(
                             0 -> FixedScheduleScreen(
                                 scheduleList = (schedulesState as AppResult.Success).data.filter { it.fix },
                                 onDeleteClick = { scheduleId ->
-                                    targetScheduleId = scheduleId
+                                    targetSchedule.scheduleId = scheduleId
                                     showDeleteDialog = true
-                                    viewModel.getSchedules(
-                                        teamId,
-                                        selectedDateTime.toLocalDate().toString()
-                                    )
                                 }
                             )
 
@@ -184,18 +204,10 @@ fun ScheduleTabScreen(
                                 scheduleList = (schedulesState as AppResult.Success).data.filter { !it.fix },
                                 onApplyClick = { scheduleId ->
                                     viewModel.applySchedule(scheduleId)
-                                    viewModel.getSchedules(
-                                        teamId,
-                                        selectedDateTime.toLocalDate().toString()
-                                    )
                                 },
-                                onRejectClick = { scheduleId ->
-                                    targetScheduleId = scheduleId
+                                onRejectClick = { schedule ->
+                                    targetSchedule = schedule
                                     showRejectDialog = true
-                                    viewModel.getSchedules(
-                                        teamId,
-                                        selectedDateTime.toLocalDate().toString()
-                                    )
                                 }
                             )
                         }
@@ -237,10 +249,6 @@ fun ScheduleTabScreen(
                                     scheduleTimeId = selectedScheduleTime.value.scheduleTimeId,
                                     fix = true
                                 )
-                                viewModel.getSchedules(
-                                    teamId,
-                                    selectedDateTime.toLocalDate().toString()
-                                )
                             },
                             selectedMember = selectedMember,
                             scheduleTimes = (scheduleTimesState as AppResult.Success<List<ScheduleTime>>).data,
@@ -252,11 +260,7 @@ fun ScheduleTabScreen(
                             message = "스케줄을 삭제하시겠습니까?",
                             confirmText = "삭제",
                             onClickConfirm = {
-                                viewModel.deleteSchedule(targetScheduleId)
-                                viewModel.getSchedules(
-                                    teamId,
-                                    selectedDateTime.toLocalDate().toString()
-                                )
+                                viewModel.deleteSchedule(targetSchedule.scheduleId)
                             },
                             cancelText = "취소",
                             onClickCancel = { showDeleteDialog = false }
@@ -266,10 +270,10 @@ fun ScheduleTabScreen(
                         ScheduleRejectDialog(
                             rejectReasonState = rejectReasonState,
                             onClickReject = {
-                                viewModel.deleteSchedule(targetScheduleId)
-                                viewModel.getSchedules(
-                                    teamId,
-                                    selectedDateTime.toLocalDate().toString()
+                                viewModel.sendRejectPushMessage(
+                                    teamId = teamId,
+                                    schedule = targetSchedule,
+                                    rejectReason = rejectReasonState.value.text
                                 )
                             },
                             onClickCancel = { showRejectDialog = false }

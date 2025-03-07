@@ -22,6 +22,7 @@ import com.kitching.data.repository.OrderCategoryRepositoryImpl
 import com.kitching.data.repository.OrderRepositoryImpl
 import com.kitching.data.repository.PrepCategoryRepositoryImpl
 import com.kitching.data.repository.PrepRepositoryImpl
+import com.kitching.data.repository.PushMessageRepositoryImpl
 import com.kitching.data.repository.RecipeRepositoryImpl
 import com.kitching.data.repository.ScheduleRepositoryImpl
 import com.kitching.data.repository.ScheduleTimeRepositoryImpl
@@ -46,7 +47,8 @@ val viewModelFactory = object : ViewModelProvider.Factory {
                     ScheduleViewModel(
                         scheduleTimeRepository = ScheduleTimeRepositoryImpl(),
                         userTeamRepository = UserTeamRepositoryImpl(),
-                        scheduleRepository = ScheduleRepositoryImpl()
+                        scheduleRepository = ScheduleRepositoryImpl(),
+                        pushMessageRepository = PushMessageRepositoryImpl()
                     )
                 isAssignableFrom(NoticeViewModel::class.java) ->
                     NoticeViewModel(
