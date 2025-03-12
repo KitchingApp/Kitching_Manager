@@ -1,5 +1,6 @@
 package com.kitching.data.repository
 
+import android.util.Log
 import com.kitching.data.datasource.FcmTokenDataSource
 import com.kitching.data.datasource.FcmTokenDataSourceImpl
 import com.kitching.data.datasource.PushMessageDataSource
@@ -41,12 +42,13 @@ class PushMessageRepositoryImpl(
                 if (res.code() == 200) {
                     successedPushDeviceList.add(token.deviceModel)
                 } else {
+                    Log.d("fcm", "failedReason: $res.code() ${res.errorBody()?.string()}")
                     failedPushDeviceList.add(token.toDomain())
                     failedPushErrMsgList.add(res.errorBody()?.string() ?: "")
-                    throw Throwable(res.raw().toString())
                 }
             } catch (throwable: Throwable) {
                 failedPushDeviceList.add(token.toDomain())
+                failedPushErrMsgList.add(throwable.message ?: "")
             }
         }
         // 여러대의 기기중 한대라도 푸시알림 성공적으로 보냈다면 성공으로 간주(기준 회의 필요)
