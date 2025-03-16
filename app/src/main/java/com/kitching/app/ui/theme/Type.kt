@@ -83,7 +83,7 @@ val H5_m = TextStyle(
 /** Regular = Normal */
 val Body1 = TextStyle(
     fontFamily = pretendard,
-    fontWeight = FontWeight.Normal,
+    fontWeight = FontWeight.SemiBold,
     fontSize = 16.sp
 )
 
@@ -95,7 +95,7 @@ val Body1_m = TextStyle(
 
 val Body2 = TextStyle(
     fontFamily = pretendard,
-    fontWeight = FontWeight.Normal,
+    fontWeight = FontWeight.SemiBold,
     fontSize = 14.sp
 )
 
@@ -107,7 +107,7 @@ val Body2_m = TextStyle(
 
 val Caption1_R = TextStyle(
     fontFamily = pretendard,
-    fontWeight = FontWeight.Normal,
+    fontWeight = FontWeight.SemiBold,
     fontSize = 12.sp
 )
 
@@ -119,7 +119,7 @@ val Caption1_m = TextStyle(
 
 val Caption2_R = TextStyle(
     fontFamily = pretendard,
-    fontWeight = FontWeight.Normal,
+    fontWeight = FontWeight.SemiBold,
     fontSize = 10.sp
 )
 
