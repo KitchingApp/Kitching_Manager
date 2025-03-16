@@ -13,3 +13,5 @@ val splashLogoSizeHeight = 78.65.dp
 
 val loginButtonWidth = 320.dp
 val loginButtonHeight = 48.dp
+
+val drawerWidth = 300.dp

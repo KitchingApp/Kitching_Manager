@@ -33,13 +33,13 @@ import com.kitching.app.ui.theme.H1
 import com.kitching.app.ui.theme.NeutralGray0
 import com.kitching.app.ui.theme.NeutralGray800
 import com.kitching.app.ui.theme.PrimaryGreen300
+import com.kitching.app.ui.theme.drawerWidth
 import com.kitching.domain.AppResult
 import com.kitching.domain.entities.Team
 
 @Composable
 fun CustomNavigationDrawer(
     drawerState: DrawerState,
-    viewModel: LoginViewModel = viewModel(factory = viewModelFactory),
     teamListState: AppResult<List<Team>>,
     content: @Composable () -> Unit
 ) {
@@ -49,7 +49,7 @@ fun CustomNavigationDrawer(
             ) {
                 Column(
                     modifier = Modifier
-                        .width(300.dp)
+                        .width(drawerWidth)
                         .padding(20.dp, 50.dp),
                     horizontalAlignment = Alignment.CenterHorizontally,
                     verticalArrangement = Arrangement.SpaceBetween
