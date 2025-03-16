@@ -74,9 +74,9 @@ fun PrepTabScreen(
         navIconInfo = NavigationIconInfo.DRAWER,
         onClickNavIcon = {
             if (commonState.topAppBarState.value.drawerState.isOpen) {
-                commonState.scope.launch { commonState.topAppBarState.value.drawerState.close() }
+                commonState.coroutineScope.launch { commonState.topAppBarState.value.drawerState.close() }
             } else {
-                commonState.scope.launch { commonState.topAppBarState.value.drawerState.open() }
+                commonState.coroutineScope.launch { commonState.topAppBarState.value.drawerState.open() }
             }
         },
         actionIconInfo = ActionIconInfo.ADD,

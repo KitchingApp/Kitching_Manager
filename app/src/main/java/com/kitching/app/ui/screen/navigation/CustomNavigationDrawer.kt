@@ -17,30 +17,32 @@ import androidx.compose.material3.ModalNavigationDrawer
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.kitching.app.ui.factory.viewModelFactory
 import com.kitching.app.ui.item.TeamCardItem
+import com.kitching.app.ui.model.LoginViewModel
 import com.kitching.app.ui.theme.H1
 import com.kitching.app.ui.theme.NeutralGray0
 import com.kitching.app.ui.theme.NeutralGray800
 import com.kitching.app.ui.theme.PrimaryGreen300
+import com.kitching.domain.AppResult
+import com.kitching.domain.entities.Team
 
 @Composable
 fun CustomNavigationDrawer(
     drawerState: DrawerState,
+    viewModel: LoginViewModel = viewModel(factory = viewModelFactory),
+    teamListState: AppResult<List<Team>>,
     content: @Composable () -> Unit
 ) {
-    val teamListMockData = listOf(
-        "A 레스토랑",
-        "B 레스토랑",
-        "C 레스토랑",
-        "D 레스토랑",
-        "E 레스토랑"
-    )
-
     ModalNavigationDrawer(
         drawerContent = {
             ModalDrawerSheet(
@@ -71,9 +73,10 @@ fun CustomNavigationDrawer(
                         modifier = Modifier.fillMaxWidth().weight(1f),
                         verticalArrangement = Arrangement.spacedBy(20.dp)
                     ) {
-                        itemsIndexed(teamListMockData) { index, team ->
+                        val teamListdata = if(teamListState is AppResult.Success) teamListState.data else emptyList<Team>()
+                        itemsIndexed(teamListdata) { index, team ->
                             TeamCardItem(
-                                teamName = team,
+                                teamName = team.teamName,
                                 onCardClick = {}
                             )
                         }

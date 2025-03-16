@@ -31,9 +31,9 @@ fun OtherTabScreen(commonState: CommonState) {
         navIconInfo = DRAWER,
         onClickNavIcon = {
             if (commonState.topAppBarState.value.drawerState.isOpen) {
-                commonState.scope.launch { commonState.topAppBarState.value.drawerState.close() }
+                commonState.coroutineScope.launch { commonState.topAppBarState.value.drawerState.close() }
             } else {
-                commonState.scope.launch { commonState.topAppBarState.value.drawerState.open() }
+                commonState.coroutineScope.launch { commonState.topAppBarState.value.drawerState.open() }
             }
         },
         actionIconInfo = ActionIconInfo.NULL
@@ -77,7 +77,7 @@ fun OtherTabScreen(commonState: CommonState) {
 }
 
 private fun logout(commonState: CommonState) {
-    commonState.scope.launch {
+    commonState.coroutineScope.launch {
         val context = commonState.navController.context
         PreferencesDataStore(context).clearUserId()
         PreferencesDataStore(context).clearTeamId()
