@@ -4,12 +4,15 @@ import android.annotation.SuppressLint
 import android.app.Activity
 import com.kitching.app.R
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -29,6 +32,15 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.style.TextAlign
+import coil3.compose.AsyncImage
+import com.kitching.app.ui.screen.common.ColumnSpacer
+import com.kitching.app.ui.theme.H3_m
+import com.kitching.app.ui.theme.defaultPadding
+import com.kitching.app.ui.theme.loginButtonHeight
+import com.kitching.app.ui.theme.loginButtonWidth
+import com.kitching.app.ui.theme.splashLogoSizeHeight
+import com.kitching.app.ui.theme.splashLogoSizeWidth
 import com.kitching.domain.AppResult
 
 @SuppressLint("ContextCastToActivity")
@@ -37,7 +49,7 @@ fun LoginMainScreen(
     viewModel: LoginViewModel,
     coroutineScope: CoroutineScope,
     onNavigateToSelectTeam: () -> Unit
-    ) {
+) {
     val loginState by viewModel.loginState.collectAsState()
     val context = LocalContext.current as Activity
 
@@ -53,53 +65,39 @@ fun LoginMainScreen(
 
     Column(
         modifier = Modifier
-            .fillMaxSize()
-            .padding(top = 283.dp),
+            .fillMaxSize(),
+        verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Image(
-            painter = painterResource(id = R.drawable.kitching_splash),
-            contentDescription = "Logo",
+        AsyncImage(
             modifier = Modifier
-                .size(width = 150.dp, height = 80.dp)
+                .size(width = splashLogoSizeWidth, height = splashLogoSizeHeight),
+            model = R.drawable.kitching_splash,
+            contentDescription = null,
         )
 
-        Spacer(modifier = Modifier.height(24.dp))
+        ColumnSpacer(defaultPadding)
 
         Text(
-            text = stringResource(id = R.string.login_info_text1),
-            style = TextStyle(
-                fontSize = 20.sp,
-                color = Color(0xFF565656)
-            )
+            text = stringResource(id = R.string.login_info_text1) + "\n" + stringResource(id = R.string.login_info_text2),
+            textAlign = TextAlign.Center,
+            style = H3_m
         )
 
-        Text(
-            text = stringResource(id = R.string.login_info_text2),
-            style = TextStyle(
-                fontSize = 20.sp,
-                color = Color(0xFF565656)
-            )
-        )
+        ColumnSpacer(defaultPadding)
 
-        Spacer(modifier = Modifier.height(200.dp))
 
-        Surface(
-            onClick = {
-                coroutineScope.launch {
-                    viewModel.performKakaoLogin(context)
-                }
-            },
-            shape = RoundedCornerShape(6.dp),
-            color = Color.Transparent, // 배경색 제거
+        AsyncImage(
             modifier = Modifier
-                .size(width = 320.dp, height = 48.dp)
-        ) {
-            Image(
-                painter = painterResource(id = R.drawable.kakao_login_img),
-                contentDescription = "Login with Kakao",
-                modifier = Modifier.fillMaxSize(),
-            )
-        }
+                .width(loginButtonWidth)
+                .height(loginButtonHeight)
+                .clickable {
+                    coroutineScope.launch {
+                        viewModel.performKakaoLogin(context)
+                    }
+                },
+            model = R.drawable.kakao_login_img,
+            contentDescription = "Login with Kakao",
+        )
     }
 }
