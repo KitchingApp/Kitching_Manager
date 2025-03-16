@@ -94,6 +94,7 @@ fun SelectTeamScreen(
                             onClick = {
                                 coroutineScope.launch {
                                     viewModel.dataStore.saveTeamId(team.teamId)
+                                    viewModel.dataStore.saveTeamName(team.teamName)
                                     onNavigateToMain()
                                 }
                             }

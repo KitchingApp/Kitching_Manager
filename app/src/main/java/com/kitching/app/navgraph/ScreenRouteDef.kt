@@ -6,6 +6,7 @@ sealed class ScreenRouteDef(val routeName: String) {
     data object ScheduleTab: ScreenRouteDef("Schedule")
     data object OrderTab: ScreenRouteDef("Order")
     data object OtherTab: ScreenRouteDef("Other")
+    data object CreateTeamScreen: ScreenRouteDef("CreateTeam")
 
     sealed interface InnerContent{
         data object RecipeCreate : ScreenRouteDef("create")

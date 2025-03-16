@@ -42,6 +42,8 @@ import com.kitching.domain.entities.Team
 fun CustomNavigationDrawer(
     drawerState: DrawerState,
     teamListState: AppResult<List<Team>>,
+    onTeamItemClick: (Team) -> Unit,
+onTeamCreateClick: () -> Unit,
     content: @Composable () -> Unit
 ) {
     ModalNavigationDrawer(
@@ -79,7 +81,7 @@ fun CustomNavigationDrawer(
                         itemsIndexed(teamListdata) { index, team ->
                             TeamCardItem(
                                 teamName = team.teamName,
-                                onCardClick = {}
+                                onCardClick = { onTeamItemClick(team) }
                             )
                         }
                     }
@@ -94,7 +96,7 @@ fun CustomNavigationDrawer(
                             disabledContainerColor = PrimaryGreen300,
                             disabledContentColor = NeutralGray0
                         ),
-                        onClick = {},
+                        onClick = { onTeamCreateClick() },
                     ) {
                         Text(
                             text = "팀 생성",

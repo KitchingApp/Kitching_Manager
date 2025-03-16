@@ -58,20 +58,18 @@ class TeamRepositoryImpl(
     ) = flow {
         emit(AppResult.Loading)
         val inviteCode = UUID.randomUUID().toString().replace("-", "")
-            emit(
-                AppResult.Success(
-                    userTeamDataSource.createUserTeams(
-                        userId = ownerId,
-                        teamId = teamDataSource.createTeam(
-                            inviteCode,
-                            ownerId,
-                            teamName,
-                            teamAmount
-                        ),
-                        staffLevelId = ""
-                    )
-                )
-            )
+        val teamId = teamDataSource.createTeam(
+            inviteCode,
+            ownerId,
+            teamName,
+            teamAmount
+        )
+        userTeamDataSource.createUserTeams(
+            userId = ownerId,
+            teamId = teamId,
+            staffLevelId = ""
+        )
+        emit(AppResult.Success(teamId))
     }.catch {
         emit(AppResult.Failure(it))
     }

@@ -10,6 +10,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -18,29 +19,29 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.kitching.app.common.CommonState
 import com.kitching.app.common.TopAppBarState
+import com.kitching.app.navgraph.ScreenRouteDef
 import com.kitching.app.ui.factory.viewModelFactory
-import com.kitching.app.ui.model.LoginViewModel
+import com.kitching.app.ui.model.TeamViewModel
 import com.kitching.app.ui.screen.common.ResultConditionScreen
 import com.kitching.app.ui.screen.navigation.CustomNavHost
 import com.kitching.app.ui.screen.navigation.CustomNavigationBar
 import com.kitching.app.ui.screen.navigation.CustomNavigationDrawer
 import com.kitching.app.ui.screen.navigation.CustomTopAppBar
 import com.kitching.domain.AppResult
-import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
 
 @Preview(showBackground = true)
 @Composable
 fun EntryPointScreen(
-    viewModel: LoginViewModel = viewModel(factory = viewModelFactory),
+    teamViewModel: TeamViewModel = viewModel(factory = viewModelFactory),
 ) {
-    var userId = ""
-    val teamListState by viewModel.teamList.collectAsStateWithLifecycle()
-    val selectedTeamId by remember { mutableStateOf("") }
+    var userId by remember { mutableStateOf("") }
+    var selectedTeamId by remember { mutableStateOf("") }
+    var title by remember { mutableStateOf("") } // 레스토랑 이름
+
     val navController = rememberNavController()
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
     val coroutineScope = rememberCoroutineScope()
-    val title by remember { mutableStateOf("Kitching") } // 레스토랑 이름
     val topAppBarState =
         remember { mutableStateOf(TopAppBarState(drawerState = drawerState, title = title)) }
     val commonState by remember {
@@ -52,10 +53,15 @@ fun EntryPointScreen(
             )
         )
     }
+    val teamListState by teamViewModel.teamList.collectAsStateWithLifecycle()
 
     LaunchedEffect(Unit) {
-        userId = viewModel.dataStore.getUserId()
-        viewModel.getTeamList(userId)
+        userId = teamViewModel.dataStore.getUserId()
+        selectedTeamId = teamViewModel.dataStore.getTeamId()
+        title = teamViewModel.dataStore.getTeamName()
+
+        teamViewModel.getTeam(selectedTeamId)
+        teamViewModel.getTeamList(userId)
     }
 
     val navBackStackEntry by navController.currentBackStackEntryAsState()
@@ -67,13 +73,21 @@ fun EntryPointScreen(
         failCondition = teamListState is AppResult.Success,
         onRetryBtnClick = {
             coroutineScope.launch {
-                viewModel.getTeamList(viewModel.dataStore.getUserId())
+                teamViewModel.getTeamList(teamViewModel.dataStore.getUserId())
             }
         }
     ) {
         CustomNavigationDrawer(
             drawerState = drawerState,
-            teamListState = teamListState
+            teamListState = teamListState,
+            onTeamCreateClick = {
+                navController.navigate(ScreenRouteDef.CreateTeamScreen.routeName)
+            },
+            onTeamItemClick = { team ->
+                selectedTeamId = team.teamId
+                title = team.teamName
+                navController.popBackStack(ScreenRouteDef.ScheduleTab.routeName, false)
+            }
         ) {
             Scaffold(
                 modifier = Modifier.fillMaxSize(),
