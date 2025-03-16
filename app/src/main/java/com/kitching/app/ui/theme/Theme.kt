@@ -1,7 +1,6 @@
 package com.kitching.app.ui.theme
 
 import android.os.Build
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.dynamicDarkColorScheme
@@ -21,7 +20,8 @@ private val LightColorScheme = lightColorScheme(
     primary = PrimaryGreen300,
     secondary = SecondaryLightGreen500,
     tertiary = SecondaryLightGreen100,
-    surface = NeutralGray0
+    surface = NeutralGray0,
+    onSurface = NeutralGray800,
 
     /* Other default colors to override
     background = Color(0xFFFFFBFE),
