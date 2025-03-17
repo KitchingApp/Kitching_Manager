@@ -46,3 +46,12 @@ val CategoryColor3 = Color(0xFFFFECB7)
 val CategoryColor4 = Color(0xFFBEFDC0)
 val CategoryColor5 = Color(0xFFD3BDFF)
 val CategoryColor6 = Color(0xFFEEEEEE)
+
+val ColorList = listOf(
+    CategoryColor1,
+    CategoryColor2,
+    CategoryColor3,
+    CategoryColor4,
+    CategoryColor5,
+    CategoryColor6
+)

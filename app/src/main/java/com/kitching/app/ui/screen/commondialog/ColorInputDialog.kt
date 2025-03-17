@@ -23,10 +23,6 @@ import androidx.compose.material3.RadioButtonDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -40,16 +36,11 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.kitching.app.R
 import com.kitching.app.ui.theme.Body1
-import com.kitching.app.ui.theme.CategoryColor1
-import com.kitching.app.ui.theme.CategoryColor2
-import com.kitching.app.ui.theme.CategoryColor3
-import com.kitching.app.ui.theme.CategoryColor4
-import com.kitching.app.ui.theme.CategoryColor5
-import com.kitching.app.ui.theme.CategoryColor6
 import com.kitching.app.ui.theme.H3_m
 import com.kitching.app.ui.theme.NeutralGray0
 import com.kitching.app.ui.theme.NeutralGray300
 import com.kitching.app.ui.theme.NeutralGray800
+import com.kitching.app.ui.theme.ColorList
 
 //@Preview(showBackground = true)
 @Composable
@@ -63,15 +54,6 @@ fun ColorInputDialog(
     cancelText: String,
     onClickCancel: () -> Unit
 ) {
-    val colorList = listOf(
-        CategoryColor1,
-        CategoryColor2,
-        CategoryColor3,
-        CategoryColor4,
-        CategoryColor5,
-        CategoryColor6
-    )
-
     CommonDialogComponent(
         height = 261.dp,
         paddingTop = 40.dp,
@@ -119,7 +101,7 @@ fun ColorInputDialog(
                 .selectableGroup(),
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
-            colorList.forEach { color ->
+            ColorList.forEach { color ->
                 Box(
                     modifier = Modifier
                         .selectable(
