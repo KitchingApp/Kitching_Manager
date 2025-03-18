@@ -103,22 +103,22 @@ fun OrderTabScreen(
                                 categoryColor = category.color
                             )
                         },
-                        onCardClick = { categoryId, categoryName, categoryColor ->
+                        onCardClick = { categoryItemForScreen ->
                             val encodedColor = URLEncoder.encode(
-                                categoryColor,
+                                categoryItemForScreen.categoryColor,
                                 StandardCharsets.UTF_8.toString()
                             )
-                            commonState.navController.navigate("${ScreenRouteDef.InnerContent.OrderDetail.routeName}/${categoryId}/${categoryName}/${encodedColor}")
+                            commonState.navController.navigate("${ScreenRouteDef.InnerContent.OrderDetail.routeName}/${categoryItemForScreen.categoryId}/${categoryItemForScreen.categoryName}/${encodedColor}")
                         },
                         onCardOptionBtnClick = { categoryId ->
                             optionMenuId.value =
                                 if (optionMenuId.value == categoryId) "" else categoryId
                         },
                         optionMenuId = optionMenuId,
-                        onClickModify = { categoryId, categoryName, categoryColor ->
-                            optionMenuId.value = categoryId
-                            textState.value = TextFieldValue(categoryName)
-                            colorState.value = Color(hexToArgb(categoryColor))
+                        onClickModify = { categoryItemForScreen ->
+                            optionMenuId.value = categoryItemForScreen.categoryId
+                            textState.value = TextFieldValue(categoryItemForScreen.categoryName)
+                            colorState.value = Color(hexToArgb(categoryItemForScreen.categoryColor))
                             showModifyDialog = true
                         },
                         onClickDelete = { categoryId ->
