@@ -73,7 +73,7 @@ fun ScheduleTimeScreen(
                 endTime = LocalTime.now().customFormat()
             )
             commonState.navController.navigate(
-                ScreenRouteDef.InnerContent.ScheduleTimeCreateOrUpdate.routeName + "/${""}"
+                ScreenRouteDef.OtherTabSlice.ScheduleTimeCreateOrUpdate.routeName + "/${""}"
             )
         }
     )
@@ -121,7 +121,7 @@ fun ScheduleTimeScreen(
                                             onDismissRequest = { selectedScheduleTime = ScheduleTime() },
                                             onClickModify = {
                                                 commonState.navController.navigate(
-                                                    ScreenRouteDef.InnerContent.ScheduleTimeCreateOrUpdate.routeName +
+                                                    ScreenRouteDef.OtherTabSlice.ScheduleTimeCreateOrUpdate.routeName +
                                                             "/${if (selectedScheduleTime.scheduleTimeId.isEmpty()) null else Json.encodeToString(selectedScheduleTime)}"
                                                 )
                                             },

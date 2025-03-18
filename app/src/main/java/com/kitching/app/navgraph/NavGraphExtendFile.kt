@@ -34,14 +34,14 @@ fun NavGraphBuilder.sliceNavGraph(
         route = "recipe_create"
     ) {
         composable(
-            ScreenRouteDef.InnerContent.RecipeCreate.routeName,
+            ScreenRouteDef.RecipeTabSlice.RecipeCreate.routeName,
         ) { backStackEntry ->
             RecipeCreateScreen(
                 commonState = commonState
             )
         }
         composable(
-            ScreenRouteDef.InnerContent.RecipeCreateUseExcel.routeName
+            ScreenRouteDef.RecipeTabSlice.RecipeCreateUseExcel.routeName
         ) { navBackStackEntry ->
             RecipeCreateUseExcelScreen(
                 commonState = commonState
@@ -53,7 +53,7 @@ fun NavGraphBuilder.sliceNavGraph(
         route = "recipe_detail"
     ) {
         composable(
-            ScreenRouteDef.InnerContent.RecipeDetail.routeName + "/{recipeId}", // detail/1
+            ScreenRouteDef.RecipeTabSlice.RecipeDetail.routeName + "/{recipeId}", // detail/1
             arguments = listOf(navArgument("recipeId") { NavType.StringType })
         ) { backStackEntry ->
             RecipeDetailScreen(
@@ -63,7 +63,7 @@ fun NavGraphBuilder.sliceNavGraph(
         }
 
         composable(
-            route = ScreenRouteDef.InnerContent.RecipeEdit.routeName + "/{recipeId}",
+            route = ScreenRouteDef.RecipeTabSlice.RecipeEdit.routeName + "/{recipeId}",
             arguments = listOf(navArgument("recipeId") { type = NavType.StringType })
         ) { backStackEntry ->
             val recipeId = backStackEntry.arguments?.getString("recipeId").toString()
@@ -75,7 +75,7 @@ fun NavGraphBuilder.sliceNavGraph(
         route = "prep_detail"
     ) {
         composable(
-            ScreenRouteDef.InnerContent.PrepDetail.routeName + "/{categoryId}/{categoryName}/{categoryColor}",
+            ScreenRouteDef.PrepTabSlice.PrepDetail.routeName + "/{categoryId}/{categoryName}/{categoryColor}",
             arguments = listOf(
                 navArgument("categoryId") { NavType.StringType },
                 navArgument("categoryName") { NavType.StringType },
@@ -95,7 +95,7 @@ fun NavGraphBuilder.sliceNavGraph(
         route = "order_detail"
     ) {
         composable(
-            ScreenRouteDef.InnerContent.OrderDetail.routeName + "/{categoryId}/{categoryName}/{categoryColor}",
+            ScreenRouteDef.OrderTabSlice.OrderDetail.routeName + "/{categoryId}/{categoryName}/{categoryColor}",
             arguments = listOf(
                 navArgument("categoryId") { NavType.StringType },
                 navArgument("categoryName") { NavType.StringType },
@@ -115,26 +115,26 @@ fun NavGraphBuilder.sliceNavGraph(
         route = "other_menus"
     ) {
         composable(
-            ScreenRouteDef.InnerContent.InviteCode.routeName
+            ScreenRouteDef.OtherTabSlice.InviteCode.routeName
         ) {
             InviteCodeScreen(commonState = commonState)
         }
 
         composable(
-            ScreenRouteDef.InnerContent.NoticeList.routeName
+            ScreenRouteDef.OtherTabSlice.NoticeList.routeName
         ) {
             NoticeListScreen(commonState = commonState)
         }
 
         composable(
-            route = ScreenRouteDef.InnerContent.NoticeDetail.routeName + "/{notice}",
+            route = ScreenRouteDef.OtherTabSlice.NoticeDetail.routeName + "/{notice}",
             arguments = listOf(navArgument("notice") { type = NavType.StringType})
         ) { backStackEntry ->
             NoticeDetailScreen(notice = Json.decodeFromString<Notice>(backStackEntry.arguments?.getString("notice") ?: ""), commonState = commonState)
         }
 
         composable(
-            route = ScreenRouteDef.InnerContent.NoticeCreateOrUpdate.routeName + "/{notice}",
+            route = ScreenRouteDef.OtherTabSlice.NoticeCreateOrUpdate.routeName + "/{notice}",
             arguments = listOf(
                 navArgument("notice") { type = NavType.StringType; nullable }
             )
@@ -152,19 +152,19 @@ fun NavGraphBuilder.sliceNavGraph(
         }
 
         composable(
-            ScreenRouteDef.InnerContent.StaffLevel.routeName
+            ScreenRouteDef.OtherTabSlice.StaffLevel.routeName
         ) {
             StaffLevelScreen(commonState = commonState)
         }
 
         composable(
-            ScreenRouteDef.InnerContent.ScheduleTime.routeName
+            ScreenRouteDef.OtherTabSlice.ScheduleTime.routeName
         ) {
             ScheduleTimeScreen(commonState = commonState)
         }
 
         composable(
-            route = ScreenRouteDef.InnerContent.ScheduleTimeCreateOrUpdate.routeName + "/{scheduleTime}",
+            route = ScreenRouteDef.OtherTabSlice.ScheduleTimeCreateOrUpdate.routeName + "/{scheduleTime}",
             arguments = listOf(
                 navArgument("scheduleTime") { type = NavType.StringType; nullable }
             )
@@ -182,13 +182,13 @@ fun NavGraphBuilder.sliceNavGraph(
         }
 
         composable(
-            ScreenRouteDef.InnerContent.MemberList.routeName
+            ScreenRouteDef.OtherTabSlice.MemberList.routeName
         ) {
             MemberListScreen(commonState = commonState)
         }
 
         composable(
-            route = ScreenRouteDef.InnerContent.MemberDetail.routeName + "/{member}",
+            route = ScreenRouteDef.OtherTabSlice.MemberDetail.routeName + "/{member}",
             arguments = listOf(navArgument("member") { type = NavType.StringType})
         ) { backStackEntry ->
             val encodedMember = backStackEntry.arguments?.getString("member") ?: ""

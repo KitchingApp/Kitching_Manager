@@ -105,7 +105,8 @@ fun RecipeCreateUseExcelScreen(
                     val sheet = sheetIterator.next()
                     val sheetName = sheet.sheetName
                     val recipeName = runCatching { getRecipeTitle(sheet) }.getOrElse { "" }
-                    val ingredients = runCatching { getIngredients(sheet) }.getOrElse { emptyList() }
+                    val ingredients =
+                        runCatching { getIngredients(sheet) }.getOrElse { emptyList() }
                     val recipeSteps = runCatching { getSteps(sheet) }.getOrElse { emptyList() }
                     val fileName = UUID.randomUUID().toString().replace("-", "")
                     val imageUri = runCatching { getImageFromSheet(sheet) }.getOrNull()
@@ -153,15 +154,17 @@ fun RecipeCreateUseExcelScreen(
                 LazyColumn(
                     verticalArrangement = Arrangement.spacedBy(defaultPadding)
                 ) {
-                    itemsIndexed(recipeInfos) { index, recipeInfo ->
-                        RecipeSheetInfoExpandableCardItem(recipeInfo) {
-                            val newList = selectedRecipes.toMutableList()
-                            if(newList.contains(index)) {
-                                newList.remove(index)
-                            } else {
-                                newList.add(index)
+                    recipeInfos.forEachIndexed { index, recipeInfo ->
+                        item(key = recipeInfo.recipeName) {
+                            RecipeSheetInfoExpandableCardItem(recipeInfo) {
+                                val newList = selectedRecipes.toMutableList()
+                                if (newList.contains(index)) {
+                                    newList.remove(index)
+                                } else {
+                                    newList.add(index)
+                                }
+                                selectedRecipes = newList
                             }
-                            selectedRecipes = newList
                         }
                     }
                 }
@@ -228,7 +231,7 @@ fun getImageFromSheet(sheet: Sheet): ByteArray {
                 }
             }
         }
-    } else if(sheet is HSSFSheet) {
+    } else if (sheet is HSSFSheet) {
         val patriarch: HSSFPatriarch = sheet.drawingPatriarch
         val shapes = patriarch.children
 

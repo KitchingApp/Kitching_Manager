@@ -7,8 +7,10 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.kitching.app.common.CommonState
+import com.kitching.app.navgraph.LoginRouteDef
 import com.kitching.app.navgraph.ScreenRouteDef
 import com.kitching.app.navgraph.sliceNavGraph
+import com.kitching.app.ui.screen.login.CreateTeamScreen
 import com.kitching.app.ui.screen.order.OrderTabScreen
 import com.kitching.app.ui.screen.other.OtherTabScreen
 import com.kitching.app.ui.screen.prep.PrepTabScreen
@@ -25,6 +27,18 @@ fun CustomNavHost(
         startDestination = ScreenRouteDef.ScheduleTab.routeName,
         modifier = Modifier.padding(paddingValues = paddingValues)
     ) {
+        composable(ScreenRouteDef.CreateTeamScreen.routeName) {
+            CreateTeamScreen(
+                coroutineScope = commonState.coroutineScope,
+                onNavigateBack = {
+                    commonState.navController.popBackStack()
+                },
+                onTeamCreated = {
+
+                    commonState.navController.popBackStack(ScreenRouteDef.ScheduleTab.routeName, false)
+                }
+            )
+        }
         composable(ScreenRouteDef.ScheduleTab.routeName) {
             ScheduleTabScreen(commonState = commonState)
         }

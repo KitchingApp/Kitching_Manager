@@ -35,7 +35,7 @@ data class TopAppBarState(
 data class CommonState(
     val navController: NavHostController,
     var topAppBarState: MutableState<TopAppBarState>,
-    val scope: CoroutineScope,
+    val coroutineScope: CoroutineScope,
     )
 
 data class TeamSize(val label: String, val value: Int)

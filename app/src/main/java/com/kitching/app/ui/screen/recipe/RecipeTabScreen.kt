@@ -49,9 +49,9 @@ fun RecipeTabScreen(
         navIconInfo = NavigationIconInfo.DRAWER,
         onClickNavIcon = {
             if (commonState.topAppBarState.value.drawerState.isOpen) {
-                commonState.scope.launch { commonState.topAppBarState.value.drawerState.close() }
+                commonState.coroutineScope.launch { commonState.topAppBarState.value.drawerState.close() }
             } else {
-                commonState.scope.launch { commonState.topAppBarState.value.drawerState.open() }
+                commonState.coroutineScope.launch { commonState.topAppBarState.value.drawerState.open() }
             }
         },
         actionIconInfo = ActionIconInfo.ADD,
@@ -83,7 +83,7 @@ fun RecipeTabScreen(
                         },
                         onClickUseExcelFile = {
                             showCreateOptionMenu = false
-                            commonState.navController.navigate(ScreenRouteDef.InnerContent.RecipeCreateUseExcel.routeName)
+                            commonState.navController.navigate(ScreenRouteDef.RecipeTabSlice.RecipeCreateUseExcel.routeName)
                         }
                     )
                 }

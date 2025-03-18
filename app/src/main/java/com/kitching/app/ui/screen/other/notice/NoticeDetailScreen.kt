@@ -146,7 +146,7 @@ fun NoticeDetailScreen(
                                     shape = RoundedCornerShape(20.dp),
                                     onClick = {
                                         commonState.navController.navigate(
-                                            ScreenRouteDef.InnerContent.NoticeCreateOrUpdate.routeName
+                                            ScreenRouteDef.OtherTabSlice.NoticeCreateOrUpdate.routeName
                                                     + "/${Json.encodeToString(notice)}"
                                         )
                                     },
@@ -192,7 +192,7 @@ fun NoticeDetailScreen(
                                     viewModel.deleteNotice(notice.noticeId)
                                     if (noticeResultState is AppResult.Success) {
                                         viewModel.getNotices(teamId)
-                                        commonState.navController.navigate(ScreenRouteDef.InnerContent.NoticeList)
+                                        commonState.navController.navigate(ScreenRouteDef.OtherTabSlice.NoticeList)
                                     }
                                     showDeleteDialog = false
                                 },

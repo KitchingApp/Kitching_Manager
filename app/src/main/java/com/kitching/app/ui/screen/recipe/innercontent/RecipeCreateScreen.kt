@@ -68,7 +68,7 @@ fun RecipeCreateScreen(
     var recipeSteps by remember { mutableStateOf(listOf("")) }
     var teamId by remember { mutableStateOf("") }
 
-    commonState.scope.launch {
+    commonState.coroutineScope.launch {
         teamId = PreferencesDataStore(commonState.navController.context).getTeamId().toString()
     }
 

@@ -16,6 +16,7 @@ import com.kitching.app.ui.model.ScheduleTimeViewModel
 import com.kitching.app.ui.model.ScheduleViewModel
 import com.kitching.app.util.PreferencesDataStore
 import com.kitching.app.ui.model.StaffLevelViewModel
+import com.kitching.app.ui.model.TeamViewModel
 import com.kitching.data.repository.LoginRepositoryImpl
 import com.kitching.data.repository.NoticeRepositoryImpl
 import com.kitching.data.repository.OrderCategoryRepositoryImpl
@@ -87,6 +88,11 @@ val viewModelFactory = object : ViewModelProvider.Factory {
                 isAssignableFrom(LoginViewModel::class.java) ->
                     LoginViewModel(
                         loginRepository = LoginRepositoryImpl(),
+                        teamRepository = TeamRepositoryImpl(),
+                        dataStore = PreferencesDataStore(context = KitchingApplication.getInstance())
+                    )
+                isAssignableFrom(TeamViewModel::class.java) ->
+                    TeamViewModel(
                         teamRepository = TeamRepositoryImpl(),
                         dataStore = PreferencesDataStore(context = KitchingApplication.getInstance())
                     )

@@ -4,7 +4,9 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+
+
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -54,8 +56,8 @@ fun PrepDetailScreen(
         val textState = remember { mutableStateOf(TextFieldValue("")) }
         val optionMenuId = remember { mutableStateOf<String>("") }
 
-        val prepState by viewModel.prepList.collectAsState()
-        val prepResultState by viewModel.prepResult.collectAsState()
+        val prepState by viewModel.prepList.collectAsStateWithLifecycle()
+        val prepResultState by viewModel.prepResult.collectAsStateWithLifecycle()
 
         commonState.topAppBarState.value = commonState.topAppBarState.value.copy(
             title = categoryName,

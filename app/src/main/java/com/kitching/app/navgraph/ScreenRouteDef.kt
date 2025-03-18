@@ -2,18 +2,27 @@ package com.kitching.app.navgraph
 
 sealed class ScreenRouteDef(val routeName: String) {
     data object PrepTab: ScreenRouteDef("Prep")
-    data object RecipeTab: ScreenRouteDef("Recipe")
-    data object ScheduleTab: ScreenRouteDef("Schedule")
-    data object OrderTab: ScreenRouteDef("Order")
-    data object OtherTab: ScreenRouteDef("Other")
+    interface PrepTabSlice {
+        data object PrepDetail: ScreenRouteDef("PrepDetail")
+    }
 
-    sealed interface InnerContent{
+    data object RecipeTab: ScreenRouteDef("Recipe")
+    interface RecipeTabSlice {
         data object RecipeCreate : ScreenRouteDef("create")
         data object RecipeCreateUseExcel : ScreenRouteDef("UploadExcel")
         data object RecipeDetail : ScreenRouteDef("detail")
         data object RecipeEdit : ScreenRouteDef("detail/edit")
-        data object PrepDetail : ScreenRouteDef("PrepDetail")
+    }
+
+    data object ScheduleTab: ScreenRouteDef("Schedule")
+
+    data object OrderTab: ScreenRouteDef("Order")
+    interface OrderTabSlice {
         data object OrderDetail : ScreenRouteDef("OrderDetail")
+    }
+
+    data object OtherTab: ScreenRouteDef("Other")
+    interface OtherTabSlice {
         data object InviteCode : ScreenRouteDef("InviteCode")
         data object NoticeList : ScreenRouteDef("NoticeList")
         data object NoticeDetail : ScreenRouteDef("NoticeDetail")
@@ -24,4 +33,6 @@ sealed class ScreenRouteDef(val routeName: String) {
         data object MemberList : ScreenRouteDef("MemberList")
         data object MemberDetail : ScreenRouteDef("MemberDetail")
     }
+
+    data object CreateTeamScreen: ScreenRouteDef("CreateTeam")
 }

@@ -43,10 +43,10 @@ data class CategoryItemForScreen(
 fun CategoryScreen(
     title: String,
     categoryList: List<CategoryItemForScreen>,
-    onCardClick: (categoryId: String, categoryName: String, color: String) -> Unit,
+    onCardClick: (categoryItemForScreen: CategoryItemForScreen) -> Unit,
     onCardOptionBtnClick: (categoryId: String) -> Unit,
     optionMenuId: MutableState<String>,
-    onClickModify: (categoryId: String, categoryName: String, categoryColor: String) -> Unit,
+    onClickModify: (categoryItemForScreen: CategoryItemForScreen) -> Unit,
     onClickDelete: (categoryId: String) -> Unit
 ) {
 
@@ -82,24 +82,16 @@ fun CategoryScreen(
                     CategoryCardItem(
                         cardText = category.categoryName,
                         cardColor = category.categoryColor,
-                        onCardClick = {
-                            onCardClick(
-                                category.categoryId,
-                                category.categoryName,
-                                category.categoryColor
-                            )
-                        },
+                        onCardClick = { onCardClick(category) },
                         onOptionBtnClick = { onCardOptionBtnClick(category.categoryId) },
                     )
                     if (optionMenuId.value == category.categoryId) {
                         DropdownOptionMenu(
                             onDismissRequest = { optionMenuId.value = "" },
                             onClickModify = {
-                                onClickModify(category.categoryId, category.categoryName, category.categoryColor)
+                                onClickModify(category)
                             },
-                            onClickDelete = {
-                                onClickDelete(category.categoryId)
-                            }
+                            onClickDelete = { onClickDelete(category.categoryId) }
                         )
                     }
                 }
