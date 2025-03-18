@@ -18,7 +18,7 @@ fun AppliedScheduleScreen(
     } else {
         LazyColumn {
             scheduleList.forEach { schedule ->
-                item {
+                item(key = schedule.scheduleId) {
                     AppliedScheduleItemUI(
                         schedule = schedule,
                         onApplyClick = { scheduleId -> onApplyClick(scheduleId) },

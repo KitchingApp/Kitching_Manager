@@ -96,29 +96,31 @@ fun StaffLevelScreen(
                             modifier = Modifier.weight(1f),
                             verticalArrangement = Arrangement.spacedBy(12.dp),
                         ) {
-                            items(staffLevelData) { staffLevel ->
-                                Column(
-                                    modifier = Modifier.fillMaxWidth(),
-                                    horizontalAlignment = Alignment.End
-                                ) {
-                                    SubdivisionCardItem(
-                                        cardText = staffLevel.staffLevelName,
-                                        onOptionBtnClick = {
-                                            textInputState.value =
-                                                TextFieldValue(staffLevel.staffLevelName)
-                                            optionMenuId.value = staffLevel.staffLevelId
-                                        }
-                                    )
-                                    if (optionMenuId.value == staffLevel.staffLevelId) {
-                                        DropdownOptionMenu(
-                                            onDismissRequest = { optionMenuId.value = "" },
-                                            onClickModify = {
-                                                showUpdateDialog = true
-                                            },
-                                            onClickDelete = {
-                                                showDeleteDialog = true
+                            staffLevelData.forEach { staffLevel ->
+                                item(key = staffLevel.staffLevelId) {
+                                    Column(
+                                        modifier = Modifier.fillMaxWidth(),
+                                        horizontalAlignment = Alignment.End
+                                    ) {
+                                        SubdivisionCardItem(
+                                            cardText = staffLevel.staffLevelName,
+                                            onOptionBtnClick = {
+                                                textInputState.value =
+                                                    TextFieldValue(staffLevel.staffLevelName)
+                                                optionMenuId.value = staffLevel.staffLevelId
                                             }
                                         )
+                                        if (optionMenuId.value == staffLevel.staffLevelId) {
+                                            DropdownOptionMenu(
+                                                onDismissRequest = { optionMenuId.value = "" },
+                                                onClickModify = {
+                                                    showUpdateDialog = true
+                                                },
+                                                onClickDelete = {
+                                                    showDeleteDialog = true
+                                                }
+                                            )
+                                        }
                                     }
                                 }
                             }

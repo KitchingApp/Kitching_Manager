@@ -15,7 +15,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardOptions
@@ -120,7 +119,8 @@ fun MemberSearchComponent(
             }
             IconButton(
                 modifier = Modifier
-                    .size(24.dp).align(Alignment.CenterVertically),
+                    .size(24.dp)
+                    .align(Alignment.CenterVertically),
                 onClick = { isExpanded.value = !isExpanded.value }
             ) {
                 Icon(
@@ -150,22 +150,22 @@ fun MemberSearchComponent(
                 LazyColumn(
                     modifier = Modifier.heightIn(max = 150.dp)
                 ) {
-                    items(
-                        members
-                            .filter { it.userName.contains(textState.text.lowercase()) || textState.text.isEmpty() }
-                            .sortedBy { it.userName }
-                    ) { member ->
-                        DropDownMemberList(
-                            member = member,
-                        ) { memberItem ->
-                            textState = TextFieldValue(
-                                text = memberItem.userName,
-                                selection = TextRange(memberItem.userName.length)
-                            )
-                            selectedMember.value = memberItem
-                            isExpanded.value = false
+                    members
+                        .filter { it.userName.contains(textState.text.lowercase()) || textState.text.isEmpty() }
+                        .sortedBy { it.userName }.forEach { member ->
+                            item(key = member.userId) {
+                                DropDownMemberList(
+                                    member = member,
+                                ) { memberItem ->
+                                    textState = TextFieldValue(
+                                        text = memberItem.userName,
+                                        selection = TextRange(memberItem.userName.length)
+                                    )
+                                    selectedMember.value = memberItem
+                                    isExpanded.value = false
+                                }
+                            }
                         }
-                    }
                 }
             }
         }

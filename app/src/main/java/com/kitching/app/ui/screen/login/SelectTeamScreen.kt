@@ -11,7 +11,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -88,17 +87,19 @@ fun SelectTeamScreen(
                     modifier = Modifier.weight(1f),
                     verticalArrangement = Arrangement.spacedBy(12.dp),
                 ) {
-                    items(teamList) { team ->
-                        TeamListItem(
-                            teamName = team.teamName,
-                            onClick = {
-                                coroutineScope.launch {
-                                    viewModel.dataStore.saveTeamId(team.teamId)
-                                    viewModel.dataStore.saveTeamName(team.teamName)
-                                    onNavigateToMain()
+                    teamList.forEach { team ->
+                        item(key = team.teamId) {
+                            TeamListItem(
+                                teamName = team.teamName,
+                                onClick = {
+                                    coroutineScope.launch {
+                                        viewModel.dataStore.saveTeamId(team.teamId)
+                                        viewModel.dataStore.saveTeamName(team.teamName)
+                                        onNavigateToMain()
+                                    }
                                 }
-                            }
-                        )
+                            )
+                        }
                     }
                 }
                 Button(

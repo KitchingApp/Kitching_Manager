@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.DrawerState
@@ -17,18 +16,12 @@ import androidx.compose.material3.ModalNavigationDrawer
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.lifecycle.viewmodel.compose.viewModel
-import com.kitching.app.ui.factory.viewModelFactory
 import com.kitching.app.ui.item.TeamCardItem
-import com.kitching.app.ui.model.LoginViewModel
 import com.kitching.app.ui.theme.H1
 import com.kitching.app.ui.theme.NeutralGray0
 import com.kitching.app.ui.theme.NeutralGray800
@@ -78,11 +71,13 @@ onTeamCreateClick: () -> Unit,
                         verticalArrangement = Arrangement.spacedBy(20.dp)
                     ) {
                         val teamListdata = if(teamListState is AppResult.Success) teamListState.data else emptyList<Team>()
-                        itemsIndexed(teamListdata) { index, team ->
-                            TeamCardItem(
-                                teamName = team.teamName,
-                                onCardClick = { onTeamItemClick(team) }
-                            )
+                        teamListdata.forEach { team ->
+                            item(key = team.teamId) {
+                                TeamCardItem(
+                                    teamName = team.teamName,
+                                    onCardClick = { onTeamItemClick(team) }
+                                )
+                            }
                         }
                     }
                     TextButton(

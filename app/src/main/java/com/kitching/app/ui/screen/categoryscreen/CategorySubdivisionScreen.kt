@@ -6,7 +6,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.ui.Alignment
@@ -36,21 +35,23 @@ fun CategorySubDivisionScreen(
             modifier = Modifier.weight(1f),
             verticalArrangement = Arrangement.spacedBy(20.dp)
         ) {
-            itemsIndexed(itemList) { _, item ->
-                Column(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalAlignment = Alignment.End
-                ) {
-                    SubdivisionCardItem(
-                        cardText = item.name,
-                        onOptionBtnClick = { onCardOptionBtnClick(item.id) },
-                    )
-                    if (optionMenuId.value == item.id) {
-                        DropdownOptionMenu(
-                            onDismissRequest = { optionMenuId.value = "" },
-                            onClickModify = { onClickModify(item.id, item.name) },
-                            onClickDelete = { onClickDelete(item.id) }
+            itemList.forEach { item ->
+                item(key = item.id) {
+                    Column(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalAlignment = Alignment.End
+                    ) {
+                        SubdivisionCardItem(
+                            cardText = item.name,
+                            onOptionBtnClick = { onCardOptionBtnClick(item.id) },
                         )
+                        if (optionMenuId.value == item.id) {
+                            DropdownOptionMenu(
+                                onDismissRequest = { optionMenuId.value = "" },
+                                onClickModify = { onClickModify(item.id, item.name) },
+                                onClickDelete = { onClickDelete(item.id) }
+                            )
+                        }
                     }
                 }
             }

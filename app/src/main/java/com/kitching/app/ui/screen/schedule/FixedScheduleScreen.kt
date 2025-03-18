@@ -22,7 +22,7 @@ fun FixedScheduleScreen(
     } else {
         LazyColumn {
             scheduleList.forEach { schedule ->
-                item {
+                item(key = schedule.scheduleId) {
                     FixedScheduleItemUI(
                         schedule = schedule,
                         onDeleteClick = { scheduleId -> onDeleteClick(scheduleId) }

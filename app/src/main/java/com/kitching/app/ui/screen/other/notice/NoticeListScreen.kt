@@ -2,7 +2,6 @@ package com.kitching.app.ui.screen.other.notice
 
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -75,13 +74,15 @@ fun NoticeListScreen(
                     )
                 } else {
                     LazyColumn {
-                        itemsIndexed(notices) { _, notice ->
-                            NoticeItem(notice = notice) {
-                                commonState.navController.navigate(
-                                    ScreenRouteDef.InnerContent.NoticeDetail.routeName + "/${
-                                        Json.encodeToString(notice)
-                                    }"
-                                )
+                        notices.forEach { notice ->
+                            item(key = notice.noticeId) {
+                                NoticeItem(notice = notice) {
+                                    commonState.navController.navigate(
+                                        ScreenRouteDef.InnerContent.NoticeDetail.routeName + "/${
+                                            Json.encodeToString(notice)
+                                        }"
+                                    )
+                                }
                             }
                         }
                     }

@@ -80,17 +80,22 @@ fun MemberListScreen(
                         modifier = Modifier.fillMaxSize(),
                         verticalArrangement = Arrangement.spacedBy(defaultPadding)
                     ) {
-                        items(membersData) { member ->
-                            MemberCardItem(
-                                member = member,
-                                onCardClick = {
-                                    val json = Json.encodeToString(member)
-                                    val encodedJson = Base64.encodeToString(json.toByteArray(), Base64.URL_SAFE or Base64.NO_WRAP)
-                                    commonState.navController.navigate(
-                                        ScreenRouteDef.InnerContent.MemberDetail.routeName + "/$encodedJson"
-                                    )
-                                }
-                            )
+                        membersData.forEach { member ->
+                            item(key = member.userId) {
+                                MemberCardItem(
+                                    member = member,
+                                    onCardClick = {
+                                        val json = Json.encodeToString(member)
+                                        val encodedJson = Base64.encodeToString(
+                                            json.toByteArray(),
+                                            Base64.URL_SAFE or Base64.NO_WRAP
+                                        )
+                                        commonState.navController.navigate(
+                                            ScreenRouteDef.InnerContent.MemberDetail.routeName + "/$encodedJson"
+                                        )
+                                    }
+                                )
+                            }
                         }
                     }
                 }
