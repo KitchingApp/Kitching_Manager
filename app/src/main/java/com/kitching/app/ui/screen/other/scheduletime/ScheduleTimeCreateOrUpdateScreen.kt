@@ -193,7 +193,7 @@ fun ScheduleTimeCreateOrUpdateScreen(
                                     endTime = String.format(Locale.KOREA, "%02d:%02d", endTimeState.hour, endTimeState.minute)
                                 )
                             }
-                            commonState.navController.navigate(ScreenRouteDef.InnerContent.ScheduleTime.routeName)
+                            commonState.navController.navigate(ScreenRouteDef.OtherTabSlice.ScheduleTime.routeName)
                         }
                     ) {
                         Text(
@@ -214,7 +214,7 @@ fun ScheduleTimeCreateOrUpdateScreen(
                         ),
                         contentPadding = PaddingValues(0.dp),
                         border = BorderStroke(1.dp, NeutralGray300),
-                        onClick = { commonState.navController.navigate(ScreenRouteDef.InnerContent.ScheduleTime.routeName) }
+                        onClick = { commonState.navController.navigate(ScreenRouteDef.OtherTabSlice.ScheduleTime.routeName) }
                     ) {
                         Text(
                             text = "취소",

@@ -108,7 +108,7 @@ fun OrderTabScreen(
                                 categoryItemForScreen.categoryColor,
                                 StandardCharsets.UTF_8.toString()
                             )
-                            commonState.navController.navigate("${ScreenRouteDef.InnerContent.OrderDetail.routeName}/${categoryItemForScreen.categoryId}/${categoryItemForScreen.categoryName}/${encodedColor}")
+                            commonState.navController.navigate("${ScreenRouteDef.OrderTabSlice.OrderDetail.routeName}/${categoryItemForScreen.categoryId}/${categoryItemForScreen.categoryName}/${encodedColor}")
                         },
                         onCardOptionBtnClick = { categoryId ->
                             optionMenuId.value =

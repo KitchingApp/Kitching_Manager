@@ -54,7 +54,7 @@ fun NoticeListScreen(
         navIconInfo = NavigationIconInfo.BACK,
         onClickNavIcon = { commonState.navController.popBackStack() },
         actionIconInfo = ActionIconInfo.ADD,
-        onClickActionIcon = { commonState.navController.navigate(ScreenRouteDef.InnerContent.NoticeCreateOrUpdate.routeName + "/") }
+        onClickActionIcon = { commonState.navController.navigate(ScreenRouteDef.OtherTabSlice.NoticeCreateOrUpdate.routeName + "/") }
     )
 
     KitchingManagerTheme {
@@ -78,7 +78,7 @@ fun NoticeListScreen(
                             item(key = notice.noticeId) {
                                 NoticeItem(notice = notice) {
                                     commonState.navController.navigate(
-                                        ScreenRouteDef.InnerContent.NoticeDetail.routeName + "/${
+                                        ScreenRouteDef.OtherTabSlice.NoticeDetail.routeName + "/${
                                             Json.encodeToString(notice)
                                         }"
                                     )

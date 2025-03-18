@@ -229,7 +229,7 @@ fun NoticeCreateOrModifyScreen(
                                     }
                                     if(noticeResultState is AppResult.Success) {
                                         viewModel.getNotices(teamId)
-                                        commonState.navController.navigate(ScreenRouteDef.InnerContent.NoticeList.routeName)
+                                        commonState.navController.navigate(ScreenRouteDef.OtherTabSlice.NoticeList.routeName)
                                     }
                                 },
                                 colors = ButtonColors(

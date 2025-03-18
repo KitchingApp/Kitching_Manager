@@ -91,7 +91,7 @@ fun MemberListScreen(
                                             Base64.URL_SAFE or Base64.NO_WRAP
                                         )
                                         commonState.navController.navigate(
-                                            ScreenRouteDef.InnerContent.MemberDetail.routeName + "/$encodedJson"
+                                            ScreenRouteDef.OtherTabSlice.MemberDetail.routeName + "/$encodedJson"
                                         )
                                     }
                                 )

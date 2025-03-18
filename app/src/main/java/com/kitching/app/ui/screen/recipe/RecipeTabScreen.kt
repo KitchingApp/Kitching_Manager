@@ -83,7 +83,7 @@ fun RecipeTabScreen(
                         },
                         onClickUseExcelFile = {
                             showCreateOptionMenu = false
-                            commonState.navController.navigate(ScreenRouteDef.InnerContent.RecipeCreateUseExcel.routeName)
+                            commonState.navController.navigate(ScreenRouteDef.RecipeTabSlice.RecipeCreateUseExcel.routeName)
                         }
                     )
                 }
