@@ -6,14 +6,19 @@ import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.NavigationBarItemColors
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
-import androidx.navigation.NavDestination
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import com.kitching.app.navgraph.BottomNavItem
+import com.kitching.app.navgraph.BottomNavItems
+import com.kitching.app.navgraph.ScheduleTab
 import com.kitching.app.ui.theme.NeutralGray200
 import com.kitching.app.ui.theme.NeutralGray400
 import com.kitching.app.ui.theme.PrimaryGreen300
@@ -21,8 +26,9 @@ import com.kitching.app.ui.theme.PrimaryGreen300
 @Composable
 fun CustomNavigationBar(
     navController: NavHostController,
-    currentDestination: NavDestination?
 ) {
+    var selectedTab by remember { mutableStateOf<BottomNavItems>(ScheduleTab) }
+
     NavigationBar(
         modifier = Modifier.drawBehind {
             drawLine(
@@ -37,7 +43,7 @@ fun CustomNavigationBar(
         BottomNavItem().renderBottomNavItems()
             .forEachIndexed { _, bottomNavItem ->
                 NavigationBarItem(
-                    selected = bottomNavItem.routeName == currentDestination?.route,
+                    selected = selectedTab == bottomNavItem.destination,
                     label = {
                         Text(
                             text = bottomNavItem.tabName,
@@ -50,7 +56,8 @@ fun CustomNavigationBar(
                         )
                     },
                     onClick = {
-                        navController.navigate(bottomNavItem.routeName) {
+                        selectedTab = bottomNavItem.destination
+                        navController.navigate(bottomNavItem.destination) {
                             popUpTo(navController.graph.findStartDestination().id) {
                                 saveState = true
                             }

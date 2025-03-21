@@ -17,8 +17,10 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.toRoute
 import com.kitching.app.common.CommonState
 import com.kitching.app.common.TopAppBarState
+import com.kitching.app.navgraph.BottomNavItems
 import com.kitching.app.navgraph.ScreenRouteDef
 import com.kitching.app.ui.factory.viewModelFactory
 import com.kitching.app.ui.model.TeamViewModel
@@ -65,7 +67,7 @@ fun EntryPointScreen(
     }
 
     val navBackStackEntry by navController.currentBackStackEntryAsState()
-    val currentDestination = navBackStackEntry?.destination
+    val currentDestination = navBackStackEntry?.toRoute<BottomNavItems>()
 
     ResultConditionScreen(
         loadingCondition = teamListState is AppResult.Loading,
@@ -98,8 +100,7 @@ fun EntryPointScreen(
                 },
                 bottomBar = {
                     CustomNavigationBar(
-                        navController = navController,
-                        currentDestination = currentDestination
+                        navController = navController
                     )
                 }
             ) { paddingValues ->

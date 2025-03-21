@@ -7,7 +7,11 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.kitching.app.common.CommonState
-import com.kitching.app.navgraph.LoginRouteDef
+import com.kitching.app.navgraph.OrderTab
+import com.kitching.app.navgraph.OtherTab
+import com.kitching.app.navgraph.PrepTab
+import com.kitching.app.navgraph.RecipeTab
+import com.kitching.app.navgraph.ScheduleTab
 import com.kitching.app.navgraph.ScreenRouteDef
 import com.kitching.app.navgraph.sliceNavGraph
 import com.kitching.app.ui.screen.login.CreateTeamScreen
@@ -17,6 +21,7 @@ import com.kitching.app.ui.screen.prep.PrepTabScreen
 import com.kitching.app.ui.screen.recipe.RecipeTabScreen
 import com.kitching.app.ui.screen.schedule.ScheduleTabScreen
 
+
 @Composable
 fun CustomNavHost(
     paddingValues: PaddingValues,
@@ -24,7 +29,7 @@ fun CustomNavHost(
 ) {
     NavHost(
         navController = commonState.navController,
-        startDestination = ScreenRouteDef.ScheduleTab.routeName,
+        startDestination = ScheduleTab,
         modifier = Modifier.padding(paddingValues = paddingValues)
     ) {
         composable(ScreenRouteDef.CreateTeamScreen.routeName) {
@@ -39,21 +44,11 @@ fun CustomNavHost(
                 }
             )
         }
-        composable(ScreenRouteDef.ScheduleTab.routeName) {
-            ScheduleTabScreen(commonState = commonState)
-        }
-        composable(ScreenRouteDef.PrepTab.routeName) {
-            PrepTabScreen(commonState = commonState)
-        }
-        composable(ScreenRouteDef.RecipeTab.routeName) {
-            RecipeTabScreen(commonState = commonState)
-        }
-        composable(ScreenRouteDef.OrderTab.routeName) {
-            OrderTabScreen(commonState = commonState)
-        }
-        composable(ScreenRouteDef.OtherTab.routeName) {
-            OtherTabScreen(commonState = commonState)
-        }
+        composable<ScheduleTab> { ScheduleTabScreen(commonState = commonState) }
+        composable<PrepTab> { PrepTabScreen(commonState = commonState) }
+        composable<RecipeTab> { RecipeTabScreen(commonState = commonState) }
+        composable<OrderTab> { OrderTabScreen(commonState = commonState) }
+        composable<OtherTab> { OtherTabScreen(commonState = commonState) }
         sliceNavGraph(commonState = commonState)
     }
 }
