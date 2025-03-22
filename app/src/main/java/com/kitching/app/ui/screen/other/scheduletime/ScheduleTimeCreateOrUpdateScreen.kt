@@ -38,7 +38,6 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.kitching.app.common.ActionIconInfo
 import com.kitching.app.common.CommonState
 import com.kitching.app.common.NavigationIconInfo
-import com.kitching.app.navgraph.ScreenRouteDef
 import com.kitching.app.ui.factory.viewModelFactory
 import com.kitching.app.ui.item.TimeInputItem
 import com.kitching.app.ui.model.ScheduleTimeViewModel
@@ -60,6 +59,7 @@ import java.util.Locale
 fun ScheduleTimeCreateOrUpdateScreen(
     commonState: CommonState,
     scheduleTime: ScheduleTime?,
+    goToScheduleTimeList: () -> Unit,
     viewModel: ScheduleTimeViewModel = viewModel(factory = viewModelFactory)
 ) {
     val textState =
@@ -193,7 +193,7 @@ fun ScheduleTimeCreateOrUpdateScreen(
                                     endTime = String.format(Locale.KOREA, "%02d:%02d", endTimeState.hour, endTimeState.minute)
                                 )
                             }
-                            commonState.navController.navigate(ScreenRouteDef.OtherTabSlice.ScheduleTime.routeName)
+                            goToScheduleTimeList()
                         }
                     ) {
                         Text(
@@ -214,7 +214,7 @@ fun ScheduleTimeCreateOrUpdateScreen(
                         ),
                         contentPadding = PaddingValues(0.dp),
                         border = BorderStroke(1.dp, NeutralGray300),
-                        onClick = { commonState.navController.navigate(ScreenRouteDef.OtherTabSlice.ScheduleTime.routeName) }
+                        onClick = { goToScheduleTimeList() }
                     ) {
                         Text(
                             text = "취소",

@@ -29,7 +29,6 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.kitching.app.common.ActionIconInfo
 import com.kitching.app.common.CommonState
 import com.kitching.app.common.NavigationIconInfo
-import com.kitching.app.navgraph.ScreenRouteDef
 import com.kitching.app.ui.factory.viewModelFactory
 import com.kitching.app.ui.model.NoticeViewModel
 import com.kitching.app.ui.screen.common.ResultConditionScreen
@@ -47,8 +46,6 @@ import com.kitching.app.ui.theme.PrimaryGreen300
 import com.kitching.app.util.PreferencesDataStore
 import com.kitching.domain.AppResult
 import com.kitching.domain.entities.Notice
-import kotlinx.serialization.encodeToString
-import kotlinx.serialization.json.Json
 
 /**
  * Notice detail screen
@@ -61,6 +58,7 @@ import kotlinx.serialization.json.Json
 fun NoticeDetailScreen(
     commonState: CommonState,
     notice: Notice,
+    goToNoticeList: () -> Unit,
     viewModel: NoticeViewModel = viewModel(factory = viewModelFactory)
 ) {
     var showDeleteDialog by remember { mutableStateOf(false) }
@@ -144,12 +142,7 @@ fun NoticeDetailScreen(
                                         .weight(1f)
                                         .height(40.dp),
                                     shape = RoundedCornerShape(20.dp),
-                                    onClick = {
-                                        commonState.navController.navigate(
-                                            ScreenRouteDef.OtherTabSlice.NoticeCreateOrUpdate.routeName
-                                                    + "/${Json.encodeToString(notice)}"
-                                        )
-                                    },
+                                    onClick = { goToNoticeList() },
                                     colors = ButtonColors(
                                         containerColor = PrimaryGreen300,
                                         contentColor = NeutralGray0,
@@ -192,7 +185,7 @@ fun NoticeDetailScreen(
                                     viewModel.deleteNotice(notice.noticeId)
                                     if (noticeResultState is AppResult.Success) {
                                         viewModel.getNotices(teamId)
-                                        commonState.navController.navigate(ScreenRouteDef.OtherTabSlice.NoticeList)
+                                        goToNoticeList()
                                     }
                                     showDeleteDialog = false
                                 },

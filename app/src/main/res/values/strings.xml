@@ -2,4 +2,10 @@
     <string name="app_name">KitchingManager</string>
     <string name="login_info_text1">당신의 업장을 효율적이고</string>
     <string name="login_info_text2">편리하게 관리해보세요!</string>
+
+    <string name="schedule">스케줄</string>
+    <string name="prep">프렙</string>
+    <string name="recipe">레시피</string>
+    <string name="order">발주목록</string>
+    <string name="other">Other</string>
 </resources>

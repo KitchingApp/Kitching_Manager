@@ -1,12 +1,10 @@
 package com.kitching.app.ui.screen.other.memberlist
 
-import android.util.Base64
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -20,7 +18,6 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.kitching.app.common.ActionIconInfo
 import com.kitching.app.common.CommonState
 import com.kitching.app.common.NavigationIconInfo
-import com.kitching.app.navgraph.ScreenRouteDef
 import com.kitching.app.ui.factory.viewModelFactory
 import com.kitching.app.ui.item.MemberCardItem
 import com.kitching.app.ui.model.MemberViewModel
@@ -30,8 +27,7 @@ import com.kitching.app.ui.theme.NeutralGray0
 import com.kitching.app.ui.theme.defaultPadding
 import com.kitching.app.util.PreferencesDataStore
 import com.kitching.domain.AppResult
-import kotlinx.serialization.encodeToString
-import kotlinx.serialization.json.Json
+import com.kitching.domain.entities.Member
 
 /**
  * Member list screen
@@ -42,6 +38,7 @@ import kotlinx.serialization.json.Json
 @Composable
 fun MemberListScreen(
     commonState: CommonState,
+    onMemberClick: (member: Member) -> Unit,
     viewModel: MemberViewModel = viewModel(factory = viewModelFactory)
 ) {
     var teamId by remember { mutableStateOf("") }
@@ -85,14 +82,7 @@ fun MemberListScreen(
                                 MemberCardItem(
                                     member = member,
                                     onCardClick = {
-                                        val json = Json.encodeToString(member)
-                                        val encodedJson = Base64.encodeToString(
-                                            json.toByteArray(),
-                                            Base64.URL_SAFE or Base64.NO_WRAP
-                                        )
-                                        commonState.navController.navigate(
-                                            ScreenRouteDef.OtherTabSlice.MemberDetail.routeName + "/$encodedJson"
-                                        )
+                                        onMemberClick(member)
                                     }
                                 )
                             }

@@ -26,7 +26,6 @@ import com.kitching.app.common.AppResultHandler
 import com.kitching.app.common.CommonState
 import com.kitching.app.common.KitchingApplication
 import com.kitching.app.common.NavigationIconInfo
-import com.kitching.app.navgraph.ScreenRouteDef
 import com.kitching.app.ui.factory.viewModelFactory
 import com.kitching.app.ui.item.RecipeItem
 import com.kitching.app.ui.model.RecipeViewModel
@@ -39,6 +38,7 @@ import kotlinx.coroutines.launch
 @Composable
 fun RecipeTabScreen(
     commonState: CommonState,
+    goToCreateWithExcelFile: () -> Unit,
     viewModel: RecipeViewModel = viewModel(factory = viewModelFactory)
 ) {
     var showCreateOptionMenu by remember { mutableStateOf(false) }
@@ -61,7 +61,7 @@ fun RecipeTabScreen(
     )
 
     LaunchedEffect(Unit) {
-        val teamId = PreferencesDataStore(KitchingApplication.getInstance()).getTeamId().toString()
+        val teamId = PreferencesDataStore(KitchingApplication.getInstance()).getTeamId()
         viewModel.getRecipesByTeamId(teamId)
     }
 
@@ -83,7 +83,7 @@ fun RecipeTabScreen(
                         },
                         onClickUseExcelFile = {
                             showCreateOptionMenu = false
-                            commonState.navController.navigate(ScreenRouteDef.RecipeTabSlice.RecipeCreateUseExcel.routeName)
+                            goToCreateWithExcelFile()
                         }
                     )
                 }

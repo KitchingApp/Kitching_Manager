@@ -1,45 +1,46 @@
 package com.kitching.app.navgraph
 
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Home
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import com.kitching.app.R
 
 data class BottomNavItem(
-    val tabName: String = "",
-    val icon: ImageVector = Icons.Default.Home,
-    val routeName: String = ""
+    val tabName: String,
+    val icon: ImageVector,
+    val destination: BottomNavigationItem
 ) {
-    @Composable
-    fun renderBottomNavItems(): List<BottomNavItem> {
-        return listOf(
-            BottomNavItem(
-                tabName = "스케줄",
-                icon = ImageVector.vectorResource(R.drawable.icon_bottom_nav_schedule),
-                routeName = "Schedule"
-            ),
-            BottomNavItem(
-                tabName = "프렙",
-                icon = ImageVector.vectorResource(R.drawable.icon_bottom_nav_prep),
-                routeName = "Prep"
-            ),
-            BottomNavItem(
-                tabName = "레시피",
-                icon = ImageVector.vectorResource(R.drawable.icon_bottom_nav_recipe),
-                routeName = "Recipe"
-            ),
-            BottomNavItem(
-                tabName = "발주목록",
-                icon = ImageVector.vectorResource(R.drawable.icon_bottom_nav_order),
-                routeName = "Order"
-            ),
-            BottomNavItem(
-                tabName = "Other",
-                icon = ImageVector.vectorResource(R.drawable.icon_bottom_nav_other),
-                routeName = "Other"
+    companion object {
+        @Composable
+        fun renderBottomNavItems(): List<BottomNavItem> {
+            return listOf(
+                BottomNavItem(
+                    tabName = stringResource(R.string.schedule),
+                    icon = ImageVector.vectorResource(R.drawable.icon_bottom_nav_schedule),
+                    destination = ScheduleTab
+                ),
+                BottomNavItem(
+                    tabName = stringResource(R.string.prep),
+                    icon = ImageVector.vectorResource(R.drawable.icon_bottom_nav_prep),
+                    destination = PrepGraph
+                ),
+                BottomNavItem(
+                    tabName = stringResource(R.string.recipe),
+                    icon = ImageVector.vectorResource(R.drawable.icon_bottom_nav_recipe),
+                    destination = RecipeGraph
+                ),
+                BottomNavItem(
+                    tabName = stringResource(R.string.order),
+                    icon = ImageVector.vectorResource(R.drawable.icon_bottom_nav_order),
+                    destination = OrderGraph
+                ),
+                BottomNavItem(
+                    tabName = stringResource(R.string.other),
+                    icon = ImageVector.vectorResource(R.drawable.icon_bottom_nav_other),
+                    destination = OtherGraph
+                )
             )
-        )
+        }
     }
 }
