@@ -9,7 +9,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.Surface
@@ -29,7 +28,6 @@ import com.kitching.app.common.ActionIconInfo
 import com.kitching.app.common.CommonState
 import com.kitching.app.common.KitchingApplication
 import com.kitching.app.common.NavigationIconInfo
-import com.kitching.app.navgraph.ScreenRouteDef
 import com.kitching.app.ui.factory.viewModelFactory
 import com.kitching.app.ui.item.RecipeSheetInfoExpandableCardItem
 import com.kitching.app.ui.model.RecipeViewModel
@@ -60,6 +58,7 @@ data class RecipeSheetInfo(
 @Composable
 fun RecipeCreateUseExcelScreen(
     commonState: CommonState,
+    goToRecipeList: () -> Unit,
     viewModel: RecipeViewModel = viewModel(factory = viewModelFactory)
 ) {
     var recipeInfos by remember { mutableStateOf((emptyList<RecipeSheetInfo>())) }
@@ -90,7 +89,7 @@ fun RecipeCreateUseExcelScreen(
                     teamId = teamId
                 )
             }
-            commonState.navController.navigate(ScreenRouteDef.RecipeTab.routeName)
+            goToRecipeList()
         }
     )
 

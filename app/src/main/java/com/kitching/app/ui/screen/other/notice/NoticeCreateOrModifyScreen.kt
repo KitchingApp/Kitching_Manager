@@ -35,7 +35,6 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.kitching.app.common.ActionIconInfo
 import com.kitching.app.common.CommonState
 import com.kitching.app.common.NavigationIconInfo
-import com.kitching.app.navgraph.ScreenRouteDef
 import com.kitching.app.ui.factory.viewModelFactory
 import com.kitching.app.ui.model.NoticeViewModel
 import com.kitching.app.ui.screen.common.ResultConditionScreen
@@ -66,6 +65,7 @@ import java.time.LocalDate
 fun NoticeCreateOrModifyScreen(
     commonState: CommonState,
     notice: Notice?,
+    onSuccessCreateOrModify: () -> Unit,
     viewModel: NoticeViewModel = viewModel(factory = viewModelFactory)
 ) {
     var titleTextState by remember { mutableStateOf(TextFieldValue(notice?.title ?: "")) }
@@ -229,7 +229,7 @@ fun NoticeCreateOrModifyScreen(
                                     }
                                     if(noticeResultState is AppResult.Success) {
                                         viewModel.getNotices(teamId)
-                                        commonState.navController.navigate(ScreenRouteDef.OtherTabSlice.NoticeList.routeName)
+                                        onSuccessCreateOrModify()
                                     }
                                 },
                                 colors = ButtonColors(

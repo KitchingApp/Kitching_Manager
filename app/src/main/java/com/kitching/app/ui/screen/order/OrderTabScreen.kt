@@ -16,10 +16,9 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.kitching.app.common.ActionIconInfo
 import com.kitching.app.common.CommonState
 import com.kitching.app.common.NavigationIconInfo
-import com.kitching.app.navgraph.ScreenRouteDef
+import com.kitching.app.navgraph.CategoryItemForScreen
 import com.kitching.app.ui.factory.viewModelFactory
 import com.kitching.app.ui.model.OrderCategoryViewModel
-import com.kitching.app.ui.screen.categoryscreen.CategoryItemForScreen
 import com.kitching.app.ui.screen.categoryscreen.CategoryScreen
 import com.kitching.app.ui.screen.common.EmptyScreen
 import com.kitching.app.ui.screen.common.ResultConditionScreen
@@ -31,18 +30,18 @@ import com.kitching.app.util.PreferencesDataStore
 import com.kitching.app.util.hexToArgb
 import com.kitching.domain.AppResult
 import kotlinx.coroutines.launch
-import java.net.URLEncoder
-import java.nio.charset.StandardCharsets
 
 /**
  * Order tab screen
  *
  * @param commonState 네비게이션 컨트롤러, 앱바 상태, 코루틴 스코프를 갖는 data class
+ * @param onClickItem
  * @param viewModel
  */
 @Composable
 fun OrderTabScreen(
     commonState: CommonState,
+    onClickItem: (categoryItemForScreen: CategoryItemForScreen) -> Unit,
     viewModel: OrderCategoryViewModel = viewModel(factory = viewModelFactory)
 ) {
 
@@ -104,11 +103,7 @@ fun OrderTabScreen(
                             )
                         },
                         onCardClick = { categoryItemForScreen ->
-                            val encodedColor = URLEncoder.encode(
-                                categoryItemForScreen.categoryColor,
-                                StandardCharsets.UTF_8.toString()
-                            )
-                            commonState.navController.navigate("${ScreenRouteDef.OrderTabSlice.OrderDetail.routeName}/${categoryItemForScreen.categoryId}/${categoryItemForScreen.categoryName}/${encodedColor}")
+                            onClickItem(categoryItemForScreen)
                         },
                         onCardOptionBtnClick = { categoryId ->
                             optionMenuId.value =

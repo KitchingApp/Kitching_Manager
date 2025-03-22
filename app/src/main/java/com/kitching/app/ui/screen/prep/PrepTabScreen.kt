@@ -17,10 +17,9 @@ import com.kitching.app.common.ActionIconInfo
 import com.kitching.app.common.CommonState
 import com.kitching.app.common.KitchingApplication
 import com.kitching.app.common.NavigationIconInfo
-import com.kitching.app.navgraph.ScreenRouteDef
+import com.kitching.app.navgraph.CategoryItemForScreen
 import com.kitching.app.ui.factory.viewModelFactory
 import com.kitching.app.ui.model.PrepCategoryViewModel
-import com.kitching.app.ui.screen.categoryscreen.CategoryItemForScreen
 import com.kitching.app.ui.screen.categoryscreen.CategoryScreen
 import com.kitching.app.ui.screen.common.EmptyScreen
 import com.kitching.app.ui.screen.common.ResultConditionScreen
@@ -33,8 +32,6 @@ import com.kitching.app.util.hexToArgb
 import com.kitching.app.util.toHex
 import com.kitching.domain.AppResult
 import kotlinx.coroutines.launch
-import java.net.URLEncoder
-import java.nio.charset.StandardCharsets
 
 /**
  * Prep tab screen
@@ -45,6 +42,7 @@ import java.nio.charset.StandardCharsets
 @Composable
 fun PrepTabScreen(
     commonState: CommonState,
+    onClickItem: (categoryItemForScreen: CategoryItemForScreen) -> Unit,
     viewModel: PrepCategoryViewModel = viewModel(factory = viewModelFactory)
 ) {
     // 다이얼로그 상태
@@ -113,11 +111,7 @@ fun PrepTabScreen(
                             )
                         },
                         onCardClick = { categoryItemForScreen ->
-                            val encodedColor = URLEncoder.encode(
-                                categoryItemForScreen.categoryColor,
-                                StandardCharsets.UTF_8.toString()
-                            )
-                            commonState.navController.navigate("${ScreenRouteDef.PrepTabSlice.PrepDetail.routeName}/${categoryItemForScreen.categoryId}/${categoryItemForScreen.categoryName}/${encodedColor}")
+                            onClickItem(categoryItemForScreen)
                         },
                         onCardOptionBtnClick = { categoryId ->
                             optionMenuId.value =
@@ -140,113 +134,64 @@ fun PrepTabScreen(
                     // state 초기화
                     textState.value = TextFieldValue("")
                     colorState.value = NeutralGray0
-                    ResultConditionScreen(
-                        loadingCondition = prepCategoryState is AppResult.Loading || prepResultState is AppResult.Loading,
-                        successCondition = prepCategoryState is AppResult.Success,
-                        failCondition = prepCategoryState is AppResult.Failure,
-                        onRetryBtnClick = {}
-                    ) {
-                        val categories = (prepCategoryState as AppResult.Success).data
-                        if (categories.isEmpty()) {
-                            EmptyScreen("프렙 카테고리를 추가해주세요")
-                        } else {
-                            CategoryScreen(
-                                title = "프렙",
-                                categoryList = categories.map { category ->
-                                    CategoryItemForScreen(
-                                        categoryId = category.categoryId,
-                                        categoryName = category.categoryName,
-                                        categoryColor = category.color
-                                    )
-                                },
-                                onCardClick = { categoryItemForScreen ->
-                                    val encodedColor = URLEncoder.encode(
-                                        categoryItemForScreen.categoryColor,
-                                        StandardCharsets.UTF_8.toString()
-                                    )
-                                    commonState.navController.navigate("${ScreenRouteDef.PrepTabSlice.PrepDetail.routeName}/${categoryItemForScreen.categoryId}/${categoryItemForScreen.categoryName}/${encodedColor}")
-                                },
-                                onCardOptionBtnClick = { categoryId ->
-                                    optionMenuId.value =
-                                        if (optionMenuId.value == categoryId) "" else categoryId
-                                },
-                                optionMenuId = optionMenuId,
-                                onClickModify = { categoryItemForScreen ->
-                                    optionMenuId.value = categoryItemForScreen.categoryId
-                                    textState.value = TextFieldValue(categoryItemForScreen.categoryName)
-                                    colorState.value = Color(hexToArgb(categoryItemForScreen.categoryColor))
-                                    showModifyDialog = true
-                                },
-                                onClickDelete = { categoryId ->
-                                    optionMenuId.value = categoryId
-                                    showDeleteDialog = true
-                                }
-                            )
-                        }
-                        if (showCreateDialog) {
-                            // state 초기화
-                            textState.value = TextFieldValue("")
-                            colorState.value = NeutralGray0
 
-                            ColorInputDialog(
-                                title = "프렙 카테고리 추가",
-                                placeHolder = "카테고리명을 입력해주세요",
-                                textState = textState,
-                                colorState = colorState,
-                                confirmText = "생성",
-                                onClickConfirm = {
-                                    viewModel.createPrepCategory(
-                                        teamId = teamId,
-                                        categoryName = textState.value.text,
-                                        color = colorState.value.toHex()
-                                    )
-                                    showCreateDialog = false
-                                    viewModel.getPrepCategory(teamId)
-                                },
-                                cancelText = "취소",
-                                onClickCancel = { showCreateDialog = false }
+                    ColorInputDialog(
+                        title = "프렙 카테고리 추가",
+                        placeHolder = "카테고리명을 입력해주세요",
+                        textState = textState,
+                        colorState = colorState,
+                        confirmText = "생성",
+                        onClickConfirm = {
+                            viewModel.createPrepCategory(
+                                teamId = teamId,
+                                categoryName = textState.value.text,
+                                color = colorState.value.toHex()
                             )
-                        }
-                        if (showModifyDialog) {
-                            ColorInputDialog(
-                                title = "프렙 카테고리 수정",
-                                placeHolder = "카테고리명을 입력해주세요",
-                                textState = textState,
-                                colorState = colorState,
-                                confirmText = "수정",
-                                onClickConfirm = {
-                                    viewModel.updatePrepCategory(
-                                        categoryId = optionMenuId.value,
-                                        categoryName = textState.value.text,
-                                        color = colorState.value.toHex()
-                                    )
-                                    optionMenuId.value = ""
-                                    showModifyDialog = false
-                                    viewModel.getPrepCategory(teamId)
-                                },
-                                cancelText = "취소",
-                                onClickCancel = {
-                                    showModifyDialog = false
-                                }
+                            showCreateDialog = false
+                            viewModel.getPrepCategory(teamId)
+                        },
+                        cancelText = "취소",
+                        onClickCancel = { showCreateDialog = false }
+                    )
+                }
+                if (showModifyDialog) {
+                    ColorInputDialog(
+                        title = "프렙 카테고리 수정",
+                        placeHolder = "카테고리명을 입력해주세요",
+                        textState = textState,
+                        colorState = colorState,
+                        confirmText = "수정",
+                        onClickConfirm = {
+                            viewModel.updatePrepCategory(
+                                categoryId = optionMenuId.value,
+                                categoryName = textState.value.text,
+                                color = colorState.value.toHex()
                             )
+                            optionMenuId.value = ""
+                            showModifyDialog = false
+                            viewModel.getPrepCategory(teamId)
+                        },
+                        cancelText = "취소",
+                        onClickCancel = {
+                            showModifyDialog = false
                         }
-                        if (showDeleteDialog) {
-                            BasicConfirmDialog(
-                                message = "프렙 카테고리를 삭제하시겠습니까?",
-                                confirmText = "삭제",
-                                onClickConfirm = {
-                                    viewModel.deletePrepCategory(optionMenuId.value)
-                                    optionMenuId.value = ""
-                                    showDeleteDialog = false
-                                    viewModel.getPrepCategory(teamId)
-                                },
-                                cancelText = "취소",
-                                onClickCancel = {
-                                    showDeleteDialog = false
-                                }
-                            )
+                    )
+                }
+                if (showDeleteDialog) {
+                    BasicConfirmDialog(
+                        message = "프렙 카테고리를 삭제하시겠습니까?",
+                        confirmText = "삭제",
+                        onClickConfirm = {
+                            viewModel.deletePrepCategory(optionMenuId.value)
+                            optionMenuId.value = ""
+                            showDeleteDialog = false
+                            viewModel.getPrepCategory(teamId)
+                        },
+                        cancelText = "취소",
+                        onClickCancel = {
+                            showDeleteDialog = false
                         }
-                    }
+                    )
                 }
             }
         }

@@ -16,17 +16,12 @@ import androidx.compose.runtime.MutableState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import com.kitching.app.navgraph.CategoryItemForScreen
 import com.kitching.app.ui.item.CategoryCardItem
 import com.kitching.app.ui.screen.commondialog.DropdownOptionMenu
 import com.kitching.app.ui.theme.H2
 import com.kitching.app.ui.theme.NeutralGray800
 import com.kitching.app.ui.theme.defaultPadding
-
-data class CategoryItemForScreen(
-    val categoryId: String,
-    val categoryName: String,
-    val categoryColor: String
-)
 
 /**
  * Category screen

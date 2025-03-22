@@ -15,7 +15,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.kitching.app.common.ActionIconInfo
 import com.kitching.app.common.CommonState
 import com.kitching.app.common.NavigationIconInfo
-import com.kitching.app.navgraph.ScreenRouteDef
+import com.kitching.app.navgraph.NoticeItemForScreen
 import com.kitching.app.ui.factory.viewModelFactory
 import com.kitching.app.ui.item.NoticeItem
 import com.kitching.app.ui.model.NoticeViewModel
@@ -25,8 +25,6 @@ import com.kitching.app.ui.theme.KitchingManagerTheme
 import com.kitching.app.ui.theme.NeutralGray0
 import com.kitching.app.util.PreferencesDataStore
 import com.kitching.domain.AppResult
-import kotlinx.serialization.encodeToString
-import kotlinx.serialization.json.Json
 
 /**
  * Notice list screen
@@ -37,6 +35,8 @@ import kotlinx.serialization.json.Json
 @Composable
 fun NoticeListScreen(
     commonState: CommonState,
+    goToCreateNotice: () -> Unit,
+    goToNoticeDetail: (notice: NoticeItemForScreen) -> Unit,
     viewModel: NoticeViewModel = viewModel(factory = viewModelFactory)
 ) {
 
@@ -54,7 +54,7 @@ fun NoticeListScreen(
         navIconInfo = NavigationIconInfo.BACK,
         onClickNavIcon = { commonState.navController.popBackStack() },
         actionIconInfo = ActionIconInfo.ADD,
-        onClickActionIcon = { commonState.navController.navigate(ScreenRouteDef.OtherTabSlice.NoticeCreateOrUpdate.routeName + "/") }
+        onClickActionIcon = { goToCreateNotice() }
     )
 
     KitchingManagerTheme {
@@ -77,10 +77,14 @@ fun NoticeListScreen(
                         notices.forEach { notice ->
                             item(key = notice.noticeId) {
                                 NoticeItem(notice = notice) {
-                                    commonState.navController.navigate(
-                                        ScreenRouteDef.OtherTabSlice.NoticeDetail.routeName + "/${
-                                            Json.encodeToString(notice)
-                                        }"
+                                    goToNoticeDetail(
+                                        NoticeItemForScreen(
+                                            noticeId = notice.noticeId,
+                                            writerName = notice.writerName,
+                                            date = notice.date,
+                                            title = notice.title,
+                                            content = notice.content
+                                        )
                                     )
                                 }
                             }

@@ -1,38 +1,62 @@
 package com.kitching.app.navgraph
 
-sealed class ScreenRouteDef(val routeName: String) {
-    data object PrepTab: ScreenRouteDef("Prep")
-    interface PrepTabSlice {
-        data object PrepDetail: ScreenRouteDef("PrepDetail")
-    }
+import kotlinx.serialization.Serializable
 
-    data object RecipeTab: ScreenRouteDef("Recipe")
-    interface RecipeTabSlice {
-        data object RecipeCreate : ScreenRouteDef("create")
-        data object RecipeCreateUseExcel : ScreenRouteDef("UploadExcel")
-        data object RecipeDetail : ScreenRouteDef("detail")
-        data object RecipeEdit : ScreenRouteDef("detail/edit")
-    }
+@Serializable
+open class BottomNavigationItem
 
-    data object ScheduleTab: ScreenRouteDef("Schedule")
+@Serializable
+object ScheduleTab : BottomNavigationItem()
 
-    data object OrderTab: ScreenRouteDef("Order")
-    interface OrderTabSlice {
-        data object OrderDetail : ScreenRouteDef("OrderDetail")
-    }
+@Serializable
+object PrepGraph: BottomNavigationItem()
+@Serializable
+data object PrepTab
+@Serializable
+data class PrepDetail(val categoryItemForScreen: CategoryItemForScreen)
 
-    data object OtherTab: ScreenRouteDef("Other")
-    interface OtherTabSlice {
-        data object InviteCode : ScreenRouteDef("InviteCode")
-        data object NoticeList : ScreenRouteDef("NoticeList")
-        data object NoticeDetail : ScreenRouteDef("NoticeDetail")
-        data object NoticeCreateOrUpdate : ScreenRouteDef("NoticeCreateOrUpdate")
-        data object StaffLevel : ScreenRouteDef("StaffLevel")
-        data object ScheduleTime : ScreenRouteDef("ScheduleTime")
-        data object ScheduleTimeCreateOrUpdate : ScreenRouteDef("ScheduleTimeCreateOrUpdate")
-        data object MemberList : ScreenRouteDef("MemberList")
-        data object MemberDetail : ScreenRouteDef("MemberDetail")
-    }
+@Serializable
+object RecipeGraph: BottomNavigationItem()
+@Serializable
+data object RecipeTab
+@Serializable
+data object RecipeCreate
+@Serializable
+data object RecipeCreateUseExcel
+@Serializable
+data object RecipeDetail
+@Serializable
+data object RecipeEdit
 
-    data object CreateTeamScreen: ScreenRouteDef("CreateTeam")
-}
+@Serializable
+object OrderGraph: BottomNavigationItem()
+@Serializable
+data object OrderTab
+@Serializable
+data class OrderDetail(val categoryItemForScreen: CategoryItemForScreen)
+
+@Serializable
+object OtherGraph: BottomNavigationItem()
+@Serializable
+data object OtherTab
+@Serializable
+data object InviteCode
+@Serializable
+data object NoticeList
+@Serializable
+data class NoticeDetail(val notice: NoticeItemForScreen)
+@Serializable
+data class NoticeCreateOrUpdate(val notice: NoticeItemForScreen?)
+@Serializable
+data object StaffLevel
+@Serializable
+data object ScheduleTime
+@Serializable
+data class ScheduleTimeCreateOrUpdate(val scheduleTime: ScheduleTimeItemForScreen)
+@Serializable
+data object MemberList
+@Serializable
+data class MemberDetail(val member: MemberItemForScreen)
+
+@Serializable
+object CreateTeamScreen

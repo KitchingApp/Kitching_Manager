@@ -22,7 +22,6 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.kitching.app.common.ActionIconInfo
 import com.kitching.app.common.CommonState
 import com.kitching.app.common.NavigationIconInfo
-import com.kitching.app.navgraph.ScreenRouteDef
 import com.kitching.app.ui.factory.viewModelFactory
 import com.kitching.app.ui.item.ScheduleTimeItem
 import com.kitching.app.ui.model.ScheduleTimeViewModel
@@ -37,13 +36,12 @@ import com.kitching.app.util.PreferencesDataStore
 import com.kitching.app.util.customFormat
 import com.kitching.domain.AppResult
 import com.kitching.domain.entities.ScheduleTime
-import kotlinx.serialization.encodeToString
-import kotlinx.serialization.json.Json
 import java.time.LocalTime
 
 @Composable
 fun ScheduleTimeScreen(
     commonState: CommonState,
+    goToCreateOfModifyScheduleTime: (scheduleTime: ScheduleTime) -> Unit,
     viewModel: ScheduleTimeViewModel = viewModel(factory = viewModelFactory)
 ) {
 
@@ -72,9 +70,7 @@ fun ScheduleTimeScreen(
                 startTime = LocalTime.now().customFormat(),
                 endTime = LocalTime.now().customFormat()
             )
-            commonState.navController.navigate(
-                ScreenRouteDef.OtherTabSlice.ScheduleTimeCreateOrUpdate.routeName + "/${""}"
-            )
+            goToCreateOfModifyScheduleTime(selectedScheduleTime)
         }
     )
 
@@ -120,10 +116,7 @@ fun ScheduleTimeScreen(
                                         DropdownOptionMenu(
                                             onDismissRequest = { selectedScheduleTime = ScheduleTime() },
                                             onClickModify = {
-                                                commonState.navController.navigate(
-                                                    ScreenRouteDef.OtherTabSlice.ScheduleTimeCreateOrUpdate.routeName +
-                                                            "/${if (selectedScheduleTime.scheduleTimeId.isEmpty()) null else Json.encodeToString(selectedScheduleTime)}"
-                                                )
+                                                goToCreateOfModifyScheduleTime(selectedScheduleTime)
                                             },
                                             onClickDelete = {
                                                 showDeleteDialog = true

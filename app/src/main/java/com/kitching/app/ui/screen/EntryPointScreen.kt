@@ -15,13 +15,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import androidx.navigation.toRoute
 import com.kitching.app.common.CommonState
 import com.kitching.app.common.TopAppBarState
-import com.kitching.app.navgraph.BottomNavItems
-import com.kitching.app.navgraph.ScreenRouteDef
+import com.kitching.app.navgraph.CreateTeamScreen
+import com.kitching.app.navgraph.ScheduleTab
 import com.kitching.app.ui.factory.viewModelFactory
 import com.kitching.app.ui.model.TeamViewModel
 import com.kitching.app.ui.screen.common.ResultConditionScreen
@@ -66,9 +64,6 @@ fun EntryPointScreen(
         teamViewModel.getTeamList(userId)
     }
 
-    val navBackStackEntry by navController.currentBackStackEntryAsState()
-    val currentDestination = navBackStackEntry?.toRoute<BottomNavItems>()
-
     ResultConditionScreen(
         loadingCondition = teamListState is AppResult.Loading,
         successCondition = teamListState is AppResult.Success,
@@ -83,12 +78,12 @@ fun EntryPointScreen(
             drawerState = drawerState,
             teamListState = teamListState,
             onTeamCreateClick = {
-                navController.navigate(ScreenRouteDef.CreateTeamScreen.routeName)
+                navController.navigate(CreateTeamScreen)
             },
             onTeamItemClick = { team ->
                 selectedTeamId = team.teamId
                 title = team.teamName
-                navController.popBackStack(ScreenRouteDef.ScheduleTab.routeName, false)
+                navController.popBackStack(ScheduleTab, false)
             }
         ) {
             Scaffold(
@@ -106,7 +101,8 @@ fun EntryPointScreen(
             ) { paddingValues ->
                 CustomNavHost(
                     paddingValues = paddingValues,
-                    commonState = commonState
+                    commonState = commonState,
+                    navController = navController
                 )
             }
         }

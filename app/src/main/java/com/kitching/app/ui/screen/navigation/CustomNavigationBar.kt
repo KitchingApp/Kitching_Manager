@@ -14,10 +14,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
-import androidx.navigation.NavGraph.Companion.findStartDestination
-import androidx.navigation.NavHostController
-import com.kitching.app.navgraph.BottomNavItem
-import com.kitching.app.navgraph.BottomNavItems
+import androidx.navigation.NavController
+import com.kitching.app.navgraph.BottomNavItem.Companion.renderBottomNavItems
+import com.kitching.app.navgraph.BottomNavigationItem
 import com.kitching.app.navgraph.ScheduleTab
 import com.kitching.app.ui.theme.NeutralGray200
 import com.kitching.app.ui.theme.NeutralGray400
@@ -25,9 +24,9 @@ import com.kitching.app.ui.theme.PrimaryGreen300
 
 @Composable
 fun CustomNavigationBar(
-    navController: NavHostController,
+    navController: NavController,
 ) {
-    var selectedTab by remember { mutableStateOf<BottomNavItems>(ScheduleTab) }
+    var selectedTab by remember { mutableStateOf<BottomNavigationItem>(ScheduleTab) }
 
     NavigationBar(
         modifier = Modifier.drawBehind {
@@ -40,8 +39,8 @@ fun CustomNavigationBar(
         containerColor = Color.White,
         contentColor = NeutralGray200,
     ) {
-        BottomNavItem().renderBottomNavItems()
-            .forEachIndexed { _, bottomNavItem ->
+        renderBottomNavItems()
+            .forEach { bottomNavItem ->
                 NavigationBarItem(
                     selected = selectedTab == bottomNavItem.destination,
                     label = {
@@ -57,13 +56,7 @@ fun CustomNavigationBar(
                     },
                     onClick = {
                         selectedTab = bottomNavItem.destination
-                        navController.navigate(bottomNavItem.destination) {
-                            popUpTo(navController.graph.findStartDestination().id) {
-                                saveState = true
-                            }
-                            launchSingleTop = true
-                            restoreState = true
-                        }
+                        navController.navigate(bottomNavItem.destination)
                     },
                     colors = NavigationBarItemColors(
                         selectedIconColor = PrimaryGreen300,
