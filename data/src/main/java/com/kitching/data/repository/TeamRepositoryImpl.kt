@@ -37,18 +37,16 @@ class TeamRepositoryImpl(
     override fun getTeam(teamId: String) = flow {
         emit(AppResult.Loading)
         val team = teamDataSource.getTeam(teamId)
-        if (team != null) {
-            emit(
-                AppResult.Success(
-                    Team(
-                        teamId = team.id,
-                        teamName = team.teamName,
-                        teamAmount = team.teamAmount,
-                        inviteCode = team.inviteCode
-                    )
+        emit(
+            AppResult.Success(
+                Team(
+                    teamId = team.id,
+                    teamName = team.teamName,
+                    teamAmount = team.teamAmount,
+                    inviteCode = team.inviteCode
                 )
             )
-        } else throw Throwable("team is not exists")
+        )
     }.catch {
         emit(AppResult.Failure(it))
     }

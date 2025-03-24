@@ -25,18 +25,14 @@ class ScheduleRepositoryImpl(
         val schedules = scheduleDataSource.getSchedules(teamId, date).map {
             val userName = userDataSource.getUser(it.userId)
             val scheduleTimeName = scheduleTimeDataSource.getScheduleTime(it.scheduleTimeId)
-            if (scheduleTimeName !== null) {
-                Schedule(
-                    scheduleId = it.id,
-                    userId = it.userId,
-                    userName = userName.userName,
-                    scheduleTimeName = scheduleTimeName.name,
-                    date = it.date,
-                    fix = it.fix,
-                )
-            } else {
-                throw Throwable("scheduleTime Name Not Found")
-            }
+            Schedule(
+                scheduleId = it.id,
+                userId = it.userId,
+                userName = userName.userName,
+                scheduleTimeName = scheduleTimeName.name,
+                date = it.date,
+                fix = it.fix,
+            )
         }
         if (schedules.isEmpty()) emit(AppResult.Success(emptyList()))
         else emit(AppResult.Success(schedules))

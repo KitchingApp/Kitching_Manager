@@ -7,9 +7,9 @@ interface StaffLevelDataSource {
 
     suspend fun getStaffLevels(teamId: String): List<StaffLevelDTO>
 
-    suspend fun createStaffLevel(teamId: String, staffLevelName: String): Boolean
+    suspend fun createStaffLevel(teamId: String, staffLevelName: String)
 
-    suspend fun updateStaffLevel(staffLevelId: String, name: String): Boolean
+    suspend fun updateStaffLevel(staffLevelId: String, name: String)
 
-    suspend fun deleteStaffLevel(staffLevelId: String): Boolean
+    suspend fun deleteStaffLevel(staffLevelId: String)
 }

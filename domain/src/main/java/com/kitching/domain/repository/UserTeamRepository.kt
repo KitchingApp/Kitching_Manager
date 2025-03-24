@@ -11,6 +11,6 @@ interface UserTeamRepository {
         userTeamId: String,
         staffLevelId: String,
         manager: Boolean
-    ): Flow<AppResult<Boolean>>
+    ): Flow<AppResult<Unit>>
 
 }
