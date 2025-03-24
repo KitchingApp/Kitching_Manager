@@ -8,4 +8,8 @@ data class ScheduleTime(
     val scheduleTimeName: String = "",
     val startTime: String = "",
     val endTime: String = "",
-)
+) {
+    companion object {
+        fun init() = ScheduleTime("", "", "00:00", "00:00")
+    }
+}
