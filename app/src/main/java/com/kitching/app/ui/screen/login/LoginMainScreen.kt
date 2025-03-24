@@ -97,7 +97,7 @@ fun LoginMainScreen(
                     }
                 },
             model = R.drawable.kakao_login_img,
-            contentDescription = "Login with Kakao",
+            contentDescription = stringResource(R.string.login_with_kakao),
         )
     }
 }

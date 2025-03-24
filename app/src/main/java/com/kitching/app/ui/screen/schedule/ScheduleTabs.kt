@@ -14,6 +14,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -57,7 +58,7 @@ fun ScheduleTabs(
                         .height(60.dp),
                     text = {
                         Text(
-                            text = tabItem.tabName,
+                            text = stringResource(tabItem.tabName),
                             fontWeight = if (tabPageState.currentPage == index) FontWeight.Bold else FontWeight.Normal,
                             color = Color.Black,
                             fontSize = 16.dp.value.sp,

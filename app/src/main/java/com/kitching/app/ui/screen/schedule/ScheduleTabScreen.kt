@@ -15,9 +15,11 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.kitching.app.R
 import com.kitching.app.common.ActionIconInfo
 import com.kitching.app.common.CommonState
 import com.kitching.app.common.KitchingApplication
@@ -257,12 +259,12 @@ fun ScheduleTabScreen(
                     }
                     if (showDeleteDialog) {
                         BasicConfirmDialog(
-                            message = "스케줄을 삭제하시겠습니까?",
-                            confirmText = "삭제",
+                            message = stringResource(R.string.schedule_delete_dialog_message),
+                            confirmText = stringResource(R.string.button_delete),
                             onClickConfirm = {
                                 viewModel.deleteSchedule(targetSchedule.scheduleId)
                             },
-                            cancelText = "취소",
+                            cancelText = stringResource(R.string.button_cancel),
                             onClickCancel = { showDeleteDialog = false }
                         )
                     }

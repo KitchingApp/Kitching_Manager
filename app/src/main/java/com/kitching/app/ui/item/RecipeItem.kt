@@ -47,7 +47,7 @@ fun RecipeItem(recipe: Recipe, commonState: CommonState) {
         ) {
             AsyncImage(
                 model = recipe.picture,
-                contentDescription = "${recipe.recipeName} 이미지",
+                contentDescription = null,
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(160.dp),

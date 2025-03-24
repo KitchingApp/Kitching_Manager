@@ -2,10 +2,50 @@
     <string name="app_name">KitchingManager</string>
     <string name="login_info_text1">당신의 업장을 효율적이고</string>
     <string name="login_info_text2">편리하게 관리해보세요!</string>
-
+    <string name="line_change_escape_char">\n</string>
+    <string name="login_with_kakao">카카오로 로그인하기</string>
+    <string name="button_create">생성</string>
+    <string name="button_modify">수정</string>
+    <string name="button_delete">삭제</string>
+    <string name="button_cancel">취소</string>
+    <string name="button_retry">재시도</string>
+    <string name="button_create_team">팀 만들기</string>
+    <string name="button_drop_down_icon_description">목록을 펼칩니다.</string>
+    <string name="button_create_recipe_on_device">직접 입력하기</string>
+    <string name="button_create_recipe_use_excel">엑셀로 불러오기</string>
     <string name="schedule">스케줄</string>
     <string name="prep">프렙</string>
     <string name="recipe">레시피</string>
     <string name="order">발주목록</string>
     <string name="other">Other</string>
+    <string name="schedule_tab_item_fixed_schedule">스케줄 확정</string>
+    <string name="schedule_tab_item_applied_schedule">스케줄 신청</string>
+    <string name="schedule_delete_dialog_message">스케줄을 삭제하시겠습니까?</string>
+    <string name="applied_schedule_cancel_icon_description">신청 스케줄을 삭제합니다.</string>
+    <string name="fixed_schedule_cancel_icon_description">확정된 스케줄을 삭제합니다.</string>
+    <string name="category_detail_screen_title">%1$s 카테고리</string>
+    <string name="order_detail_empty_message">발주 물품을 추가해주세요</string>
+    <string name="order_detail_create">발주 물품 추가</string>
+    <string name="order_detail_name_place_holder">발주 물품을 입력해주세요</string>
+    <string name="order_detail_modify">발주 물품 수정</string>
+    <string name="order_detail_delete_message">발주 물품을 삭제하시겠습니까?</string>
+    <string name="no_staffLevel_message">직급이 없습니다.</string>
+    <string name="invite_code">초대코드</string>
+    <string name="notice">공지사항</string>
+    <string name="staff_level">직급</string>
+    <string name="staff_level_management">직급관리</string>
+    <string name="schedule_time">스케줄타임</string>
+    <string name="member">멤버</string>
+    <string name="member_management">멤버관리</string>
+    <string name="create_team">팀 만들기</string>
+    <string name="team_name_place_holder">팀 이름을 적어주세요!</string>
+    <string name="choose_team_size">팀 인원 선택</string>
+    <string name="indicator_screen_message_salt">소금 뿌리는 중..</string>
+    <string name="indicator_screen_message_whipper">조리하는 중..</string>
+    <string name="indicator_screen_message_bread">빵 굽는 중..</string>
+    <string name="indicator_screen_message_common">요리가 완성되는 중입니다. 조금만 기다려주세요!</string>
+    <string name="disconnected_screen_message_title">네트워크에 접속할 수 없습니다.</string>
+    <string name="disconnected_screen_message_content">네트워크 연결상태를 확인하거나 아래 버튼 클릭 후
+다시 접속을 시도해주시기 바랍니다.</string>
+
 </resources>

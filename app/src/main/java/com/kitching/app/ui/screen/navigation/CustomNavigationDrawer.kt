@@ -18,9 +18,11 @@ import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.kitching.app.R
 import com.kitching.app.ui.item.TeamCardItem
 import com.kitching.app.ui.theme.H1
 import com.kitching.app.ui.theme.NeutralGray0
@@ -94,7 +96,7 @@ onTeamCreateClick: () -> Unit,
                         onClick = { onTeamCreateClick() },
                     ) {
                         Text(
-                            text = "팀 생성",
+                            text = stringResource(R.string.button_create_team),
                             color = NeutralGray0,
                             style = H1.copy(
                                 color = NeutralGray800,

@@ -39,7 +39,7 @@ fun ProfileSection(imageRes: Int, name: String, role: String) {
         ) {
             Image(
                 painter = painterResource(id = imageRes),
-                contentDescription = "Profile Image",
+                contentDescription = null,
                 modifier = Modifier
                     .size(80.dp)
                     .clip(CircleShape),

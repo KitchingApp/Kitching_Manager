@@ -13,6 +13,7 @@ import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
@@ -44,14 +45,13 @@ fun DisConnectedScreen(
                 contentDescription = null
             )
             Text(
-                text = "네트워크에 접속할 수 없습니다.",
+                text = stringResource(R.string.disconnected_screen_message_title),
                 style = H4,
                 textAlign = TextAlign.Center,
                 color = NeutralGray800
             )
             Text(
-                text = "네트워크 연결상태를 확인하거나 아래 버튼 클릭 후 \n" +
-                        "다시 접속을 시도해주시기 바랍니다.",
+                text = stringResource(R.string.disconnected_screen_message_content),
                 style = Caption1_m,
                 textAlign = TextAlign.Center,
                 color = NeutralGray500
@@ -66,7 +66,7 @@ fun DisConnectedScreen(
                 onClick = onRetryBtnClick
             ) {
                 Text(
-                    text = "재시도",
+                    text = stringResource(R.string.button_retry),
                     style = Body1
                 )
             }

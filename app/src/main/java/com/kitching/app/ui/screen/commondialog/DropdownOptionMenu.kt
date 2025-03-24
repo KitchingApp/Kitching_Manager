@@ -13,6 +13,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
 import com.kitching.app.R
@@ -46,7 +47,7 @@ fun DropdownOptionMenu(
             DropdownMenuItem(
                 modifier = Modifier.width(200.dp).height(48.dp).padding(20.dp, 10.dp),
                 contentPadding = PaddingValues(0.dp),
-                text = { Text(text = "수정", style = Body1_m.copy(color = NeutralGray800)) },
+                text = { Text(text = stringResource(R.string.button_modify), style = Body1_m.copy(color = NeutralGray800)) },
                 trailingIcon = {
                     AsyncImage(
                         modifier = Modifier.size(24.dp),
@@ -63,7 +64,7 @@ fun DropdownOptionMenu(
             DropdownMenuItem(
                 modifier = Modifier.width(200.dp).height(48.dp).padding(20.dp, 10.dp),
                 contentPadding = PaddingValues(0.dp),
-                text = { Text(text = "삭제", style = Body1_m.copy(color = NeutralGray800)) },
+                text = { Text(text = stringResource(R.string.button_delete), style = Body1_m.copy(color = NeutralGray800)) },
                 trailingIcon = {
                     AsyncImage(
                         modifier = Modifier.size(24.dp),
