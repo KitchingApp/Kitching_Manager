@@ -38,7 +38,7 @@ class RecipeViewModel(
         }
     }
 
-    private val _updateResult = MutableStateFlow<AppResult<Boolean>>(AppResult.Initial)
+    private val _updateResult = MutableStateFlow<AppResult<Unit>>(AppResult.Initial)
     val updateResult get() = _updateResult.asStateFlow()
 
     fun updateRecipe(
@@ -54,7 +54,7 @@ class RecipeViewModel(
         }
     }
 
-    private val _createRecipeResult = MutableStateFlow<AppResult<Boolean>>(AppResult.Initial)
+    private val _createRecipeResult = MutableStateFlow<AppResult<Unit>>(AppResult.Initial)
     val createRecipeResult get() = _createRecipeResult.asStateFlow()
 
     fun createRecipe(

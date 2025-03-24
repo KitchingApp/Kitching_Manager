@@ -18,7 +18,7 @@ class MemberViewModel(
     private val staffLevelRepository: StaffLevelRepository,
 ) : ViewModel() {
 
-    private val _members = MutableStateFlow<AppResult<List<Member>>>(AppResult.Loading)
+    private val _members = MutableStateFlow<AppResult<List<Member>>>(AppResult.Initial)
     val members get() = _members.asStateFlow()
 
     fun getMembers(teamId: String) {
@@ -29,7 +29,7 @@ class MemberViewModel(
         }
     }
 
-    private val _memberResult = MutableStateFlow<AppResult<Boolean>>(AppResult.Success(true))
+    private val _memberResult = MutableStateFlow<AppResult<Unit>>(AppResult.Initial)
     val memberResult get() = _memberResult.asStateFlow()
 
     fun updateMember(userTeamId: String, staffLevelId: String, manager: Boolean) {
@@ -44,7 +44,7 @@ class MemberViewModel(
         }
     }
 
-    private val _staffLevels = MutableStateFlow<AppResult<List<StaffLevel>>>(AppResult.Loading)
+    private val _staffLevels = MutableStateFlow<AppResult<List<StaffLevel>>>(AppResult.Initial)
     val staffLevels get() = _staffLevels.asStateFlow()
 
     fun getStaffLevels(teamId: String) {

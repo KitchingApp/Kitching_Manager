@@ -110,17 +110,14 @@ class RecipeDataSourceImpl(
             ""
         }
 
-        // (2) 레시피 생성
-        val recipeData = mapOf(
-            "id" to "",
-            "name" to recipeName,
-            "picture" to pictureUrl,
-            "steps" to steps,
-            "teamId" to teamId
-        )
-
         val recipeDocument = db.collection(COLLECTION_RECIPE)
-            .add(recipeData)
+            .add(RecipeDTO(
+                id = "",
+                name = recipeName,
+                picture = pictureUrl,
+                steps = steps,
+                teamId = teamId
+            ))
             .await()
 
         // 문서 id 필드 업데이트

@@ -67,21 +67,21 @@ fun ScheduleTimeCreateOrUpdateScreen(
 
     val currentTime = Calendar.getInstance()
     val startTimeState = rememberTimePickerState(
-        initialHour = if (scheduleTime !== null) LocalTime.parse(scheduleTime.startTime).hour else (currentTime.get(
-            Calendar.HOUR_OF_DAY
-        )),
-        initialMinute = if (scheduleTime !== null) LocalTime.parse(scheduleTime.startTime).minute else (currentTime.get(
-            Calendar.MINUTE
-        )),
+        initialHour = scheduleTime?.let {
+            LocalTime.parse(it.startTime).hour
+        } ?: currentTime.get(Calendar.HOUR_OF_DAY),
+        initialMinute = scheduleTime?.let {
+            LocalTime.parse(it.startTime).minute
+        } ?: currentTime.get(Calendar.MINUTE),
         is24Hour = false
     )
     val endTimeState = rememberTimePickerState(
-        initialHour = if (scheduleTime !== null) LocalTime.parse(scheduleTime.endTime).hour else (currentTime.get(
-            Calendar.HOUR_OF_DAY
-        )),
-        initialMinute = if (scheduleTime !== null) LocalTime.parse(scheduleTime.endTime).minute else (currentTime.get(
-            Calendar.MINUTE
-        )),
+        initialHour = scheduleTime?.let {
+            LocalTime.parse(it.endTime).hour
+        } ?: currentTime.get(Calendar.HOUR_OF_DAY),
+        initialMinute = scheduleTime?.let {
+            LocalTime.parse(it.endTime).minute
+        } ?: currentTime.get(Calendar.MINUTE),
         is24Hour = false
     )
 
