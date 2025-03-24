@@ -34,7 +34,7 @@ class ScheduleViewModel(
     }
 
     private val _scheduleResult =
-        MutableStateFlow<AppResult<Boolean>>(AppResult.Initial)
+        MutableStateFlow<AppResult<Unit>>(AppResult.Initial)
     val scheduleResult get() = _scheduleResult.asStateFlow()
 
     fun createSchedule(

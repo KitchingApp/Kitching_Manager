@@ -25,7 +25,7 @@ class PrepViewModel(
         }
     }
 
-    private val _prepResult = MutableStateFlow<AppResult<Boolean>>(AppResult.Initial)
+    private val _prepResult = MutableStateFlow<AppResult<Unit>>(AppResult.Initial)
     val prepResult get() = _prepResult.asStateFlow()
 
     fun createPrep(categoryId: String, name: String) {
