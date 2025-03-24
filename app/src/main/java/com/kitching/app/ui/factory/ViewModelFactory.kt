@@ -17,6 +17,7 @@ import com.kitching.app.ui.model.ScheduleViewModel
 import com.kitching.app.util.PreferencesDataStore
 import com.kitching.app.ui.model.StaffLevelViewModel
 import com.kitching.app.ui.model.TeamViewModel
+import com.kitching.app.ui.model.UserViewModel
 import com.kitching.data.repository.LoginRepositoryImpl
 import com.kitching.data.repository.NoticeRepositoryImpl
 import com.kitching.data.repository.OrderCategoryRepositoryImpl
@@ -29,6 +30,7 @@ import com.kitching.data.repository.ScheduleRepositoryImpl
 import com.kitching.data.repository.ScheduleTimeRepositoryImpl
 import com.kitching.data.repository.StaffLevelRepositoryImpl
 import com.kitching.data.repository.TeamRepositoryImpl
+import com.kitching.data.repository.UserRepositoryImpl
 import com.kitching.data.repository.UserTeamRepositoryImpl
 
 @Suppress("UNCHECKED_CAST")
@@ -95,6 +97,10 @@ val viewModelFactory = object : ViewModelProvider.Factory {
                     TeamViewModel(
                         teamRepository = TeamRepositoryImpl(),
                         dataStore = PreferencesDataStore(context = KitchingApplication.getInstance())
+                    )
+                isAssignableFrom(UserViewModel::class.java) ->
+                    UserViewModel(
+                        userRepository = UserRepositoryImpl(),
                     )
                 else ->
                     throw IllegalArgumentException("Unknown ViewModel class: ${modelClass.name}")
