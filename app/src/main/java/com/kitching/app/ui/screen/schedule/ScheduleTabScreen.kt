@@ -79,19 +79,7 @@ fun ScheduleTabScreen(
     val rejectReasonState = remember { mutableStateOf(TextFieldValue("")) }
 
     /** 드롭다운에서 선택된 멤버 */
-    val selectedMember = remember {
-        mutableStateOf(
-            Member(
-                userTeamId = "",
-                userId = "",
-                userName = "",
-                userImage = "",
-                staffLevelId = "",
-                staffLevelName = "",
-                manager = false
-            )
-        )
-    }
+    val selectedMember = remember { mutableStateOf(Member.init()) }
 
     /** 선택된 스케줄타임 */
     val selectedScheduleTime = remember {
