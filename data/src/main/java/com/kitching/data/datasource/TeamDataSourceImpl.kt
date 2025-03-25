@@ -37,7 +37,7 @@ class TeamDataSourceImpl(private val db: FirebaseFirestore = FirebaseFirestore.g
     }.getOrElse { throw FailedCRUDInFirebaseException(it).getException() }
 
     override suspend fun getTeamList(teamId: String): List<TeamDTO> = runCatching {
-        db.collection(COLLECTION_TEAM).whereNotEqualTo("id", teamId).get().await()
+        db.collection(COLLECTION_TEAM).whereEqualTo("id", teamId).get().await()
             .toObjects(TeamDTO::class.java)
     }.getOrElse { throw FailedCRUDInFirebaseException(it).getException() }
 }
