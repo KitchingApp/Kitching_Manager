@@ -1,5 +1,6 @@
 package com.kitching.data.repository
 
+import android.util.Log
 import com.kitching.data.datasource.TeamDataSource
 import com.kitching.data.datasource.TeamDataSourceImpl
 import com.kitching.data.datasource.UserTeamDataSource
@@ -17,19 +18,11 @@ class TeamRepositoryImpl(
 ) : TeamRepository {
     override fun getTeamsByUserId(userId: String) = flow {
         emit(AppResult.Loading)
-
-        val userTeams = userTeamDataSource.getUserTeams(userId)
-
-        val teamList = userTeams.flatMap { userTeamDTO ->
-            teamDataSource.getTeamList(userTeamDTO.teamId).map { dto ->
-                Team(
-                    teamId = dto.id,
-                    teamName = dto.teamName,
-                    teamAmount = dto.teamAmount
-                )
+        emit(AppResult.Success(
+            userTeamDataSource.getUserTeams(userId).map { userTeam ->
+                teamDataSource.getTeam(userTeam.teamId).toDomain()
             }
-        }
-        emit(AppResult.Success(teamList))
+        ))
     }.catch {
         emit(AppResult.Failure(it))
     }

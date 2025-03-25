@@ -70,15 +70,15 @@ onTeamCreateClick: () -> Unit,
                         modifier = Modifier.fillMaxWidth().weight(1f),
                         verticalArrangement = Arrangement.spacedBy(20.dp)
                     ) {
-//                        val teamListdata = if(teamListState is AppResult.Success) teamListState.data else emptyList<Team>()
-//                        teamListdata.forEach { team ->
-//                            item(key = team.teamId) {
-//                                TeamCardItem(
-//                                    teamName = team.teamName,
-//                                    onCardClick = { onTeamItemClick(team) }
-//                                )
-//                            }
-//                        }
+                        val teamListdata = if(teamListState is AppResult.Success) teamListState.data else emptyList<Team>()
+                        teamListdata.forEach { team ->
+                            item(key = team.teamId) {
+                                TeamCardItem(
+                                    teamName = team.teamName,
+                                    onCardClick = { onTeamItemClick(team) }
+                                )
+                            }
+                        }
                     }
                     TextButton(
                         modifier = Modifier
