@@ -25,7 +25,7 @@ class NoticeViewModel(
         }
     }
 
-    private val _noticeResult = MutableStateFlow<AppResult<Boolean>>(AppResult.Initial)
+    private val _noticeResult = MutableStateFlow<AppResult<Unit>>(AppResult.Initial)
     val noticeResult get() = _noticeResult.asStateFlow()
 
     fun createNotice(userId: String, teamId: String, title: String, content: String) {

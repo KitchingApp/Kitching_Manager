@@ -21,13 +21,15 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import coil3.compose.AsyncImage
+import com.kitching.app.common.CoilImageRequest
 import com.kitching.app.ui.theme.Caption1_m
 import com.kitching.app.ui.theme.H2
 import com.kitching.app.ui.theme.NeutralGray800
 import com.kitching.app.util.dropShadow
 
 @Composable
-fun ProfileSection(imageRes: Int, name: String, role: String) {
+fun ProfileSection(imageSource: String, name: String, role: String) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
         modifier = Modifier.fillMaxWidth()
@@ -37,8 +39,8 @@ fun ProfileSection(imageRes: Int, name: String, role: String) {
             .background(Color.White, shape = CircleShape)
             .dropShadow(shape = CircleShape, offsetY = 2.dp, spread = 2.dp)
         ) {
-            Image(
-                painter = painterResource(id = imageRes),
+            AsyncImage(
+                model = CoilImageRequest.getImageRequest(imageSource),
                 contentDescription = null,
                 modifier = Modifier
                     .size(80.dp)

@@ -26,7 +26,7 @@ class OrderViewModel(
         }
     }
 
-    private var _orderResult = MutableStateFlow<AppResult<Boolean>>(AppResult.Initial)
+    private var _orderResult = MutableStateFlow<AppResult<Unit>>(AppResult.Initial)
     val orderResult get() = _orderResult.asStateFlow()
 
     fun createOrder(categoryId: String, orderName: String) {

@@ -27,7 +27,7 @@ class OrderRepositoryImpl(
         emit(AppResult.Failure(it))
     }
 
-    override fun createOrder(categoryId: String, orderName: String): Flow<AppResult<Boolean>> =
+    override fun createOrder(categoryId: String, orderName: String) =
         flow {
             emit(AppResult.Loading)
             emit(AppResult.Success(orderDataSource.createOrder(categoryId, orderName)))
@@ -35,14 +35,14 @@ class OrderRepositoryImpl(
             emit(AppResult.Failure(it))
         }
 
-    override fun deleteOrder(orderId: String): Flow<AppResult<Boolean>> = flow {
+    override fun deleteOrder(orderId: String) = flow {
         emit(AppResult.Loading)
         emit(AppResult.Success(orderDataSource.deleteOrder(orderId)))
     }.catch {
         emit(AppResult.Failure(it))
     }
 
-    override fun updateOrder(orderId: String, orderName: String): Flow<AppResult<Boolean>> =
+    override fun updateOrder(orderId: String, orderName: String) =
         flow {
             emit(AppResult.Loading)
             emit(AppResult.Success(orderDataSource.updateOrder(orderId, orderName)))

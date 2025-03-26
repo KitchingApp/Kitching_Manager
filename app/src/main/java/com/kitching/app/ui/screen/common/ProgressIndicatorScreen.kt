@@ -2,6 +2,7 @@ package com.kitching.app.ui.screen.common
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.width
@@ -11,6 +12,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
@@ -24,6 +26,7 @@ import com.kitching.app.ui.theme.NeutralGray100
 import com.kitching.app.ui.theme.PrimaryGreen300
 import com.kitching.app.ui.theme.defaultPadding
 
+@Preview
 @Composable
 fun ProgressIndicatorScreen() {
     val indicatorItem = ProgressIndicatorItem.getRandomItem()
@@ -37,36 +40,29 @@ fun ProgressIndicatorScreen() {
     ) {
         Column(
             modifier = Modifier.fillMaxSize(),
-            verticalArrangement = Arrangement.Center,
+            verticalArrangement = Arrangement.spacedBy(defaultPadding),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Column(
-                verticalArrangement = Arrangement.spacedBy(defaultPadding),
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                Column (
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ) {
-                    AsyncImage(
-                        modifier = Modifier.width(100.dp),
-                        model = indicatorItem.image,
-                        contentDescription = null
-                    )
-                    Text(
-                        text = stringResource(indicatorItem.stringResource),
-                        style = H1.copy(color = PrimaryGreen300)
-                    )
-                }
-                LinearProgressIndicator(
-                    modifier = Modifier.width(240.dp).height(16.dp),
-                    trackColor = NeutralGray100,
-                    color = PrimaryGreen300
-                )
-                Text(
-                    text = stringResource(R.string.indicator_screen_message_common),
-                    style = Caption1_m.copy(color = NeutralGray0)
-                )
-            }
+            Spacer(modifier = Modifier.weight(1f))
+            AsyncImage(
+                modifier = Modifier.width(100.dp),
+                model = indicatorItem.image,
+                contentDescription = null
+            )
+            Text(
+                text = indicatorItem.title,
+                style = H1.copy(color = PrimaryGreen300)
+            )
+            LinearProgressIndicator(
+                modifier = Modifier.width(240.dp).height(16.dp),
+                trackColor = NeutralGray100,
+                color = PrimaryGreen300
+            )
+            Text(
+                text = stringResource(R.string.indicator_screen_message_common),
+                style = Caption1_m.copy(color = NeutralGray0)
+            )
+            Spacer(modifier = Modifier.weight(1f))
         }
     }
 }

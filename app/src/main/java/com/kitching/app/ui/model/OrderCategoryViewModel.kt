@@ -25,7 +25,7 @@ class OrderCategoryViewModel(
         }
     }
 
-    private val _orderCategoryResult = MutableStateFlow<AppResult<Boolean>>(AppResult.Initial)
+    private val _orderCategoryResult = MutableStateFlow<AppResult<Unit>>(AppResult.Initial)
     val orderCategoryResult get() = _orderCategoryResult
         .asStateFlow()
 

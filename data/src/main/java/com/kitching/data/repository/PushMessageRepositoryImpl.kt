@@ -1,12 +1,12 @@
 package com.kitching.data.repository
 
-import android.util.Log
 import com.kitching.data.datasource.FcmTokenDataSource
 import com.kitching.data.datasource.FcmTokenDataSourceImpl
 import com.kitching.data.datasource.PushMessageDataSource
 import com.kitching.data.datasource.PushMessageDataSourceImpl
 import com.kitching.data.datasource.TeamDataSource
 import com.kitching.data.datasource.TeamDataSourceImpl
+import com.kitching.data.exception.PushMessageFailedException
 import com.kitching.domain.AppResult
 import com.kitching.domain.entities.FcmToken
 import com.kitching.domain.entities.Schedule
@@ -25,15 +25,13 @@ class PushMessageRepositoryImpl(
         rejectReason: String
     ) = flow {
         emit(AppResult.Loading)
-        val failedPushDeviceList = mutableListOf<FcmToken>()
-        val failedPushErrMsgList = mutableListOf<String>()
+        val failedList = mutableListOf<Pair<FcmToken, String>>()
         val successedPushDeviceList = mutableListOf<String>()
         val registrationTokens = fcmTokenDataSource.getTokens(schedule.userId)
         registrationTokens.forEach { token ->
             try {
                 val res = pushMessageDataSource.sendRejectPushMessage(
-                    teamName = teamDataSource.getTeam(teamId)?.teamName
-                        ?: throw Throwable("cannot find team"),
+                    teamName = teamDataSource.getTeam(teamId).teamName,
                     scheduleDate = schedule.date,
                     scheduleTimeName = schedule.scheduleTimeName,
                     rejectReason = rejectReason,
@@ -42,18 +40,15 @@ class PushMessageRepositoryImpl(
                 if (res.code() == 200) {
                     successedPushDeviceList.add(token.deviceModel)
                 } else {
-                    Log.d("fcm", "failedReason: $res.code() ${res.errorBody()?.string()}")
-                    failedPushDeviceList.add(token.toDomain())
-                    failedPushErrMsgList.add(res.errorBody()?.string() ?: "")
+                    failedList.add(Pair(token.toDomain(), res.errorBody()?.string() ?: ""))
                 }
             } catch (throwable: Throwable) {
-                failedPushDeviceList.add(token.toDomain())
-                failedPushErrMsgList.add(throwable.message ?: "")
+                failedList.add(Pair(token.toDomain(), throwable.message ?: ""))
             }
         }
         // 여러대의 기기중 한대라도 푸시알림 성공적으로 보냈다면 성공으로 간주(기준 회의 필요)
         if (successedPushDeviceList.isEmpty()) {
-            emit(AppResult.Failure(Throwable("cannot send push message")))
+            emit(AppResult.Failure(PushMessageFailedException(userId = schedule.userId, failedList = failedList)))
         } else {
             emit(AppResult.Success(true))
         }

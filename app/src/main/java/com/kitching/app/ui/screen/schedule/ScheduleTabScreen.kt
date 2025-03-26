@@ -1,5 +1,6 @@
 package com.kitching.app.ui.screen.schedule
 
+import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -61,9 +62,6 @@ fun ScheduleTabScreen(
     var showDeleteDialog by remember { mutableStateOf(false) }
     var showRejectDialog by remember { mutableStateOf(false) }
 
-    /** 드롭다운 메뉴가 열려있는지 저장 */
-    val isExpanded = remember { mutableStateOf(false) }
-
     var selectedDateTime by remember { mutableStateOf(LocalDateTime.now()) }
 
     var targetSchedule by remember {
@@ -79,33 +77,6 @@ fun ScheduleTabScreen(
         )
     }
     val rejectReasonState = remember { mutableStateOf(TextFieldValue("")) }
-
-    /** 드롭다운에서 선택된 멤버 */
-    val selectedMember = remember {
-        mutableStateOf(
-            Member(
-                userTeamId = "",
-                userId = "",
-                userName = "",
-                userImage = "",
-                staffLevelId = "",
-                staffLevelName = "",
-                manager = false
-            )
-        )
-    }
-
-    /** 선택된 스케줄타임 */
-    val selectedScheduleTime = remember {
-        mutableStateOf(
-            ScheduleTime(
-                scheduleTimeId = "",
-                scheduleTimeName = "",
-                startTime = LocalTime.now().toString(),
-                endTime = LocalTime.now().toString()
-            )
-        )
-    }
 
     val tabItems = ScheduleTabItem().renderTabItems()
     val tabPageState = rememberPagerState(
@@ -233,28 +204,21 @@ fun ScheduleTabScreen(
                     }
                     if (showCreateDialog) {
                         ScheduleCreateDialog(
-                            isExpanded = isExpanded,
                             onDismissRequest = {
-                                if (isExpanded.value) {
-                                    isExpanded.value = false
-                                } else {
-                                    showCreateDialog = false
-                                }
+                                showCreateDialog = false
                             },
                             selectedDateTime = selectedDateTime,
                             members = (allMembersState as AppResult.Success<List<Member>>).data,
-                            onClickConfirm = {
+                            onClickConfirm = { selectedMember, selectedScheduleTime ->
                                 viewModel.createSchedule(
                                     teamId = teamId,
                                     dateString = selectedDateTime.toLocalDate().toString(),
-                                    userId = selectedMember.value.userId,
-                                    scheduleTimeId = selectedScheduleTime.value.scheduleTimeId,
+                                    userId = selectedMember.userId,
+                                    scheduleTimeId = selectedScheduleTime.scheduleTimeId,
                                     fix = true
                                 )
                             },
-                            selectedMember = selectedMember,
                             scheduleTimes = (scheduleTimesState as AppResult.Success<List<ScheduleTime>>).data,
-                            selectedScheduleTimes = selectedScheduleTime
                         )
                     }
                     if (showDeleteDialog) {

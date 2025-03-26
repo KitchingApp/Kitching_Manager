@@ -1,5 +1,6 @@
 package com.kitching.app.ui.screen
 
+import android.util.Log
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.Scaffold

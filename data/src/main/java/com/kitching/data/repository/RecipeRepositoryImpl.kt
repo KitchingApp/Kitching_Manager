@@ -13,19 +13,17 @@ import kotlinx.coroutines.flow.flow
 
 class RecipeRepositoryImpl(
     private val recipeDataSource: RecipeDataSource = RecipeDataSourceImpl()
-): RecipeRepository {
+) : RecipeRepository {
     override fun getRecipes(teamId: String): Flow<AppResult<List<Recipe>>> = flow {
         emit(AppResult.Loading)
-        val recipes = recipeDataSource.getRecipes(teamId).map { it.toDomain() }.toList()
-        emit(AppResult.Success(recipes))
+        emit(AppResult.Success(recipeDataSource.getRecipes(teamId).map { it.toDomain() }.toList()))
     }.catch {
         emit(AppResult.Failure(it))
     }
 
-    override fun getRecipeById(recipeId: String): Flow<AppResult<Recipe>> = flow {
+    override fun getRecipeById(recipeId: String) = flow {
         emit(AppResult.Loading)
-        val recipe = recipeDataSource.getRecipeById(recipeId).toDomain()
-        emit(AppResult.Success(recipe))
+        emit(AppResult.Success(recipeDataSource.getRecipeById(recipeId).toDomain()))
     }.catch { emit(AppResult.Failure(it)) }
 
     override fun updateRecipe(
@@ -33,11 +31,9 @@ class RecipeRepositoryImpl(
         name: String,
         steps: List<String>,
         ingredients: List<Ingredient>,
-    ): Flow<AppResult<Boolean>> = flow {
+    ) = flow {
         emit(AppResult.Loading)
-
-        // Ingredient -> IngredientDTO
-        val ingDtoList = ingredients.map { ingredients ->
+        emit(AppResult.Success(recipeDataSource.updateRecipe(recipeId, name, steps, ingredients.map { ingredients ->
             IngredientDTO(
                 id = ingredients.ingredientId,
                 name = ingredients.ingredientName,
@@ -45,18 +41,9 @@ class RecipeRepositoryImpl(
                 twice = ingredients.twice,
                 unit = ingredients.unit
             )
-        }
-
-        val isSuccess = recipeDataSource.updateRecipe(recipeId, name, steps, ingDtoList)
-
-        if (isSuccess) {
-            emit(AppResult.Success(true))
-        } else {
-            emit(AppResult.Failure(Exception()))
-        }
-
-    }.catch { e ->
-        emit(AppResult.Failure(e))
+        })))
+    }.catch {
+        emit(AppResult.Failure(it))
     }
 
     override fun createRecipe(
@@ -66,19 +53,12 @@ class RecipeRepositoryImpl(
         steps: List<String>,
         teamId: String,
         ingredients: List<Map<String, String>>,
-    ): Flow<AppResult<Boolean>> = flow {
+    ) = flow {
         emit(AppResult.Loading)
-
-        val isSuccess = recipeDataSource.createRecipe(
+        emit(AppResult.Success(recipeDataSource.createRecipe(
             imageData, imageName, recipeName, steps, teamId, ingredients
-        )
-
-        if (isSuccess) {
-            emit(AppResult.Success(true))
-        } else {
-            emit(AppResult.Failure(Exception()))
-        }
-    }.catch { e ->
-        emit(AppResult.Failure(e))
+        )))
+    }.catch {
+        emit(AppResult.Failure(it))
     }
 }

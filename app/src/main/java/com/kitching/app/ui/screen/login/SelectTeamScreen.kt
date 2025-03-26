@@ -36,6 +36,7 @@ import com.kitching.app.ui.theme.defaultPadding
 import com.kitching.domain.AppResult
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
+import java.util.UUID
 
 @Composable
 fun SelectTeamScreen(

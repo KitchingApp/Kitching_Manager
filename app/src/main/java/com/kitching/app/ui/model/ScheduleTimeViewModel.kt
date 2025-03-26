@@ -24,7 +24,7 @@ class ScheduleTimeViewModel(private val repository: ScheduleTimeRepository) : Vi
     }
 
     private var _scheduleTimeResult =
-        MutableStateFlow<AppResult<Boolean>>(AppResult.Initial)
+        MutableStateFlow<AppResult<Unit>>(AppResult.Initial)
     val scheduleTimeResult get() = _scheduleTimeResult.asStateFlow()
 
     fun createScheduleTime(

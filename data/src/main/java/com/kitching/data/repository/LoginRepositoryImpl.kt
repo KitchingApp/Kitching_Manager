@@ -15,10 +15,9 @@ class LoginRepositoryImpl(
         uid: String,
         userName: String,
         userImage: String,
-    ): Flow<AppResult<Boolean>> = flow {
+    ): Flow<AppResult<Unit>> = flow {
         emit(AppResult.Loading)
-        val result = dataSource.checkAndSaveUser(uid, userName, userImage)
-        emit(AppResult.Success(result))
+        emit(AppResult.Success(dataSource.checkAndSaveUser(uid, userName, userImage)))
     }.catch {
         emit(AppResult.Failure(it))
     }

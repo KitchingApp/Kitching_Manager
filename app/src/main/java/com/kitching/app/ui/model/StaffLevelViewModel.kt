@@ -25,7 +25,7 @@ class StaffLevelViewModel(
         }
     }
 
-    private val _staffLevelResult = MutableStateFlow<AppResult<Boolean>>(AppResult.Initial)
+    private val _staffLevelResult = MutableStateFlow<AppResult<Unit>>(AppResult.Initial)
     val staffLevelResult get() = _staffLevelResult.asStateFlow()
 
     fun createStaffLevel(teamId: String, name: String) {
