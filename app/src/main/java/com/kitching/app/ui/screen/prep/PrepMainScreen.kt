@@ -17,7 +17,7 @@ import com.kitching.app.common.ActionIconInfo
 import com.kitching.app.common.CommonState
 import com.kitching.app.common.KitchingApplication
 import com.kitching.app.common.NavigationIconInfo
-import com.kitching.app.navgraph.CategoryItemForScreen
+import com.kitching.app.navgraph.CategoryItem
 import com.kitching.app.ui.factory.viewModelFactory
 import com.kitching.app.ui.model.PrepCategoryViewModel
 import com.kitching.app.ui.screen.categoryscreen.CategoryScreen
@@ -40,9 +40,9 @@ import kotlinx.coroutines.launch
  * @param viewModel
  */
 @Composable
-fun PrepTabScreen(
+fun PrepMainScreen(
     commonState: CommonState,
-    onClickItem: (categoryItemForScreen: CategoryItemForScreen) -> Unit,
+    navigateToPrepDetail: (categoryItemForScreen: CategoryItem) -> Unit,
     viewModel: PrepCategoryViewModel = viewModel(factory = viewModelFactory)
 ) {
     // 다이얼로그 상태
@@ -104,14 +104,14 @@ fun PrepTabScreen(
                     CategoryScreen(
                         title = "프렙",
                         categoryList = categories.map { category ->
-                            CategoryItemForScreen(
+                            CategoryItem(
                                 categoryId = category.categoryId,
                                 categoryName = category.categoryName,
                                 categoryColor = category.color
                             )
                         },
                         onCardClick = { categoryItemForScreen ->
-                            onClickItem(categoryItemForScreen)
+                            navigateToPrepDetail(categoryItemForScreen)
                         },
                         onCardOptionBtnClick = { categoryId ->
                             optionMenuId.value =

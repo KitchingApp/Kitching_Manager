@@ -16,7 +16,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.kitching.app.common.ActionIconInfo
 import com.kitching.app.common.CommonState
 import com.kitching.app.common.NavigationIconInfo
-import com.kitching.app.navgraph.CategoryItemForScreen
+import com.kitching.app.navgraph.CategoryItem
 import com.kitching.app.ui.factory.viewModelFactory
 import com.kitching.app.ui.model.OrderCategoryViewModel
 import com.kitching.app.ui.screen.categoryscreen.CategoryScreen
@@ -32,16 +32,16 @@ import com.kitching.domain.AppResult
 import kotlinx.coroutines.launch
 
 /**
- * Order tab screen
+ * Order main screen
  *
  * @param commonState 네비게이션 컨트롤러, 앱바 상태, 코루틴 스코프를 갖는 data class
  * @param onClickItem
  * @param viewModel
  */
 @Composable
-fun OrderTabScreen(
+fun OrderMainScreen(
     commonState: CommonState,
-    onClickItem: (categoryItemForScreen: CategoryItemForScreen) -> Unit,
+    onClickItem: (categoryItemForScreen: CategoryItem) -> Unit,
     viewModel: OrderCategoryViewModel = viewModel(factory = viewModelFactory)
 ) {
 
@@ -96,7 +96,7 @@ fun OrderTabScreen(
                     CategoryScreen(
                         title = "발주",
                         categoryList = categories.map { category ->
-                            CategoryItemForScreen(
+                            CategoryItem(
                                 categoryId = category.categoryId,
                                 categoryName = category.categoryName,
                                 categoryColor = category.color

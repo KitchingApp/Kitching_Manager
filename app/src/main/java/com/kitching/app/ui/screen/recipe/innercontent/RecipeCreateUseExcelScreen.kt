@@ -58,7 +58,7 @@ data class RecipeSheetInfo(
 @Composable
 fun RecipeCreateUseExcelScreen(
     commonState: CommonState,
-    goToRecipeList: () -> Unit,
+    navigateToRecipeList: () -> Unit,
     viewModel: RecipeViewModel = viewModel(factory = viewModelFactory)
 ) {
     var recipeInfos by remember { mutableStateOf((emptyList<RecipeSheetInfo>())) }
@@ -89,7 +89,7 @@ fun RecipeCreateUseExcelScreen(
                     teamId = teamId
                 )
             }
-            goToRecipeList()
+            navigateToRecipeList()
         }
     )
 

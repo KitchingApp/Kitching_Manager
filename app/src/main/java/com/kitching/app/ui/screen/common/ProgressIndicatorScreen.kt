@@ -50,7 +50,7 @@ fun ProgressIndicatorScreen() {
                 contentDescription = null
             )
             Text(
-                text = indicatorItem.title,
+                text = stringResource(indicatorItem.stringResource),
                 style = H1.copy(color = PrimaryGreen300)
             )
             LinearProgressIndicator(
