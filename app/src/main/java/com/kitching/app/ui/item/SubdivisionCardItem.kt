@@ -68,7 +68,7 @@ fun SubdivisionCardItem(
                 Icon(
                     imageVector = ImageVector.vectorResource(R.drawable.icon_kebab_menu),
                     tint = NeutralGray600,
-                    contentDescription = ""
+                    contentDescription = null
                 )
             }
         }

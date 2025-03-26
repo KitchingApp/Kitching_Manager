@@ -11,11 +11,13 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import coil3.compose.AsyncImage
+import com.kitching.app.R
 import com.kitching.app.common.ProgressIndicatorItem
 import com.kitching.app.ui.theme.Caption1_m
 import com.kitching.app.ui.theme.H1
@@ -57,7 +59,7 @@ fun ProgressIndicatorScreen() {
                 color = PrimaryGreen300
             )
             Text(
-                text = "요리가 완성되는 중입니다. 조금만 기다려주세요!",
+                text = stringResource(R.string.indicator_screen_message_common),
                 style = Caption1_m.copy(color = NeutralGray0)
             )
             Spacer(modifier = Modifier.weight(1f))

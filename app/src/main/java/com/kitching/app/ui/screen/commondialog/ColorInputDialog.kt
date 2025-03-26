@@ -128,7 +128,7 @@ fun ColorInputDialog(
                     if(color == colorState.value) {
                         Icon(
                             imageVector = ImageVector.vectorResource(R.drawable.icon_check),
-                            contentDescription = "선택된 컬러 표시",
+                            contentDescription = null,
                             tint = NeutralGray0,
                             modifier = Modifier.size(20.dp)
                         )

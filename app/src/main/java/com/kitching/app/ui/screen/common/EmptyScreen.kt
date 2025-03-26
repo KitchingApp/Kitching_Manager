@@ -30,7 +30,7 @@ fun EmptyScreen(
     ) {
         Image(
             imageVector = ImageVector.vectorResource(R.drawable.logo_dish),
-            contentDescription = "Empty"
+            contentDescription = null
         )
         Text(
             modifier = Modifier.fillMaxWidth().padding(15.dp),

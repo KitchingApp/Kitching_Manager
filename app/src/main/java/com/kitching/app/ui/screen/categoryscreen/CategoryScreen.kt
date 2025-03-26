@@ -15,7 +15,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import com.kitching.app.R
 import com.kitching.app.navgraph.CategoryItemForScreen
 import com.kitching.app.ui.item.CategoryCardItem
 import com.kitching.app.ui.screen.commondialog.DropdownOptionMenu
@@ -61,7 +63,7 @@ fun CategoryScreen(
                 modifier = Modifier
                     .fillMaxSize()
                     .wrapContentHeight(),
-                text = "$title 카테고리",
+                text = stringResource(R.string.category_detail_screen_title, title),
                 style = H2.copy(color = NeutralGray800)
             )
         }

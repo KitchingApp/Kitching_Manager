@@ -158,7 +158,7 @@ fun RecipeFormStateRow(correctCondition: Boolean, targetElement: String) {
             modifier = Modifier.size(10.dp),
             model = if (correctCondition) R.drawable.icon_check_circle else R.drawable.icon_error_circle,
             colorFilter = ColorFilter.tint(if (correctCondition) PrimaryGreen300 else SecondaryRed600),
-            contentDescription = if (correctCondition) "${targetElement}에 문제가 없습니다" else "${targetElement}에 문제가 있습니다"
+            contentDescription = null
         )
     }
 }

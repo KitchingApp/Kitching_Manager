@@ -10,9 +10,11 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.kitching.app.R
 import com.kitching.app.common.ActionIconInfo
 import com.kitching.app.common.CommonState
 import com.kitching.app.common.NavigationIconInfo
@@ -70,7 +72,7 @@ fun OrderDetailScreen(
             ) {
                 val orders = (orderState as AppResult.Success).data
                 if (orders.isEmpty()) {
-                    EmptyScreen("발주 물품을 추가해주세요")
+                    EmptyScreen(stringResource(R.string.order_detail_empty_message))
                 } else {
                     CategorySubDivisionScreen(
                         itemList = orders.map { item ->
@@ -97,8 +99,8 @@ fun OrderDetailScreen(
                 }
                 if (showCreateDialog) {
                     BasicInputDialog(
-                        title = "발주 물품 추가",
-                        confirmText = "생성",
+                        title = stringResource(R.string.order_detail_create),
+                        confirmText = stringResource(R.string.button_create),
                         onClickConfirm = {
                             viewModel.createOrder(
                                 categoryId = categoryItemForScreen.categoryId,
@@ -109,42 +111,42 @@ fun OrderDetailScreen(
                             viewModel.getOrderList(categoryItemForScreen.categoryId)
 
                         },
-                        cancelText = "취소",
+                        cancelText = stringResource(R.string.button_cancel),
                         onClickCancel = {
                             optionMenuId.value = ""
                             showCreateDialog = false
                         },
                         textState = textState,
-                        placeHolder = "발주 물품을 입력해주세요"
+                        placeHolder = stringResource(R.string.order_detail_name_place_holder)
                     )
                 }
                 if (showModifyDialog) {
                     BasicInputDialog(
-                        title = "발주 물품 수정",
-                        confirmText = "수정",
+                        title = stringResource(R.string.order_detail_modify),
+                        confirmText = stringResource(R.string.button_modify),
                         onClickConfirm = {
                             viewModel.updateOrder(optionMenuId.value, textState.value.text)
                             viewModel.getOrderList(categoryItemForScreen.categoryId)
                             optionMenuId.value = ""
                             showModifyDialog = false
                         },
-                        cancelText = "취소",
+                        cancelText = stringResource(R.string.button_cancel),
                         onClickCancel = { showModifyDialog = false },
                         textState = textState,
-                        placeHolder = "발주 물품을 입력해주세요"
+                        placeHolder = stringResource(R.string.order_detail_name_place_holder)
                     )
                 }
                 if (showDeleteDialog) {
                     BasicConfirmDialog(
-                        message = "발주 물품을 삭제하시겠습니까?",
-                        confirmText = "삭제",
+                        message = stringResource(R.string.order_detail_delete_message),
+                        confirmText = stringResource(R.string.button_delete),
                         onClickConfirm = {
                             viewModel.deleteOrder(optionMenuId.value)
                             viewModel.getOrderList(categoryItemForScreen.categoryId)
                             optionMenuId.value = ""
                             showDeleteDialog = false
                         },
-                        cancelText = "취소",
+                        cancelText = stringResource(R.string.button_cancel),
                         onClickCancel = { showDeleteDialog = false }
                     )
                 }
