@@ -1,6 +1,5 @@
 package com.kitching.app.ui.screen
 
-import android.util.Log
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.Scaffold
@@ -19,8 +18,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.rememberNavController
 import com.kitching.app.common.CommonState
 import com.kitching.app.common.TopAppBarState
-import com.kitching.app.navgraph.CreateTeamScreen
-import com.kitching.app.navgraph.ScheduleTab
+import com.kitching.app.navgraph.ScreenRouteDef
 import com.kitching.app.ui.factory.viewModelFactory
 import com.kitching.app.ui.model.TeamViewModel
 import com.kitching.app.ui.screen.common.ResultConditionScreen
@@ -79,12 +77,12 @@ fun EntryPointScreen(
             drawerState = drawerState,
             teamListState = teamListState,
             onTeamCreateClick = {
-                navController.navigate(CreateTeamScreen)
+                navController.navigate(ScreenRouteDef.CreateTeam)
             },
             onTeamItemClick = { team ->
                 selectedTeamId = team.teamId
                 title = team.teamName
-                navController.popBackStack(ScheduleTab, false)
+                navController.popBackStack(ScreenRouteDef.ScheduleGraph, false)
             }
         ) {
             Scaffold(

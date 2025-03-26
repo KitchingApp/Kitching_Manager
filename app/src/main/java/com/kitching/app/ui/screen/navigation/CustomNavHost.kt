@@ -8,14 +8,13 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.kitching.app.common.CommonState
-import com.kitching.app.navgraph.CreateTeamScreen
-import com.kitching.app.navgraph.ScheduleTab
+import com.kitching.app.navgraph.ScreenRouteDef
 import com.kitching.app.navgraph.orderSliceNavGraph
 import com.kitching.app.navgraph.otherSliceNavGraph
 import com.kitching.app.navgraph.prepSliceNavGraph
 import com.kitching.app.navgraph.recipeSliceNavGraph
+import com.kitching.app.navgraph.scheduleSliceNavGraph
 import com.kitching.app.ui.screen.login.CreateTeamScreen
-import com.kitching.app.ui.screen.schedule.ScheduleTabScreen
 
 
 @Composable
@@ -26,10 +25,10 @@ fun CustomNavHost(
 ) {
     NavHost(
         navController = commonState.navController,
-        startDestination = ScheduleTab,
+        startDestination = ScreenRouteDef.ScheduleGraph.route,
         modifier = Modifier.padding(paddingValues = paddingValues)
     ) {
-        composable<CreateTeamScreen> {
+        composable(route = ScreenRouteDef.CreateTeam.route) {
             CreateTeamScreen(
                 coroutineScope = commonState.coroutineScope,
                 onNavigateBack = {
@@ -37,16 +36,25 @@ fun CustomNavHost(
                 },
                 onTeamCreated = {
                     commonState.navController.popBackStack(
-                        ScheduleTab,
+                        ScreenRouteDef.ScheduleGraph.route,
                         false
                     )
                 }
             )
         }
-        composable<ScheduleTab> { ScheduleTabScreen(commonState = commonState) }
-        prepSliceNavGraph(commonState = commonState, navController = navController)
-        recipeSliceNavGraph(commonState = commonState, navController = navController)
-        orderSliceNavGraph(commonState = commonState, navController = navController)
+        scheduleSliceNavGraph(commonState = commonState, navController = navController)
+        prepSliceNavGraph(
+            commonState = commonState,
+            navController = navController
+        )
+        recipeSliceNavGraph(
+            commonState = commonState,
+            navController = navController
+        )
+        orderSliceNavGraph(
+            commonState = commonState,
+            navController = navController
+        )
         otherSliceNavGraph(commonState = commonState, navController = navController)
     }
 }

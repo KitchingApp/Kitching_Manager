@@ -1,6 +1,5 @@
 package com.kitching.app.ui.screen.schedule
 
-import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -43,7 +42,6 @@ import com.kitching.domain.entities.ScheduleTime
 import kotlinx.coroutines.launch
 import java.time.Instant
 import java.time.LocalDateTime
-import java.time.LocalTime
 import java.time.ZoneId
 
 /**
@@ -53,7 +51,7 @@ import java.time.ZoneId
  * @param viewModel
  */
 @Composable
-fun ScheduleTabScreen(
+fun ScheduleMainScreen(
     commonState: CommonState,
     viewModel: ScheduleViewModel = viewModel(factory = viewModelFactory)
 ) {

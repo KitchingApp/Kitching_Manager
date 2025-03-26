@@ -35,6 +35,7 @@ import com.kitching.app.common.ActionIconInfo
 import com.kitching.app.common.CoilImageRequest
 import com.kitching.app.common.CommonState
 import com.kitching.app.common.NavigationIconInfo
+import com.kitching.app.navgraph.MemberItem
 import com.kitching.app.ui.factory.viewModelFactory
 import com.kitching.app.ui.model.MemberViewModel
 import com.kitching.app.ui.screen.common.ResultConditionScreen
@@ -49,7 +50,6 @@ import com.kitching.app.ui.theme.PrimaryGreen300
 import com.kitching.app.ui.theme.defaultPadding
 import com.kitching.app.util.PreferencesDataStore
 import com.kitching.domain.AppResult
-import com.kitching.domain.entities.Member
 import com.kitching.domain.entities.StaffLevel
 
 /**
@@ -62,7 +62,7 @@ import com.kitching.domain.entities.StaffLevel
 @Composable
 fun MemberDetailScreen(
     commonState: CommonState,
-    member: Member,
+    member: MemberItem,
     viewModel: MemberViewModel = viewModel(factory = viewModelFactory)
 ) {
     var isManager by remember { mutableStateOf(member.manager) }

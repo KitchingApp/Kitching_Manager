@@ -1,8 +1,5 @@
 package com.kitching.domain.entities
 
-import kotlinx.serialization.Serializable
-
-@Serializable
 data class Member(
     val userTeamId: String,
     val userId: String,

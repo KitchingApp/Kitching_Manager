@@ -36,9 +36,10 @@ import com.kitching.app.util.PreferencesDataStore
 import kotlinx.coroutines.launch
 
 @Composable
-fun RecipeTabScreen(
+fun RecipeMainScreen(
     commonState: CommonState,
-    goToCreateWithExcelFile: () -> Unit,
+    navigateToCreateUesDevice: () -> Unit,
+    navigateToCreateWithExcelFile: () -> Unit,
     viewModel: RecipeViewModel = viewModel(factory = viewModelFactory)
 ) {
     var showCreateOptionMenu by remember { mutableStateOf(false) }
@@ -79,11 +80,11 @@ fun RecipeTabScreen(
                         onDismissRequest = { showCreateOptionMenu = false },
                         onClickUseDevice = {
                             showCreateOptionMenu = false
-                            commonState.navController.navigate("create")
+                            navigateToCreateUesDevice()
                         },
                         onClickUseExcelFile = {
                             showCreateOptionMenu = false
-                            goToCreateWithExcelFile()
+                            navigateToCreateWithExcelFile()
                         }
                     )
                 }

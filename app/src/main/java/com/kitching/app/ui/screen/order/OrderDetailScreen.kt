@@ -18,7 +18,7 @@ import com.kitching.app.R
 import com.kitching.app.common.ActionIconInfo
 import com.kitching.app.common.CommonState
 import com.kitching.app.common.NavigationIconInfo
-import com.kitching.app.navgraph.CategoryItemForScreen
+import com.kitching.app.navgraph.CategoryItem
 import com.kitching.app.ui.factory.viewModelFactory
 import com.kitching.app.ui.model.OrderViewModel
 import com.kitching.app.ui.screen.categoryscreen.CategorySubDivisionScreen
@@ -34,7 +34,7 @@ import com.kitching.domain.AppResult
 @Composable
 fun OrderDetailScreen(
     commonState: CommonState,
-    categoryItemForScreen: CategoryItemForScreen,
+    categoryItemForScreen: CategoryItem,
     viewModel: OrderViewModel = viewModel(factory = viewModelFactory)
 ) {
     var showCreateDialog by remember { mutableStateOf(false) }
