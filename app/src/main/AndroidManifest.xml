@@ -16,6 +16,8 @@
         android:name=".common.KitchingApplication"
         tools:targetApi="31">
 
+        <profileable android:shell="true" />
+
         <provider
             android:name="androidx.core.content.FileProvider"
             android:authorities="com.kitching.app.fileprovider"
