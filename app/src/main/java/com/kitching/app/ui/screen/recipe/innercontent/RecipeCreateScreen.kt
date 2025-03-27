@@ -64,7 +64,7 @@ fun RecipeCreateScreen(
     var imageUri by remember { mutableStateOf<Uri?>(null) }
     var imgName by remember { mutableStateOf("") }
     var recipeName by remember { mutableStateOf("") }
-    var ingredients by remember { mutableStateOf(listOf<Ingredient>(Ingredient("", "", -1, -1, ""))) }
+    var ingredients by remember { mutableStateOf(listOf<Ingredient>(Ingredient.init()))}
     var recipeSteps by remember { mutableStateOf(listOf("")) }
     var teamId by remember { mutableStateOf("") }
 
