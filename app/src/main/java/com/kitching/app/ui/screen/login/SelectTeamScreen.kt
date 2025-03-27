@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -35,7 +36,6 @@ import com.kitching.app.ui.theme.defaultPadding
 import com.kitching.domain.AppResult
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
-import java.util.UUID
 
 @Composable
 fun SelectTeamScreen(
@@ -88,19 +88,17 @@ fun SelectTeamScreen(
                     modifier = Modifier.weight(1f),
                     verticalArrangement = Arrangement.spacedBy(12.dp),
                 ) {
-                    teamList.forEach { team ->
-                        item(key = team.teamId) {
-                            TeamListItem(
-                                teamName = team.teamName,
-                                onClick = {
-                                    coroutineScope.launch {
-                                        viewModel.dataStore.saveTeamId(team.teamId)
-                                        viewModel.dataStore.saveTeamName(team.teamName)
-                                        onNavigateToMain()
-                                    }
+                    items(items = teamList, key = { it.teamId }) {
+                        TeamListItem(
+                            teamName = it.teamName,
+                            onClick = {
+                                coroutineScope.launch {
+                                    viewModel.dataStore.saveTeamId(it.teamId)
+                                    viewModel.dataStore.saveTeamName(it.teamName)
+                                    onNavigateToMain()
                                 }
-                            )
-                        }
+                            }
+                        )
                     }
                 }
                 Button(

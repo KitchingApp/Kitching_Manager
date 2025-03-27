@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -77,15 +78,13 @@ fun MemberListScreen(
                         modifier = Modifier.fillMaxSize(),
                         verticalArrangement = Arrangement.spacedBy(defaultPadding)
                     ) {
-                        membersData.forEach { member ->
-                            item(key = member.userId) {
-                                MemberCardItem(
-                                    member = member,
-                                    onCardClick = {
-                                        onMemberClick(member)
-                                    }
-                                )
-                            }
+                        items(items = membersData, key = {it.userId}) {
+                            MemberCardItem(
+                                member = it,
+                                onCardClick = {
+                                    onMemberClick(it)
+                                }
+                            )
                         }
                     }
                 }

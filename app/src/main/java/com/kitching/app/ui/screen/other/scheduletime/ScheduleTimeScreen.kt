@@ -99,7 +99,7 @@ fun ScheduleTimeScreen(
                             modifier = Modifier.weight(1f),
                             verticalArrangement = Arrangement.spacedBy(12.dp),
                         ) {
-                            items(scheduleTimeData) { scheduleTime ->
+                            items(items = scheduleTimeData, key = {it.scheduleTimeId}) { scheduleTime ->
                                 Column(
                                     modifier = Modifier.fillMaxWidth(),
                                     horizontalAlignment = Alignment.End
