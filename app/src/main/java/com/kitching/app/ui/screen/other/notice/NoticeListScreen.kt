@@ -75,7 +75,7 @@ fun NoticeListScreen(
                     )
                 } else {
                     LazyColumn {
-                        items(items = notices, key= {it.noticeId}) {
+                        items(items = notices, key = { it.noticeId }) {
                             NoticeItem(notice = it) {
                                 navigateToNoticeDetail(
                                     NoticeItem(
@@ -86,7 +86,6 @@ fun NoticeListScreen(
                                         content = it.content
                                     )
                                 )
-                                }
                             }
                         }
                     }
