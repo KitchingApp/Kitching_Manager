@@ -62,18 +62,7 @@ fun ScheduleMainScreen(
 
     var selectedDateTime by remember { mutableStateOf(LocalDateTime.now()) }
 
-    var targetSchedule by remember {
-        mutableStateOf(
-            Schedule(
-                scheduleId = "",
-                userId = "",
-                userName = "",
-                date = "",
-                scheduleTimeName = "",
-                fix = false
-            )
-        )
-    }
+    var targetSchedule by remember { mutableStateOf(Schedule()) }
     val rejectReasonState = remember { mutableStateOf(TextFieldValue("")) }
 
     val tabItems = ScheduleTabItem().renderTabItems()
@@ -97,7 +86,9 @@ fun ScheduleMainScreen(
     }
 
     LaunchedEffect(rejectPushMessageResultState) {
-        if (rejectPushMessageResultState is AppResult.Success) viewModel.deleteSchedule(targetSchedule.scheduleId)
+        if (rejectPushMessageResultState is AppResult.Success) viewModel.deleteSchedule(
+            targetSchedule.scheduleId
+        )
     }
 
     LaunchedEffect(scheduleResultState) {

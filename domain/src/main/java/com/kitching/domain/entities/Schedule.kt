@@ -7,4 +7,13 @@ data class Schedule(
     val scheduleTimeName: String,
     val date: String,
     val fix: Boolean,
-)
+) {
+    constructor() : this(
+        scheduleId = "",
+        userId = "",
+        userName = "",
+        scheduleTimeName = "",
+        date = "",
+        fix = false
+    )
+}
