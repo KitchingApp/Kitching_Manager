@@ -40,6 +40,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
@@ -88,7 +89,7 @@ fun CreateTeamScreen(
                             modifier = Modifier
                                 .align(Alignment.Center)
                                 .offset(x = (-30).dp),
-                            text = "팀 만들기",
+                            text = stringResource(R.string.create_team),
                             style = H3_m,
                         )
                     }
@@ -114,7 +115,7 @@ fun CreateTeamScreen(
         ) {
             Image(
                 painter = painterResource(R.drawable.create_team),
-                contentDescription = "puzzle img",
+                contentDescription = null,
                 modifier = Modifier
                     .padding(top = 30.dp)
                     .size(width = 132.dp, height = 130.dp)
@@ -133,7 +134,7 @@ fun CreateTeamScreen(
                     focusedBorderColor = PrimaryGreen300,
                     unfocusedBorderColor = PrimaryGreen300
                 ),
-                placeholder = { Text("팀 이름을 적어주세요!") },
+                placeholder = { Text(stringResource(R.string.team_name_place_holder)) },
                 modifier = Modifier.padding(10.dp),
                 textStyle = Body1_m
             )
@@ -145,7 +146,7 @@ fun CreateTeamScreen(
                 onExpandedChange = { expanded = it }
             ) {
                 OutlinedTextField(
-                    value = selectedTeamSize?.label ?: "팀 인원 선택",
+                    value = selectedTeamSize?.label ?: stringResource(R.string.choose_team_size),
                     onValueChange = { },
                     readOnly = true,
                     trailingIcon = {
@@ -156,7 +157,7 @@ fun CreateTeamScreen(
                                 } else {
                                     Icons.Default.KeyboardArrowDown
                                 },
-                                contentDescription = "드롭다운 아이콘",
+                                contentDescription = stringResource(R.string.button_drop_down_icon_description),
                                 tint = Color.Black
                             )
                         }
@@ -209,7 +210,7 @@ fun CreateTeamScreen(
                 shape = RoundedCornerShape(10.dp)
             ) {
                 Text(
-                    text = "만들기",
+                    text = stringResource(R.string.button_create_team),
                     style = H3_m
                 )
             }

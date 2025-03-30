@@ -16,7 +16,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.kitching.app.common.ActionIconInfo
 import com.kitching.app.common.CommonState
 import com.kitching.app.common.NavigationIconInfo
-import com.kitching.app.navgraph.NoticeItemForScreen
+import com.kitching.app.navgraph.NoticeItem
 import com.kitching.app.ui.factory.viewModelFactory
 import com.kitching.app.ui.item.NoticeItem
 import com.kitching.app.ui.model.NoticeViewModel
@@ -36,8 +36,8 @@ import com.kitching.domain.AppResult
 @Composable
 fun NoticeListScreen(
     commonState: CommonState,
-    goToCreateNotice: () -> Unit,
-    goToNoticeDetail: (notice: NoticeItemForScreen) -> Unit,
+    navigateToCreateNotice: () -> Unit,
+    navigateToNoticeDetail: (notice: NoticeItem) -> Unit,
     viewModel: NoticeViewModel = viewModel(factory = viewModelFactory)
 ) {
 
@@ -55,7 +55,7 @@ fun NoticeListScreen(
         navIconInfo = NavigationIconInfo.BACK,
         onClickNavIcon = { commonState.navController.popBackStack() },
         actionIconInfo = ActionIconInfo.ADD,
-        onClickActionIcon = { goToCreateNotice() }
+        onClickActionIcon = { navigateToCreateNotice() }
     )
 
     KitchingManagerTheme {
@@ -77,8 +77,8 @@ fun NoticeListScreen(
                     LazyColumn {
                         items(items = notices, key= {it.noticeId}) {
                             NoticeItem(notice = it) {
-                                goToNoticeDetail(
-                                    NoticeItemForScreen(
+                                navigateToNoticeDetail(
+                                    NoticeItem(
                                         noticeId = it.noticeId,
                                         writerName = it.writerName,
                                         date = it.date,
@@ -86,6 +86,7 @@ fun NoticeListScreen(
                                         content = it.content
                                     )
                                 )
+                                }
                             }
                         }
                     }

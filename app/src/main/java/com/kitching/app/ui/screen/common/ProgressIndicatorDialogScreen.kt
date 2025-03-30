@@ -11,22 +11,25 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import coil3.compose.AsyncImage
+import com.kitching.app.R
 import com.kitching.app.common.ProgressIndicatorItem
 import com.kitching.app.ui.theme.Caption1_m
 import com.kitching.app.ui.theme.H1
 import com.kitching.app.ui.theme.NeutralGray0
 import com.kitching.app.ui.theme.NeutralGray100
+import com.kitching.app.ui.theme.NeutralGray800
 import com.kitching.app.ui.theme.PrimaryGreen300
 import com.kitching.app.ui.theme.defaultPadding
 
 @Preview
 @Composable
-fun ProgressIndicatorScreen() {
+fun ProgressIndicatorDialogScreen() {
     val indicatorItem = ProgressIndicatorItem.getRandomItem()
 
     Dialog(
@@ -48,7 +51,7 @@ fun ProgressIndicatorScreen() {
                 contentDescription = null
             )
             Text(
-                text = indicatorItem.title,
+                text = stringResource(indicatorItem.stringResource),
                 style = H1.copy(color = PrimaryGreen300)
             )
             LinearProgressIndicator(
@@ -57,10 +60,42 @@ fun ProgressIndicatorScreen() {
                 color = PrimaryGreen300
             )
             Text(
-                text = "요리가 완성되는 중입니다. 조금만 기다려주세요!",
+                text = stringResource(R.string.indicator_screen_message_common),
                 style = Caption1_m.copy(color = NeutralGray0)
             )
             Spacer(modifier = Modifier.weight(1f))
         }
+    }
+}
+
+@Composable
+fun ProgressIndicatorScreenWithNoDialog(indicatorMessageResource: Int) {
+    val indicatorItem = ProgressIndicatorItem.getRandomItem()
+
+    Column(
+        modifier = Modifier.fillMaxSize(),
+        verticalArrangement = Arrangement.spacedBy(defaultPadding),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Spacer(modifier = Modifier.weight(1f))
+        AsyncImage(
+            modifier = Modifier.width(100.dp),
+            model = indicatorItem.image,
+            contentDescription = null
+        )
+        Text(
+            text = stringResource(indicatorItem.stringResource),
+            style = H1.copy(color = PrimaryGreen300)
+        )
+        LinearProgressIndicator(
+            modifier = Modifier.width(240.dp).height(16.dp),
+            trackColor = NeutralGray100,
+            color = PrimaryGreen300
+        )
+        Text(
+            text = stringResource(indicatorMessageResource),
+            style = Caption1_m.copy(color = NeutralGray800)
+        )
+        Spacer(modifier = Modifier.weight(1f))
     }
 }

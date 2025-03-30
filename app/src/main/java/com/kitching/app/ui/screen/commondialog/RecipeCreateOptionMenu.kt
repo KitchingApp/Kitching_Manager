@@ -11,7 +11,9 @@ import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import com.kitching.app.R
 import com.kitching.app.ui.theme.Body1_m
 import com.kitching.app.ui.theme.NeutralGray200
 import com.kitching.app.ui.theme.NeutralGray50
@@ -39,7 +41,7 @@ fun RecipeCreateOptionMenu(
             DropdownMenuItem(
                 modifier = Modifier.width(200.dp).height(48.dp).padding(20.dp, 10.dp),
                 contentPadding = PaddingValues(0.dp),
-                text = { Text(text = "직접 입력하기", style = Body1_m.copy(color = NeutralGray800)) },
+                text = { Text(text = stringResource(R.string.button_create_recipe_on_device), style = Body1_m.copy(color = NeutralGray800)) },
                 onClick = { onClickUseDevice() }
             )
             HorizontalDivider(
@@ -48,7 +50,7 @@ fun RecipeCreateOptionMenu(
             DropdownMenuItem(
                 modifier = Modifier.width(200.dp).height(48.dp).padding(20.dp, 10.dp),
                 contentPadding = PaddingValues(0.dp),
-                text = { Text(text = "엑셀로 불러오기", style = Body1_m.copy(color = NeutralGray800)) },
+                text = { Text(text = stringResource(R.string.button_create_recipe_use_excel), style = Body1_m.copy(color = NeutralGray800)) },
                 onClick = { onClickUseExcelFile() }
             )
         }

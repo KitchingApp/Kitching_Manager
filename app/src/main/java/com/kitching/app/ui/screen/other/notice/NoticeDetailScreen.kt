@@ -29,6 +29,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.kitching.app.common.ActionIconInfo
 import com.kitching.app.common.CommonState
 import com.kitching.app.common.NavigationIconInfo
+import com.kitching.app.navgraph.NoticeItem
 import com.kitching.app.ui.factory.viewModelFactory
 import com.kitching.app.ui.model.NoticeViewModel
 import com.kitching.app.ui.screen.common.ResultConditionScreen
@@ -45,7 +46,6 @@ import com.kitching.app.ui.theme.NeutralGray800
 import com.kitching.app.ui.theme.PrimaryGreen300
 import com.kitching.app.util.PreferencesDataStore
 import com.kitching.domain.AppResult
-import com.kitching.domain.entities.Notice
 
 /**
  * Notice detail screen
@@ -57,8 +57,8 @@ import com.kitching.domain.entities.Notice
 @Composable
 fun NoticeDetailScreen(
     commonState: CommonState,
-    notice: Notice,
-    goToNoticeList: () -> Unit,
+    notice: NoticeItem,
+    navigateToNoticeList: () -> Unit,
     viewModel: NoticeViewModel = viewModel(factory = viewModelFactory)
 ) {
     var showDeleteDialog by remember { mutableStateOf(false) }
@@ -142,7 +142,7 @@ fun NoticeDetailScreen(
                                         .weight(1f)
                                         .height(40.dp),
                                     shape = RoundedCornerShape(20.dp),
-                                    onClick = { goToNoticeList() },
+                                    onClick = { navigateToNoticeList() },
                                     colors = ButtonColors(
                                         containerColor = PrimaryGreen300,
                                         contentColor = NeutralGray0,
@@ -185,7 +185,7 @@ fun NoticeDetailScreen(
                                     viewModel.deleteNotice(notice.noticeId)
                                     if (noticeResultState is AppResult.Success) {
                                         viewModel.getNotices(teamId)
-                                        goToNoticeList()
+                                        navigateToNoticeList()
                                     }
                                     showDeleteDialog = false
                                 },

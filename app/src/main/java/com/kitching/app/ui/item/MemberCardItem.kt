@@ -19,9 +19,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
+import com.kitching.app.R
 import com.kitching.app.common.CoilImageRequest
 import com.kitching.app.ui.theme.Body1_m
 import com.kitching.app.ui.theme.NeutralGray300
@@ -70,7 +72,7 @@ fun MemberCardItem(
                 if(member.staffLevelName == "") {
                     Text(
                         modifier = Modifier.width(108.dp),
-                        text = "직급없음",
+                        text = stringResource(R.string.no_staffLevel_message),
                         style = Body1_m.copy(color = NeutralGray300),
                         textAlign = TextAlign.Center
                     )

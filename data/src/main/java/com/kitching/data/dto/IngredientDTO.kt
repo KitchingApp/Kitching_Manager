@@ -18,4 +18,14 @@ data class IngredientDTO(
             unit = unit
         )
     }
+
+    companion object {
+        fun domainToDto(domain: Ingredient): IngredientDTO = IngredientDTO(
+            id = domain.ingredientId,
+            name = domain.ingredientName,
+            once = domain.once,
+            twice = domain.twice,
+            unit = domain.unit
+        )
+    }
 }

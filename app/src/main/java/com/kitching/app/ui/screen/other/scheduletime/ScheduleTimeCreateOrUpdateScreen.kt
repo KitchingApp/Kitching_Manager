@@ -59,7 +59,7 @@ import java.util.Locale
 fun ScheduleTimeCreateOrUpdateScreen(
     commonState: CommonState,
     scheduleTime: ScheduleTime?,
-    goToScheduleTimeList: () -> Unit,
+    navigateToScheduleTimeList: () -> Unit,
     viewModel: ScheduleTimeViewModel = viewModel(factory = viewModelFactory)
 ) {
     val textState =
@@ -193,7 +193,7 @@ fun ScheduleTimeCreateOrUpdateScreen(
                                     endTime = String.format(Locale.KOREA, "%02d:%02d", endTimeState.hour, endTimeState.minute)
                                 )
                             }
-                            goToScheduleTimeList()
+                            navigateToScheduleTimeList()
                         }
                     ) {
                         Text(
@@ -214,7 +214,7 @@ fun ScheduleTimeCreateOrUpdateScreen(
                         ),
                         contentPadding = PaddingValues(0.dp),
                         border = BorderStroke(1.dp, NeutralGray300),
-                        onClick = { goToScheduleTimeList() }
+                        onClick = { navigateToScheduleTimeList() }
                     ) {
                         Text(
                             text = "취소",

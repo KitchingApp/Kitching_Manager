@@ -17,11 +17,11 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.kitching.app.LoginActivity
-import com.kitching.app.R
 import com.kitching.app.common.ActionIconInfo
 import com.kitching.app.common.CommonState
 import com.kitching.app.common.NavigationIconInfo.DRAWER
@@ -37,7 +37,7 @@ import com.kitching.domain.AppResult
 import kotlinx.coroutines.launch
 
 @Composable
-fun OtherTabScreen(
+fun OtherMainScreen(
     commonState: CommonState,
     userViewModel: UserViewModel = viewModel(factory = viewModelFactory)
 ) {
@@ -91,9 +91,9 @@ fun OtherTabScreen(
                     Column(
                         verticalArrangement = Arrangement.spacedBy(20.dp)
                     ) {
-                        OtherMenuItem().renderOtherMenuItems().forEach { otherMenu ->
-                            OtherButtonItem(label = otherMenu.tabName) {
-                                commonState.navController.navigate(otherMenu.routeName)
+                        OtherMenuItem.renderOtherMenuItems().forEach { otherMenu ->
+                            OtherButtonItem(label = stringResource(otherMenu.tabName)) {
+                                commonState.navController.navigate(otherMenu.destination.route)
                             }
                         }
 

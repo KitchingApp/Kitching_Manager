@@ -17,7 +17,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.kitching.app.common.ActionIconInfo
 import com.kitching.app.common.CommonState
 import com.kitching.app.common.NavigationIconInfo
-import com.kitching.app.navgraph.CategoryItemForScreen
+import com.kitching.app.navgraph.CategoryItem
 import com.kitching.app.ui.factory.viewModelFactory
 import com.kitching.app.ui.model.PrepViewModel
 import com.kitching.app.ui.screen.categoryscreen.CategorySubDivisionScreen
@@ -40,7 +40,7 @@ import com.kitching.domain.AppResult
 @Composable
 fun PrepDetailScreen(
     commonState: CommonState,
-    categoryItemForScreen: CategoryItemForScreen,
+    categoryItemForScreen: CategoryItem,
     viewModel: PrepViewModel = viewModel(factory = viewModelFactory)
 ) {
     var showCreateDialog by remember { mutableStateOf(false) }

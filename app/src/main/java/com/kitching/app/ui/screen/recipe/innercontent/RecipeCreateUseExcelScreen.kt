@@ -1,7 +1,9 @@
 package com.kitching.app.ui.screen.recipe.innercontent
 
 import android.content.Context
+import android.content.Intent
 import android.net.Uri
+import android.os.Parcelable
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Arrangement
@@ -22,12 +24,14 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.core.content.FileProvider
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.kitching.app.common.ActionIconInfo
 import com.kitching.app.common.CommonState
 import com.kitching.app.common.KitchingApplication
 import com.kitching.app.common.NavigationIconInfo
+import com.kitching.app.service.RecipeUploadService
 import com.kitching.app.ui.factory.viewModelFactory
 import com.kitching.app.ui.item.RecipeSheetInfoExpandableCardItem
 import com.kitching.app.ui.model.RecipeViewModel
@@ -35,6 +39,10 @@ import com.kitching.app.ui.theme.KitchingManagerTheme
 import com.kitching.app.ui.theme.defaultPadding
 import com.kitching.app.util.PreferencesDataStore
 import com.kitching.domain.entities.Ingredient
+import kotlinx.parcelize.Parcelize
+import kotlinx.serialization.Serializable
+import kotlinx.serialization.encodeToString
+import kotlinx.serialization.json.Json
 import org.apache.poi.hssf.usermodel.HSSFPatriarch
 import org.apache.poi.hssf.usermodel.HSSFPicture
 import org.apache.poi.hssf.usermodel.HSSFSheet
@@ -44,7 +52,9 @@ import org.apache.poi.ss.usermodel.WorkbookFactory
 import org.apache.poi.xssf.usermodel.XSSFDrawing
 import org.apache.poi.xssf.usermodel.XSSFPicture
 import org.apache.poi.xssf.usermodel.XSSFSheet
+import java.io.File
 import java.util.UUID
+
 
 data class RecipeSheetInfo(
     val sheetName: String,
@@ -53,19 +63,70 @@ data class RecipeSheetInfo(
     val recipeName: String,
     val ingredients: List<Ingredient>,
     val recipeSteps: List<String>
-)
+) {
+    fun toRecipeData() = RecipeData(
+        imageData = imageData,
+        imageName = imageName,
+        recipeName = recipeName,
+        ingredients = ingredients.map { IngredientData.domainToParcelize(it) },
+        recipeSteps = recipeSteps
+    )
+}
+
+@Serializable
+@Parcelize
+data class RecipeServiceData(
+    val recipes: List<RecipeData>,
+    val teamId: String
+) : Parcelable
+
+@Serializable
+@Parcelize
+data class RecipeData(
+    val imageData: ByteArray?,
+    val imageName: String,
+    val recipeName: String,
+    val ingredients: List<IngredientData>,
+    val recipeSteps: List<String>
+) : Parcelable
+
+@Serializable
+@Parcelize
+data class IngredientData(
+    val ingredientId: String,
+    val ingredientName: String,
+    val once: Int,
+    val twice: Int,
+    val unit: String,
+) : Parcelable {
+    companion object {
+        fun domainToParcelize(domain: Ingredient) = IngredientData(
+            ingredientId = domain.ingredientId,
+            ingredientName = domain.ingredientName,
+            once = domain.once,
+            twice = domain.twice,
+            unit = domain.unit
+        )
+    }
+
+    fun toDomain() = Ingredient(
+        ingredientId = ingredientId,
+        ingredientName = ingredientName,
+        once = once,
+        twice = twice,
+        unit = unit
+    )
+}
 
 @Composable
 fun RecipeCreateUseExcelScreen(
     commonState: CommonState,
-    goToRecipeList: () -> Unit,
+    navigateToRecipeUploadInProgress: () -> Unit,
     viewModel: RecipeViewModel = viewModel(factory = viewModelFactory)
 ) {
     var recipeInfos by remember { mutableStateOf((emptyList<RecipeSheetInfo>())) }
     var selectedRecipes by remember { mutableStateOf(emptyList<Int>()) }
     var teamId by remember { mutableStateOf("") }
-
-    val recipeCreateResultState by viewModel.createRecipeResult.collectAsStateWithLifecycle()
 
     LaunchedEffect(Unit) {
         teamId = PreferencesDataStore(commonState.navController.context).getTeamId()
@@ -78,18 +139,26 @@ fun RecipeCreateUseExcelScreen(
         },
         actionIconInfo = ActionIconInfo.CHECK,
         onClickActionIcon = {
-            selectedRecipes.forEach {
-                val recipeInfo = recipeInfos[it]
-                viewModel.createRecipe(
-                    imageData = recipeInfo.imageData,
-                    imageName = recipeInfo.imageName,
-                    recipeName = recipeInfo.recipeName,
-                    steps = recipeInfo.recipeSteps,
-                    ingredients = recipeInfo.ingredients,
-                    teamId = teamId
-                )
-            }
-            goToRecipeList()
+            val file = File(KitchingApplication.getInstance().cacheDir, "recipe_data.json")
+            file.writeText(Json.encodeToString(RecipeServiceData(
+                teamId = teamId,
+                recipes = selectedRecipes.map { recipeInfos[it].toRecipeData() }
+            )))
+            val fileUri = FileProvider.getUriForFile(
+                commonState.navController.context,
+                "com.kitching.app.fileprovider",
+                file
+            )
+            val intent = Intent(
+                commonState.navController.context,
+                RecipeUploadService::class.java
+            )
+                .setData(fileUri)
+                .addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION or Intent.FLAG_GRANT_WRITE_URI_PERMISSION or Intent.FLAG_GRANT_PERSISTABLE_URI_PERMISSION)
+            commonState.navController.context.startForegroundService(
+                intent
+            )
+            navigateToRecipeUploadInProgress()
         }
     )
 
@@ -154,7 +223,7 @@ fun RecipeCreateUseExcelScreen(
                     verticalArrangement = Arrangement.spacedBy(defaultPadding)
                 ) {
                     recipeInfos.forEachIndexed { index, recipeInfo ->
-                        item(key = recipeInfo.recipeName) {
+                        item(key = recipeInfo.sheetName) {
                             RecipeSheetInfoExpandableCardItem(recipeInfo) {
                                 val newList = selectedRecipes.toMutableList()
                                 if (newList.contains(index)) {

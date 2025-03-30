@@ -23,6 +23,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.kitching.app.R
@@ -77,7 +78,7 @@ fun SelectTeamScreen(
                 ) {
                     Image(
                         painter = painterResource(R.drawable.kitching_name_logo),
-                        contentDescription = "Kitching name img",
+                        contentDescription = null,
                         modifier = Modifier
                             .align(Alignment.TopStart)
                             .padding(start = 28.dp, top = 30.dp)
@@ -116,7 +117,7 @@ fun SelectTeamScreen(
                     shape = RoundedCornerShape(10.dp)
                 ) {
                     Text(
-                        text = "팀 생성",
+                        text = stringResource(R.string.button_create_team),
                         style = H3_m
                     )
                 }

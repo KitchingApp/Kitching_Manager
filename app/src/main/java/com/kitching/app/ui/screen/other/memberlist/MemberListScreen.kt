@@ -28,7 +28,6 @@ import com.kitching.app.ui.theme.NeutralGray0
 import com.kitching.app.ui.theme.defaultPadding
 import com.kitching.app.util.PreferencesDataStore
 import com.kitching.domain.AppResult
-import com.kitching.domain.entities.Member
 
 /**
  * Member list screen
@@ -39,7 +38,7 @@ import com.kitching.domain.entities.Member
 @Composable
 fun MemberListScreen(
     commonState: CommonState,
-    onMemberClick: (member: Member) -> Unit,
+    navigateToMemberDetail: (member: MemberItem) -> Unit,
     viewModel: MemberViewModel = viewModel(factory = viewModelFactory)
 ) {
     var teamId by remember { mutableStateOf("") }
@@ -82,7 +81,7 @@ fun MemberListScreen(
                             MemberCardItem(
                                 member = it,
                                 onCardClick = {
-                                    onMemberClick(it)
+                                    navigateToMemberDetail(it)
                                 }
                             )
                         }

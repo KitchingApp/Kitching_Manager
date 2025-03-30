@@ -15,8 +15,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import com.kitching.app.navgraph.CategoryItemForScreen
+import com.kitching.app.R
+import com.kitching.app.navgraph.CategoryItem
 import com.kitching.app.ui.item.CategoryCardItem
 import com.kitching.app.ui.screen.commondialog.DropdownOptionMenu
 import com.kitching.app.ui.theme.H2
@@ -27,7 +29,7 @@ import com.kitching.app.ui.theme.defaultPadding
  * Category screen
  *
  * @param title 카테고리 이름
- * @param categoryList [CategoryItemForScreen]으로 변환된 카테고리 목록
+ * @param categoryList [CategoryItem]으로 변환된 카테고리 목록
  * @param onCardClick 카드 클릭 시 액션
  * @param onCardOptionBtnClick 옵션버튼 클릭 시 액션
  * @param optionMenuId 선택된 옵션버튼의 아이템 ID(선택하지 않을 시 "")
@@ -37,11 +39,11 @@ import com.kitching.app.ui.theme.defaultPadding
 @Composable
 fun CategoryScreen(
     title: String,
-    categoryList: List<CategoryItemForScreen>,
-    onCardClick: (categoryItemForScreen: CategoryItemForScreen) -> Unit,
+    categoryList: List<CategoryItem>,
+    onCardClick: (categoryItemForScreen: CategoryItem) -> Unit,
     onCardOptionBtnClick: (categoryId: String) -> Unit,
     optionMenuId: MutableState<String>,
-    onClickModify: (categoryItemForScreen: CategoryItemForScreen) -> Unit,
+    onClickModify: (categoryItemForScreen: CategoryItem) -> Unit,
     onClickDelete: (categoryId: String) -> Unit
 ) {
 
@@ -61,7 +63,7 @@ fun CategoryScreen(
                 modifier = Modifier
                     .fillMaxSize()
                     .wrapContentHeight(),
-                text = "$title 카테고리",
+                text = stringResource(R.string.category_detail_screen_title, title),
                 style = H2.copy(color = NeutralGray800)
             )
         }

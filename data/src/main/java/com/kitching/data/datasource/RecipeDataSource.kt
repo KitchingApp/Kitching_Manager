@@ -21,6 +21,6 @@ interface RecipeDataSource {
         recipeName: String,
         steps: List<String>,
         teamId: String,
-        ingredients: List<Map<String, String>>
+        ingredients: List<IngredientDTO>
     )
 }
