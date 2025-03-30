@@ -20,6 +20,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
 import com.kitching.app.common.CommonState
+import com.kitching.app.navgraph.RecipeDetailItem
 import com.kitching.app.ui.theme.Caption1_R
 import com.kitching.app.ui.theme.NeutralGray800
 import com.kitching.app.ui.theme.ShadowColor
@@ -27,7 +28,11 @@ import com.kitching.app.util.dropShadow
 import com.kitching.domain.entities.Recipe
 
 @Composable
-fun RecipeItem(recipe: Recipe, commonState: CommonState) {
+fun RecipeItem(
+    recipe: RecipeDetailItem,
+    commonState: CommonState,
+    onClickItem: () -> Unit
+) {
     Card(
         modifier = Modifier
             .size(width = 150.dp, height = 188.dp)
@@ -36,7 +41,7 @@ fun RecipeItem(recipe: Recipe, commonState: CommonState) {
                 ShadowColor,
                 blur = 12.dp
             )
-            .clickable { commonState.navController.navigate("detail/${recipe.recipeId}") },
+            .clickable { onClickItem() },
         shape = RoundedCornerShape(8.dp),
     ) {
         Column(

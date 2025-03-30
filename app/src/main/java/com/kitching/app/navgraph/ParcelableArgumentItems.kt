@@ -2,9 +2,12 @@ package com.kitching.app.navgraph
 
 import android.os.Parcelable
 import com.kitching.app.util.customFormat
+import com.kitching.domain.entities.Ingredient
 import com.kitching.domain.entities.Member
+import com.kitching.domain.entities.Recipe
 import com.kitching.domain.entities.ScheduleTime
 import kotlinx.parcelize.Parcelize
+import kotlinx.serialization.Serializable
 import java.time.LocalTime
 
 @Parcelize
@@ -13,6 +16,71 @@ data class CategoryItem(
     val categoryName: String,
     val categoryColor: String
 ): Parcelable
+
+@Serializable
+@Parcelize
+data class RecipeServiceItem(
+    val recipes: List<RecipeCreateItem>,
+    val teamId: String
+) : Parcelable
+
+@Serializable
+@Parcelize
+data class RecipeCreateItem(
+    val imageData: ByteArray?,
+    val imageName: String,
+    val recipeName: String,
+    val ingredients: List<IngredientItem>,
+    val recipeSteps: List<String>
+) : Parcelable
+
+@Serializable
+@Parcelize
+data class RecipeDetailItem(
+    val recipeId: String,
+    val recipeName: String,
+    val picture: String,
+    val ingredient: List<IngredientItem>,
+    val steps: List<String>,
+) : Parcelable {
+    companion object {
+        fun domainToItem(domain: Recipe) = RecipeDetailItem(
+            recipeId = domain.recipeId,
+            recipeName = domain.recipeName,
+            picture = domain.picture,
+            ingredient = domain.ingredient.map { IngredientItem.domainToParcelize(it) },
+            steps = domain.steps
+        )
+    }
+}
+
+@Serializable
+@Parcelize
+data class IngredientItem(
+    val ingredientId: String,
+    val ingredientName: String,
+    val once: Int,
+    val twice: Int,
+    val unit: String,
+) : Parcelable {
+    companion object {
+        fun domainToParcelize(domain: Ingredient) = IngredientItem(
+            ingredientId = domain.ingredientId,
+            ingredientName = domain.ingredientName,
+            once = domain.once,
+            twice = domain.twice,
+            unit = domain.unit
+        )
+    }
+
+    fun toDomain() = Ingredient(
+        ingredientId = ingredientId,
+        ingredientName = ingredientName,
+        once = once,
+        twice = twice,
+        unit = unit
+    )
+}
 
 @Parcelize
 data class MemberItem(

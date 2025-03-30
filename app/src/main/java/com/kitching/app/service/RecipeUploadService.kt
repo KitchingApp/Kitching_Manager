@@ -6,9 +6,9 @@ import android.content.pm.ServiceInfo
 import android.os.Build
 import android.os.IBinder
 import androidx.annotation.RequiresApi
+import com.kitching.app.navgraph.RecipeServiceItem
 import com.kitching.app.notification.RecipeNotificationChannelDef
 import com.kitching.app.notification.values.RecipeNotification
-import com.kitching.app.ui.screen.recipe.innercontent.RecipeServiceData
 import com.kitching.data.repository.RecipeRepositoryImpl
 import com.kitching.domain.usecase.RecipeUploadServiceUseCase
 import kotlinx.coroutines.CoroutineScope
@@ -55,7 +55,7 @@ class RecipeUploadService : Service() {
                 flags and (Intent.FLAG_GRANT_READ_URI_PERMISSION or Intent.FLAG_GRANT_WRITE_URI_PERMISSION)
             contentResolver.takePersistableUriPermission(uri, takeFlags)
             contentResolver.openInputStream(uri).use { inputStream ->
-                val recipeData = Json.decodeFromString<RecipeServiceData>(
+                val recipeData = Json.decodeFromString<RecipeServiceItem>(
                     inputStream!!.bufferedReader().use { it.readText() })
 
                 val notification = notiChannel.RecipeUploadNotification(
