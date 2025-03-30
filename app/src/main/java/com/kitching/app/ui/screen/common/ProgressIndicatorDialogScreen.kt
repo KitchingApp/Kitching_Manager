@@ -23,12 +23,13 @@ import com.kitching.app.ui.theme.Caption1_m
 import com.kitching.app.ui.theme.H1
 import com.kitching.app.ui.theme.NeutralGray0
 import com.kitching.app.ui.theme.NeutralGray100
+import com.kitching.app.ui.theme.NeutralGray800
 import com.kitching.app.ui.theme.PrimaryGreen300
 import com.kitching.app.ui.theme.defaultPadding
 
 @Preview
 @Composable
-fun ProgressIndicatorScreen() {
+fun ProgressIndicatorDialogScreen() {
     val indicatorItem = ProgressIndicatorItem.getRandomItem()
 
     Dialog(
@@ -64,5 +65,37 @@ fun ProgressIndicatorScreen() {
             )
             Spacer(modifier = Modifier.weight(1f))
         }
+    }
+}
+
+@Composable
+fun ProgressIndicatorScreenWithNoDialog(indicatorMessageResource: Int) {
+    val indicatorItem = ProgressIndicatorItem.getRandomItem()
+
+    Column(
+        modifier = Modifier.fillMaxSize(),
+        verticalArrangement = Arrangement.spacedBy(defaultPadding),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Spacer(modifier = Modifier.weight(1f))
+        AsyncImage(
+            modifier = Modifier.width(100.dp),
+            model = indicatorItem.image,
+            contentDescription = null
+        )
+        Text(
+            text = stringResource(indicatorItem.stringResource),
+            style = H1.copy(color = PrimaryGreen300)
+        )
+        LinearProgressIndicator(
+            modifier = Modifier.width(240.dp).height(16.dp),
+            trackColor = NeutralGray100,
+            color = PrimaryGreen300
+        )
+        Text(
+            text = stringResource(indicatorMessageResource),
+            style = Caption1_m.copy(color = NeutralGray800)
+        )
+        Spacer(modifier = Modifier.weight(1f))
     }
 }

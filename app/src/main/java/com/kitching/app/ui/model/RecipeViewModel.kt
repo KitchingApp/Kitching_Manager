@@ -66,18 +66,8 @@ class RecipeViewModel(
         ingredients: List<Ingredient>,
     ) {
         viewModelScope.launch {
-            val ingMapList = ingredients.map { ing ->
-                mapOf(
-                    "id" to "",
-                    "name" to ing.ingredientName,
-                    "once" to ing.once.toString(),
-                    "twice" to ing.twice.toString(),
-                    "unit" to ing.unit
-                )
-            }
-
             recipeRepository.createRecipe(
-                imageData, imageName, recipeName, steps, teamId, ingMapList
+                imageData, imageName, recipeName, steps, teamId, ingredients
             ).collectLatest {
                 _createRecipeResult.value = it
             }

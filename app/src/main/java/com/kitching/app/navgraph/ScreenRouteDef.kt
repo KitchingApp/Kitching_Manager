@@ -15,6 +15,7 @@ sealed class ScreenRouteDef(val route: String) {
         data object RecipeMain: ScreenRouteDef("recipe_main")
         data object RecipeCreate: ScreenRouteDef("recipe_create")
         data object RecipeCreateUseExcel: ScreenRouteDef("recipe_create_use_excel")
+        data object RecipeUploadInProgress: ScreenRouteDef("recipe_upload_in_progress")
         data object RecipeDetail: ScreenRouteDef("recipe_detail")
         data object RecipeEdit: ScreenRouteDef("recipe_edit")
     }

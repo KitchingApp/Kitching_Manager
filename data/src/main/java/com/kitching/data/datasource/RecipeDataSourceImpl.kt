@@ -1,5 +1,6 @@
 package com.kitching.data.datasource
 
+import android.util.Log
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
 import com.kitching.data.dto.IngredientDTO
@@ -46,9 +47,10 @@ class RecipeDataSourceImpl(
             .get()
             .await().toObjects(IngredientDTO::class.java)
 
-        documentSnapshot.toObject(RecipeDTO::class.java)?.copy(ingredient = ingredients) ?: throw RecipeNotFoundException(recipeId)
+        documentSnapshot.toObject(RecipeDTO::class.java)?.copy(ingredient = ingredients)
+            ?: throw RecipeNotFoundException(recipeId)
     }.getOrElse {
-        throw if(it is RecipeNotFoundException) it.getException()
+        throw if (it is RecipeNotFoundException) it.getException()
         else FailedCRUDInFirebaseException(it).getException()
     }
 
@@ -99,7 +101,7 @@ class RecipeDataSourceImpl(
         recipeName: String,
         steps: List<String>,
         teamId: String,
-        ingredients: List<Map<String, String>>,
+        ingredients: List<IngredientDTO>,
     ) = runCatching {
         // (1) 이미지 업로드
         val pictureUrl = if (imageData != null) {
@@ -111,13 +113,15 @@ class RecipeDataSourceImpl(
         }
 
         val recipeDocument = db.collection(COLLECTION_RECIPE)
-            .add(RecipeDTO(
-                id = "",
-                name = recipeName,
-                picture = pictureUrl,
-                steps = steps,
-                teamId = teamId
-            ))
+            .add(
+                RecipeDTO(
+                    id = "",
+                    name = recipeName,
+                    picture = pictureUrl,
+                    steps = steps,
+                    teamId = teamId
+                ).toCreateDTO()
+            )
             .await()
 
         // 문서 id 필드 업데이트
@@ -134,13 +138,7 @@ class RecipeDataSourceImpl(
             .collection(COLLECTION_INGREDIENT)
 
         ingredients.forEach { ingredient ->
-            val mapped = ingredient.mapValues { (key, value) ->
-                when (key) {
-                    "once", "twice" -> value.toIntOrNull() ?: -1
-                    else -> value
-                }
-            }
-            val ingredientDoc = ingredientCollection.add(mapped).await()
+            val ingredientDoc = ingredientCollection.add(ingredient).await()
             ingredientCollection.document(ingredientDoc.id)
                 .update("id", ingredientDoc.id)
                 .await()

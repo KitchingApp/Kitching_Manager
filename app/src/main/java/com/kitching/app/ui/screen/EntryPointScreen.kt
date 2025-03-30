@@ -29,9 +29,9 @@ import com.kitching.app.ui.screen.navigation.CustomTopAppBar
 import com.kitching.domain.AppResult
 import kotlinx.coroutines.launch
 
-@Preview(showBackground = true)
 @Composable
 fun EntryPointScreen(
+    destination: String,
     teamViewModel: TeamViewModel = viewModel(factory = viewModelFactory),
 ) {
     var userId by remember { mutableStateOf("") }
@@ -55,6 +55,8 @@ fun EntryPointScreen(
     val teamListState by teamViewModel.teamList.collectAsStateWithLifecycle()
 
     LaunchedEffect(Unit) {
+        if(destination.isNotEmpty()) navController.navigate(destination)
+
         userId = teamViewModel.dataStore.getUserId()
         selectedTeamId = teamViewModel.dataStore.getTeamId()
         title = teamViewModel.dataStore.getTeamName()
