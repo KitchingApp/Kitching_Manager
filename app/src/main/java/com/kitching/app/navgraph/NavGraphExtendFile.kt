@@ -4,7 +4,6 @@ import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import androidx.navigation.navigation
-import androidx.navigation.toRoute
 import com.kitching.app.common.CommonState
 import com.kitching.app.common.getArgsFromSavedStateHandle
 import com.kitching.app.common.navigateWithArgs
@@ -26,7 +25,6 @@ import com.kitching.app.ui.screen.recipe.innercontent.RecipeCreateScreen
 import com.kitching.app.ui.screen.recipe.innercontent.RecipeCreateUseExcelScreen
 import com.kitching.app.ui.screen.recipe.innercontent.RecipeDetailScreen
 import com.kitching.app.ui.screen.recipe.innercontent.RecipeEditScreen
-import com.kitching.app.ui.screen.recipe.innercontent.RecipeUploadInProgressScreen
 import com.kitching.app.ui.screen.schedule.ScheduleMainScreen
 
 fun NavGraphBuilder.scheduleSliceNavGraph(
@@ -96,24 +94,41 @@ fun NavGraphBuilder.recipeSliceNavGraph(
             RecipeMainScreen(
                 commonState = commonState,
                 navigateToCreateUesDevice = { navController.navigate(ScreenRouteDef.RecipeGraph.RecipeCreate.route) },
-                navigateToCreateWithExcelFile = { navController.navigate(ScreenRouteDef.RecipeGraph.RecipeCreateUseExcel.route) }
+                navigateToCreateWithExcelFile = { navController.navigate(ScreenRouteDef.RecipeGraph.RecipeCreateUseExcel.route) },
+                navigateToDetail = { recipe ->
+                    navController.navigateWithArgs(
+                        route = ScreenRouteDef.RecipeGraph.RecipeDetail.route,
+                        args = RecipeDetailItem.domainToItem(recipe)
+                    )
+                }
             )
         }
         composable(
             route = ScreenRouteDef.RecipeGraph.RecipeDetail.route
-        ) { backStackEntry ->
-            RecipeDetailScreen(
-                commonState = commonState,
-                recipeId = backStackEntry.toRoute()
-            )
+        ) {
+            navController.getArgsFromSavedStateHandle<RecipeDetailItem>()?.let {
+                RecipeDetailScreen(
+                    recipe = it,
+                    commonState = commonState,
+                    navigateToEdit = { navController.navigateWithArgs(
+                        route = ScreenRouteDef.RecipeGraph.RecipeEdit.route,
+                        args = it
+                    ) },
+                    naviagateToList = { navController.popBackStack() }
+                )
+            }
         }
         composable(
             route = ScreenRouteDef.RecipeGraph.RecipeEdit.route
-        ) { backStackEntry ->
-            RecipeEditScreen(
-                commonState = commonState,
-                recipeId = backStackEntry.toRoute()
-            )
+        ) {
+            navController.getArgsFromSavedStateHandle<RecipeDetailItem>()?.let {
+                RecipeEditScreen(
+                    commonState = commonState,
+                    recipe = it,
+                    navigateToDetail = { navController.popBackStack() }
+                )
+            }
+
         }
         composable(
             route = ScreenRouteDef.RecipeGraph.RecipeCreate.route
@@ -128,13 +143,6 @@ fun NavGraphBuilder.recipeSliceNavGraph(
             RecipeCreateUseExcelScreen(
                 commonState = commonState,
                 navigateToRecipeUploadInProgress = { navController.navigate(ScreenRouteDef.RecipeGraph.RecipeUploadInProgress.route) }
-            )
-        }
-        composable(
-            route = ScreenRouteDef.RecipeGraph.RecipeUploadInProgress.route
-        ) {
-            RecipeUploadInProgressScreen(
-                commonState = commonState
             )
         }
     }

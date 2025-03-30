@@ -3,7 +3,6 @@ package com.kitching.app.ui.screen.recipe.innercontent
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
-import android.os.Parcelable
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Arrangement
@@ -25,12 +24,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.core.content.FileProvider
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.kitching.app.common.ActionIconInfo
 import com.kitching.app.common.CommonState
 import com.kitching.app.common.KitchingApplication
 import com.kitching.app.common.NavigationIconInfo
+import com.kitching.app.navgraph.IngredientItem
+import com.kitching.app.navgraph.RecipeCreateItem
+import com.kitching.app.navgraph.RecipeServiceItem
 import com.kitching.app.service.RecipeUploadService
 import com.kitching.app.ui.factory.viewModelFactory
 import com.kitching.app.ui.item.RecipeSheetInfoExpandableCardItem
@@ -39,8 +40,6 @@ import com.kitching.app.ui.theme.KitchingManagerTheme
 import com.kitching.app.ui.theme.defaultPadding
 import com.kitching.app.util.PreferencesDataStore
 import com.kitching.domain.entities.Ingredient
-import kotlinx.parcelize.Parcelize
-import kotlinx.serialization.Serializable
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import org.apache.poi.hssf.usermodel.HSSFPatriarch
@@ -64,57 +63,12 @@ data class RecipeSheetInfo(
     val ingredients: List<Ingredient>,
     val recipeSteps: List<String>
 ) {
-    fun toRecipeData() = RecipeData(
+    fun toRecipeData() = RecipeCreateItem(
         imageData = imageData,
         imageName = imageName,
         recipeName = recipeName,
-        ingredients = ingredients.map { IngredientData.domainToParcelize(it) },
+        ingredients = ingredients.map { IngredientItem.domainToParcelize(it) },
         recipeSteps = recipeSteps
-    )
-}
-
-@Serializable
-@Parcelize
-data class RecipeServiceData(
-    val recipes: List<RecipeData>,
-    val teamId: String
-) : Parcelable
-
-@Serializable
-@Parcelize
-data class RecipeData(
-    val imageData: ByteArray?,
-    val imageName: String,
-    val recipeName: String,
-    val ingredients: List<IngredientData>,
-    val recipeSteps: List<String>
-) : Parcelable
-
-@Serializable
-@Parcelize
-data class IngredientData(
-    val ingredientId: String,
-    val ingredientName: String,
-    val once: Int,
-    val twice: Int,
-    val unit: String,
-) : Parcelable {
-    companion object {
-        fun domainToParcelize(domain: Ingredient) = IngredientData(
-            ingredientId = domain.ingredientId,
-            ingredientName = domain.ingredientName,
-            once = domain.once,
-            twice = domain.twice,
-            unit = domain.unit
-        )
-    }
-
-    fun toDomain() = Ingredient(
-        ingredientId = ingredientId,
-        ingredientName = ingredientName,
-        once = once,
-        twice = twice,
-        unit = unit
     )
 }
 
@@ -140,7 +94,7 @@ fun RecipeCreateUseExcelScreen(
         actionIconInfo = ActionIconInfo.CHECK,
         onClickActionIcon = {
             val file = File(KitchingApplication.getInstance().cacheDir, "recipe_data.json")
-            file.writeText(Json.encodeToString(RecipeServiceData(
+            file.writeText(Json.encodeToString(RecipeServiceItem(
                 teamId = teamId,
                 recipes = selectedRecipes.map { recipeInfos[it].toRecipeData() }
             )))
