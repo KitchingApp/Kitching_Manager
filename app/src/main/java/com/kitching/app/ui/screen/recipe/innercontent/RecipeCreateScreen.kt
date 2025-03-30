@@ -59,6 +59,7 @@ import java.util.UUID
 @Composable
 fun RecipeCreateScreen(
     commonState: CommonState,
+    navigateToRecipe: () -> Unit,
     recipeViewModel: RecipeViewModel = viewModel(factory = viewModelFactory)
 ) {
     var imageUri by remember { mutableStateOf<Uri?>(null) }
@@ -69,7 +70,7 @@ fun RecipeCreateScreen(
     var teamId by remember { mutableStateOf("") }
 
     commonState.coroutineScope.launch {
-        teamId = PreferencesDataStore(commonState.navController.context).getTeamId().toString()
+        teamId = PreferencesDataStore().getTeamId()
     }
 
     commonState.topAppBarState.value = commonState.topAppBarState.value.copy(
@@ -77,7 +78,7 @@ fun RecipeCreateScreen(
         containerColor = NeutralGray0,
         navIconInfo = NavigationIconInfo.BACK,
         onClickNavIcon = {
-            commonState.navController.popBackStack()
+            navigateToRecipe()
         },
         actionIconInfo = ActionIconInfo.CHECK,
         onClickActionIcon = {
@@ -220,7 +221,7 @@ fun RecipeCreateScreen(
                 },
                 onSuccess = {
                     showToast("레시피 업로드 성공!")
-                    commonState.navController.popBackStack()
+                    navigateToRecipe()
                 }
             )
 

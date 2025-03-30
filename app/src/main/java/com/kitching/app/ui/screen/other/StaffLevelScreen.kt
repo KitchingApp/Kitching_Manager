@@ -40,6 +40,7 @@ import com.kitching.domain.AppResult
 @Composable
 fun StaffLevelScreen(
     commonState: CommonState,
+    navigateToOther: () -> Unit,
     viewModel: StaffLevelViewModel = viewModel(factory = viewModelFactory)
 ) {
     var showCreateDialog by remember { mutableStateOf(false) }
@@ -62,7 +63,7 @@ fun StaffLevelScreen(
         title = "직급관리",
         containerColor = NeutralGray0,
         navIconInfo = NavigationIconInfo.BACK,
-        onClickNavIcon = { commonState.navController.popBackStack() },
+        onClickNavIcon = { navigateToOther() },
         actionIconInfo = ActionIconInfo.ADD,
         onClickActionIcon = {
             textInputState.value = TextFieldValue("")

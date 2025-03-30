@@ -74,7 +74,7 @@ fun NoticeDetailScreen(
         containerColor = NeutralGray0,
         title = "공지사항",
         navIconInfo = NavigationIconInfo.BACK,
-        onClickNavIcon = { commonState.navController.popBackStack() },
+        onClickNavIcon = { navigateToNoticeList() },
         actionIconInfo = ActionIconInfo.NULL
     )
 

@@ -96,7 +96,7 @@ fun ScheduleTimeCreateOrUpdateScreen(
         title = if (scheduleTime == null) "스케줄타임 생성" else "스케줄타임 수정",
         containerColor = NeutralGray0,
         navIconInfo = NavigationIconInfo.BACK,
-        onClickNavIcon = { commonState.navController.popBackStack() },
+        onClickNavIcon = { navigateToScheduleTimeList() },
         actionIconInfo = ActionIconInfo.NULL
     )
 

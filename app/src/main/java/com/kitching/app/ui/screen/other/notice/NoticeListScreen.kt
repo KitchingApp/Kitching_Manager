@@ -38,6 +38,7 @@ fun NoticeListScreen(
     commonState: CommonState,
     navigateToCreateNotice: () -> Unit,
     navigateToNoticeDetail: (notice: NoticeItem) -> Unit,
+    navigateToOther: () -> Unit,
     viewModel: NoticeViewModel = viewModel(factory = viewModelFactory)
 ) {
 
@@ -53,7 +54,7 @@ fun NoticeListScreen(
         containerColor = NeutralGray0,
         title = "공지사항",
         navIconInfo = NavigationIconInfo.BACK,
-        onClickNavIcon = { commonState.navController.popBackStack() },
+        onClickNavIcon = { navigateToOther() },
         actionIconInfo = ActionIconInfo.ADD,
         onClickActionIcon = { navigateToCreateNotice() }
     )

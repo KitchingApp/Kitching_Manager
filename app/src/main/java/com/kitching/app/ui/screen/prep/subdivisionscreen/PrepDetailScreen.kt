@@ -41,6 +41,7 @@ import com.kitching.domain.AppResult
 fun PrepDetailScreen(
     commonState: CommonState,
     categoryItemForScreen: CategoryItem,
+    navigateToPrep: () -> Unit,
     viewModel: PrepViewModel = viewModel(factory = viewModelFactory)
 ) {
     var showCreateDialog by remember { mutableStateOf(false) }
@@ -57,7 +58,7 @@ fun PrepDetailScreen(
         title = categoryItemForScreen.categoryName,
         containerColor = Color(hexToArgb(categoryItemForScreen.categoryColor)),
         navIconInfo = NavigationIconInfo.BACK,
-        onClickNavIcon = { commonState.navController.popBackStack() },
+        onClickNavIcon = { navigateToPrep() },
         actionIconInfo = ActionIconInfo.ADD,
         onClickActionIcon = { showCreateDialog = true }
     )

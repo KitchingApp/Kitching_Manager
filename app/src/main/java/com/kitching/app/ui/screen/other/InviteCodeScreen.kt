@@ -60,6 +60,7 @@ import com.kitching.domain.AppResult
 @Composable
 fun InviteCodeScreen(
     commonState: CommonState,
+    navigateToOther: () -> Unit,
     viewModel: InviteCodeViewModel = viewModel(factory = viewModelFactory)
 ) {
     var teamId by remember { mutableStateOf("") }
@@ -74,7 +75,7 @@ fun InviteCodeScreen(
         title = "초대코드",
         containerColor = NeutralGray0,
         navIconInfo = NavigationIconInfo.BACK,
-        onClickNavIcon = { commonState.navController.popBackStack() },
+        onClickNavIcon = { navigateToOther() },
         actionIconInfo = ActionIconInfo.NULL
     )
 

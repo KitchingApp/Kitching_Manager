@@ -66,6 +66,7 @@ fun NoticeCreateOrModifyScreen(
     commonState: CommonState,
     notice: NoticeItem?,
     navigateToNoticeList: () -> Unit,
+    popBackStack: () -> Unit,
     viewModel: NoticeViewModel = viewModel(factory = viewModelFactory)
 ) {
     var titleTextState by remember { mutableStateOf(TextFieldValue(notice?.title ?: "")) }
@@ -86,7 +87,7 @@ fun NoticeCreateOrModifyScreen(
         containerColor = NeutralGray0,
         title = "공지사항",
         navIconInfo = NavigationIconInfo.BACK,
-        onClickNavIcon = { commonState.navController.popBackStack() },
+        onClickNavIcon = { navigateToNoticeList() },
         actionIconInfo = ActionIconInfo.NULL,
         onClickActionIcon = {}
     )
@@ -250,7 +251,7 @@ fun NoticeCreateOrModifyScreen(
                                     .height(40.dp),
                                 shape = RoundedCornerShape(20.dp),
                                 onClick = {
-                                    commonState.navController.popBackStack()
+                                    popBackStack()
                                 },
                                 colors = ButtonColors(
                                     containerColor = NeutralGray100,

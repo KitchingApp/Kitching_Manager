@@ -1,6 +1,5 @@
 package com.kitching.app.ui.screen.recipe.innercontent
 
-import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
@@ -27,7 +26,6 @@ import com.kitching.app.common.AppResultHandler
 import com.kitching.app.common.CommonState
 import com.kitching.app.common.NavigationIconInfo
 import com.kitching.app.common.showToast
-import com.kitching.app.navgraph.IngredientItem
 import com.kitching.app.navgraph.RecipeDetailItem
 import com.kitching.app.ui.factory.viewModelFactory
 import com.kitching.app.ui.model.RecipeViewModel
@@ -35,12 +33,12 @@ import com.kitching.app.ui.theme.H4_m
 import com.kitching.app.ui.theme.KitchingManagerTheme
 import com.kitching.app.ui.theme.NeutralGray0
 import com.kitching.domain.AppResult
-import com.kitching.domain.entities.Ingredient
 
 @Composable
 fun RecipeEditScreen(
     recipe: RecipeDetailItem,
     navigateToDetail: () -> Unit,
+    navigateToRecipe: () -> Unit,
     commonState: CommonState,
     viewModel: RecipeViewModel = viewModel(factory = viewModelFactory)
 ) {
@@ -143,7 +141,7 @@ fun RecipeEditScreen(
                 state = updateState,
                 onSuccess = {
                     showToast("레시피가 수정되었습니다!")
-                    commonState.navController.popBackStack()
+                    navigateToRecipe()
                 }
             )
         }

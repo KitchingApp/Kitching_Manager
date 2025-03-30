@@ -19,6 +19,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.kitching.app.common.ActionIconInfo
 import com.kitching.app.common.CommonState
 import com.kitching.app.common.NavigationIconInfo
+import com.kitching.app.navgraph.MemberItem
 import com.kitching.app.ui.factory.viewModelFactory
 import com.kitching.app.ui.item.MemberCardItem
 import com.kitching.app.ui.model.MemberViewModel
@@ -39,6 +40,7 @@ import com.kitching.domain.AppResult
 fun MemberListScreen(
     commonState: CommonState,
     navigateToMemberDetail: (member: MemberItem) -> Unit,
+    navigateToOther: () -> Unit,
     viewModel: MemberViewModel = viewModel(factory = viewModelFactory)
 ) {
     var teamId by remember { mutableStateOf("") }
@@ -53,7 +55,7 @@ fun MemberListScreen(
         title = "멤버관리",
         containerColor = NeutralGray0,
         navIconInfo = NavigationIconInfo.BACK,
-        onClickNavIcon = { commonState.navController.popBackStack() },
+        onClickNavIcon = { navigateToOther() },
         actionIconInfo = ActionIconInfo.NULL
     )
 
@@ -79,9 +81,9 @@ fun MemberListScreen(
                     ) {
                         items(items = membersData, key = {it.userId}) {
                             MemberCardItem(
-                                member = it,
+                                member = MemberItem.domainToItem(it),
                                 onCardClick = {
-                                    navigateToMemberDetail(it)
+                                    navigateToMemberDetail(MemberItem.domainToItem(it))
                                 }
                             )
                         }

@@ -4,7 +4,7 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.navigation.NavController
+import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.kitching.app.common.CommonState
@@ -21,10 +21,10 @@ import com.kitching.app.ui.screen.login.CreateTeamScreen
 fun CustomNavHost(
     paddingValues: PaddingValues,
     commonState: CommonState,
-    navController: NavController
+    navController: NavHostController
 ) {
     NavHost(
-        navController = commonState.navController,
+        navController = navController,
         startDestination = ScreenRouteDef.ScheduleGraph.route,
         modifier = Modifier.padding(paddingValues = paddingValues)
     ) {
@@ -32,17 +32,17 @@ fun CustomNavHost(
             CreateTeamScreen(
                 coroutineScope = commonState.coroutineScope,
                 onNavigateBack = {
-                    commonState.navController.popBackStack()
+                    navController.popBackStack()
                 },
                 onTeamCreated = {
-                    commonState.navController.popBackStack(
+                    navController.popBackStack(
                         ScreenRouteDef.ScheduleGraph.route,
                         false
                     )
                 }
             )
         }
-        scheduleSliceNavGraph(commonState = commonState, navController = navController)
+        scheduleSliceNavGraph(commonState = commonState)
         prepSliceNavGraph(
             commonState = commonState,
             navController = navController
