@@ -20,7 +20,7 @@ fun ResultConditionScreen(
     successContent: @Composable () -> Unit
 ) {
     if(loadingCondition) {
-        ProgressIndicatorScreen()
+        ProgressIndicatorDialogScreen()
     } else if(successCondition) {
         successContent()
     } else if(failCondition) {

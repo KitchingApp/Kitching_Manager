@@ -52,11 +52,11 @@ class RecipeRepositoryImpl(
         recipeName: String,
         steps: List<String>,
         teamId: String,
-        ingredients: List<Map<String, String>>,
+        ingredients: List<Ingredient>,
     ) = flow {
         emit(AppResult.Loading)
         emit(AppResult.Success(recipeDataSource.createRecipe(
-            imageData, imageName, recipeName, steps, teamId, ingredients
+            imageData, imageName, recipeName, steps, teamId, ingredients.map { IngredientDTO.domainToDto(it) }
         )))
     }.catch {
         emit(AppResult.Failure(it))

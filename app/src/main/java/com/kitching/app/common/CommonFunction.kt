@@ -2,7 +2,7 @@ package com.kitching.app.common
 
 import android.widget.Toast
 import androidx.compose.runtime.Composable
-import com.kitching.app.ui.screen.common.ProgressIndicatorScreen
+import com.kitching.app.ui.screen.common.ProgressIndicatorDialogScreen
 import com.kitching.domain.AppResult
 
 fun showToast(message: String, delayTime: Int = Toast.LENGTH_SHORT) {
@@ -19,7 +19,7 @@ fun <T> AppResultHandler(
         is AppResult.Initial -> {}
 
         is AppResult.Loading -> {
-            ProgressIndicatorScreen()
+            ProgressIndicatorDialogScreen()
         }
 
         is AppResult.Failure -> { onFailure(state.exception) }

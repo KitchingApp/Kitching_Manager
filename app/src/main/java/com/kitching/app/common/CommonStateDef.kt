@@ -18,7 +18,8 @@ enum class ActionIconInfo(val icon: Int, val description: String) {
 
 enum class NavigationIconInfo(val icon: Int, val description: String) {
     DRAWER(R.drawable.icon_hamburger_menu, "drawer icon"),
-    BACK(R.drawable.icon_arrow_back, "back button")
+    BACK(R.drawable.icon_arrow_back, "back button"),
+    NULL(-1, "no action")
 }
 
 data class TopAppBarState(
