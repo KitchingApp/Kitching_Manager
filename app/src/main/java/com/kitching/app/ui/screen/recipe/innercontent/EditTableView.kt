@@ -21,6 +21,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import com.kitching.app.navgraph.IngredientItem
 import com.kitching.app.ui.theme.Caption1_R
 import com.kitching.app.ui.theme.NeutralGray500
 import com.kitching.app.ui.theme.PrimaryGreen50
@@ -28,8 +29,8 @@ import com.kitching.domain.entities.Ingredient
 
 @Composable
 fun EditIngredientsTable(
-    ingredients: List<Ingredient>,
-    onIngredientsChange: (List<Ingredient>) -> Unit
+    ingredients: List<IngredientItem>,
+    onIngredientsChange: (List<IngredientItem>) -> Unit
 ) {
     Column(
         modifier = Modifier

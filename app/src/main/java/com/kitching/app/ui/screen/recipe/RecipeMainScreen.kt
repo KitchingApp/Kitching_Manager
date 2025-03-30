@@ -26,6 +26,7 @@ import com.kitching.app.common.AppResultHandler
 import com.kitching.app.common.CommonState
 import com.kitching.app.common.KitchingApplication
 import com.kitching.app.common.NavigationIconInfo
+import com.kitching.app.navgraph.RecipeDetailItem
 import com.kitching.app.ui.factory.viewModelFactory
 import com.kitching.app.ui.item.RecipeItem
 import com.kitching.app.ui.model.RecipeViewModel
@@ -33,6 +34,7 @@ import com.kitching.app.ui.screen.commondialog.RecipeCreateOptionMenu
 import com.kitching.app.ui.theme.KitchingManagerTheme
 import com.kitching.app.ui.theme.NeutralGray0
 import com.kitching.app.util.PreferencesDataStore
+import com.kitching.domain.entities.Recipe
 import kotlinx.coroutines.launch
 
 @Composable
@@ -40,6 +42,7 @@ fun RecipeMainScreen(
     commonState: CommonState,
     navigateToCreateUesDevice: () -> Unit,
     navigateToCreateWithExcelFile: () -> Unit,
+    navigateToDetail: (recipe: Recipe) -> Unit,
     viewModel: RecipeViewModel = viewModel(factory = viewModelFactory)
 ) {
     var showCreateOptionMenu by remember { mutableStateOf(false) }
@@ -72,7 +75,7 @@ fun RecipeMainScreen(
         Surface(
             modifier = Modifier.fillMaxSize()
         ) {
-            if(showCreateOptionMenu) {
+            if (showCreateOptionMenu) {
                 Box(
                     contentAlignment = Alignment.TopEnd
                 ) {
@@ -106,7 +109,10 @@ fun RecipeMainScreen(
                             modifier = Modifier.fillMaxSize()
                         ) {
                             items(recipes) { recipe ->
-                                RecipeItem(recipe = recipe, commonState = commonState)
+                                RecipeItem(
+                                    recipe = RecipeDetailItem.domainToItem(recipe),
+                                    commonState = commonState,
+                                    onClickItem = { navigateToDetail(recipe) })
                             }
                         }
                     }
