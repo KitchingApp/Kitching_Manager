@@ -40,6 +40,7 @@ import com.kitching.domain.AppResult
 @Composable
 fun StaffLevelScreen(
     commonState: CommonState,
+    navigateToOther: () -> Unit,
     viewModel: StaffLevelViewModel = viewModel(factory = viewModelFactory)
 ) {
     var showCreateDialog by remember { mutableStateOf(false) }
@@ -62,7 +63,7 @@ fun StaffLevelScreen(
         title = "직급관리",
         containerColor = NeutralGray0,
         navIconInfo = NavigationIconInfo.BACK,
-        onClickNavIcon = { commonState.navController.popBackStack() },
+        onClickNavIcon = { navigateToOther() },
         actionIconInfo = ActionIconInfo.ADD,
         onClickActionIcon = {
             textInputState.value = TextFieldValue("")
@@ -96,31 +97,29 @@ fun StaffLevelScreen(
                             modifier = Modifier.weight(1f),
                             verticalArrangement = Arrangement.spacedBy(12.dp),
                         ) {
-                            staffLevelData.forEach { staffLevel ->
-                                item(key = staffLevel.staffLevelId) {
-                                    Column(
-                                        modifier = Modifier.fillMaxWidth(),
-                                        horizontalAlignment = Alignment.End
-                                    ) {
-                                        SubdivisionCardItem(
-                                            cardText = staffLevel.staffLevelName,
-                                            onOptionBtnClick = {
-                                                textInputState.value =
-                                                    TextFieldValue(staffLevel.staffLevelName)
-                                                optionMenuId.value = staffLevel.staffLevelId
+                            items(items = staffLevelData, key = { it.staffLevelId }) {
+                                Column(
+                                    modifier = Modifier.fillMaxWidth(),
+                                    horizontalAlignment = Alignment.End
+                                ) {
+                                    SubdivisionCardItem(
+                                        cardText = it.staffLevelName,
+                                        onOptionBtnClick = {
+                                            textInputState.value =
+                                                TextFieldValue(it.staffLevelName)
+                                            optionMenuId.value = it.staffLevelId
+                                        }
+                                    )
+                                    if (optionMenuId.value == it.staffLevelId) {
+                                        DropdownOptionMenu(
+                                            onDismissRequest = { optionMenuId.value = "" },
+                                            onClickModify = {
+                                                showUpdateDialog = true
+                                            },
+                                            onClickDelete = {
+                                                showDeleteDialog = true
                                             }
                                         )
-                                        if (optionMenuId.value == staffLevel.staffLevelId) {
-                                            DropdownOptionMenu(
-                                                onDismissRequest = { optionMenuId.value = "" },
-                                                onClickModify = {
-                                                    showUpdateDialog = true
-                                                },
-                                                onClickDelete = {
-                                                    showDeleteDialog = true
-                                                }
-                                            )
-                                        }
                                     }
                                 }
                             }
@@ -153,7 +152,10 @@ fun StaffLevelScreen(
                             placeHolder = "직급명을 입력해주세요",
                             confirmText = "수정",
                             onClickConfirm = {
-                                viewModel.updateStaffLevel(optionMenuId.value, textInputState.value.text)
+                                viewModel.updateStaffLevel(
+                                    optionMenuId.value,
+                                    textInputState.value.text
+                                )
                                 viewModel.getStaffLevelList(teamId)
                                 showUpdateDialog = false
                                 optionMenuId.value = ""

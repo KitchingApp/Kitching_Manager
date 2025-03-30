@@ -76,6 +76,7 @@ data class RecipeSheetInfo(
 fun RecipeCreateUseExcelScreen(
     commonState: CommonState,
     navigateToRecipeUploadInProgress: () -> Unit,
+    navigateToRecipe: () -> Unit,
     viewModel: RecipeViewModel = viewModel(factory = viewModelFactory)
 ) {
     var recipeInfos by remember { mutableStateOf((emptyList<RecipeSheetInfo>())) }
@@ -83,13 +84,13 @@ fun RecipeCreateUseExcelScreen(
     var teamId by remember { mutableStateOf("") }
 
     LaunchedEffect(Unit) {
-        teamId = PreferencesDataStore(commonState.navController.context).getTeamId()
+        teamId = PreferencesDataStore().getTeamId()
     }
 
     commonState.topAppBarState.value = commonState.topAppBarState.value.copy(
         navIconInfo = NavigationIconInfo.BACK,
         onClickNavIcon = {
-            commonState.navController.popBackStack()
+            navigateToRecipe()
         },
         actionIconInfo = ActionIconInfo.CHECK,
         onClickActionIcon = {
@@ -98,19 +99,17 @@ fun RecipeCreateUseExcelScreen(
                 teamId = teamId,
                 recipes = selectedRecipes.map { recipeInfos[it].toRecipeData() }
             )))
-            val fileUri = FileProvider.getUriForFile(
-                commonState.navController.context,
-                "com.kitching.app.fileprovider",
-                file
-            )
-            val intent = Intent(
-                commonState.navController.context,
-                RecipeUploadService::class.java
-            )
-                .setData(fileUri)
-                .addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION or Intent.FLAG_GRANT_WRITE_URI_PERMISSION or Intent.FLAG_GRANT_PERSISTABLE_URI_PERMISSION)
-            commonState.navController.context.startForegroundService(
-                intent
+            KitchingApplication.getInstance().startForegroundService(
+                Intent(
+                    KitchingApplication.getInstance(),
+                    RecipeUploadService::class.java
+                )
+                    .setData(FileProvider.getUriForFile(
+                        KitchingApplication.getInstance(),
+                        "com.kitching.app.fileprovider",
+                        file
+                    ))
+                    .addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION or Intent.FLAG_GRANT_WRITE_URI_PERMISSION or Intent.FLAG_GRANT_PERSISTABLE_URI_PERMISSION)
             )
             navigateToRecipeUploadInProgress()
         }

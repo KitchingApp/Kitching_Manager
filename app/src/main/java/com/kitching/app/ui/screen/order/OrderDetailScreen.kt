@@ -35,6 +35,7 @@ import com.kitching.domain.AppResult
 fun OrderDetailScreen(
     commonState: CommonState,
     categoryItemForScreen: CategoryItem,
+    navigateToOrderMain: () -> Unit,
     viewModel: OrderViewModel = viewModel(factory = viewModelFactory)
 ) {
     var showCreateDialog by remember { mutableStateOf(false) }
@@ -55,7 +56,7 @@ fun OrderDetailScreen(
         title = categoryItemForScreen.categoryName,
         containerColor = Color(hexToArgb(categoryItemForScreen.categoryColor)),
         navIconInfo = NavigationIconInfo.BACK,
-        onClickNavIcon = { commonState.navController.popBackStack() },
+        onClickNavIcon = { navigateToOrderMain() },
         actionIconInfo = ActionIconInfo.ADD,
         onClickActionIcon = { showCreateDialog = true }
     )

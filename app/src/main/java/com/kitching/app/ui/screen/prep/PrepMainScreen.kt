@@ -67,7 +67,7 @@ fun PrepMainScreen(
     }
 
     commonState.topAppBarState.value = commonState.topAppBarState.value.copy(
-        title = "Kitching",
+        title = "Approach",
         containerColor = NeutralGray0,
         navIconInfo = NavigationIconInfo.DRAWER,
         onClickNavIcon = {

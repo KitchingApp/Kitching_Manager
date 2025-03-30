@@ -35,7 +35,7 @@ fun EntryPointScreen(
 ) {
     var userId by remember { mutableStateOf("") }
     var selectedTeamId by remember { mutableStateOf("") }
-    var title by remember { mutableStateOf("") } // 레스토랑 이름
+    var title by remember { mutableStateOf("Approach") } // 레스토랑 이름
 
     val navController = rememberNavController()
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
@@ -45,7 +45,6 @@ fun EntryPointScreen(
     val commonState by remember {
         mutableStateOf(
             CommonState(
-                navController = navController,
                 topAppBarState = topAppBarState,
                 coroutineScope = coroutineScope
             )

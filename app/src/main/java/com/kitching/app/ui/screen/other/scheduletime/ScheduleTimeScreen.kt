@@ -41,6 +41,7 @@ import com.kitching.domain.entities.ScheduleTime
 fun ScheduleTimeScreen(
     commonState: CommonState,
     naviagateToCreateOfModifyScheduleTime: (scheduleTime: ScheduleTimeItem) -> Unit,
+    navigateToOther: () -> Unit,
     viewModel: ScheduleTimeViewModel = viewModel(factory = viewModelFactory)
 ) {
 
@@ -60,7 +61,7 @@ fun ScheduleTimeScreen(
         title = "스케줄타임",
         containerColor = NeutralGray0,
         navIconInfo = NavigationIconInfo.BACK,
-        onClickNavIcon = { commonState.navController.popBackStack() },
+        onClickNavIcon = { navigateToOther() },
         actionIconInfo = ActionIconInfo.ADD,
         onClickActionIcon = {
             naviagateToCreateOfModifyScheduleTime(ScheduleTimeItem.init())
@@ -92,7 +93,7 @@ fun ScheduleTimeScreen(
                             modifier = Modifier.weight(1f),
                             verticalArrangement = Arrangement.spacedBy(12.dp),
                         ) {
-                            items(scheduleTimeData) { scheduleTime ->
+                            items(items = scheduleTimeData, key = {it.scheduleTimeId}) { scheduleTime ->
                                 Column(
                                     modifier = Modifier.fillMaxWidth(),
                                     horizontalAlignment = Alignment.End

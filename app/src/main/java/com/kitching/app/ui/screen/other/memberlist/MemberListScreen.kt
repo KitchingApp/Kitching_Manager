@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -39,6 +40,7 @@ import com.kitching.domain.AppResult
 fun MemberListScreen(
     commonState: CommonState,
     navigateToMemberDetail: (member: MemberItem) -> Unit,
+    navigateToOther: () -> Unit,
     viewModel: MemberViewModel = viewModel(factory = viewModelFactory)
 ) {
     var teamId by remember { mutableStateOf("") }
@@ -53,7 +55,7 @@ fun MemberListScreen(
         title = "멤버관리",
         containerColor = NeutralGray0,
         navIconInfo = NavigationIconInfo.BACK,
-        onClickNavIcon = { commonState.navController.popBackStack() },
+        onClickNavIcon = { navigateToOther() },
         actionIconInfo = ActionIconInfo.NULL
     )
 
@@ -77,15 +79,13 @@ fun MemberListScreen(
                         modifier = Modifier.fillMaxSize(),
                         verticalArrangement = Arrangement.spacedBy(defaultPadding)
                     ) {
-                        membersData.forEach { member ->
-                            item(key = member.userId) {
-                                MemberCardItem(
-                                    member = member,
-                                    onCardClick = {
-                                        navigateToMemberDetail(MemberItem.domainToItem(member))
-                                    }
-                                )
-                            }
+                        items(items = membersData, key = {it.userId}) {
+                            MemberCardItem(
+                                member = MemberItem.domainToItem(it),
+                                onCardClick = {
+                                    navigateToMemberDetail(MemberItem.domainToItem(it))
+                                }
+                            )
                         }
                     }
                 }

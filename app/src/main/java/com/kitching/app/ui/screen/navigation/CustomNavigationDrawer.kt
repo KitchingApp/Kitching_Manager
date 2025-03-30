@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.DrawerState
@@ -73,13 +74,11 @@ onTeamCreateClick: () -> Unit,
                         verticalArrangement = Arrangement.spacedBy(20.dp)
                     ) {
                         val teamListdata = if(teamListState is AppResult.Success) teamListState.data else emptyList<Team>()
-                        teamListdata.forEach { team ->
-                            item(key = team.teamId) {
-                                TeamCardItem(
-                                    teamName = team.teamName,
-                                    onCardClick = { onTeamItemClick(team) }
-                                )
-                            }
+                        items(items = teamListdata, key = {it.teamId}) {
+                            TeamCardItem(
+                                teamName = it.teamName,
+                                onCardClick = { onTeamItemClick(it) }
+                            )
                         }
                     }
                     TextButton(

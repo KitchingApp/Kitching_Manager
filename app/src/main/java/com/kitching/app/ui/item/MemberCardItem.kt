@@ -25,14 +25,14 @@ import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
 import com.kitching.app.R
 import com.kitching.app.common.CoilImageRequest
+import com.kitching.app.navgraph.MemberItem
 import com.kitching.app.ui.theme.Body1_m
 import com.kitching.app.ui.theme.NeutralGray300
 import com.kitching.app.ui.theme.NeutralGray800
-import com.kitching.domain.entities.Member
 
 @Composable
 fun MemberCardItem(
-    member: Member,
+    member: MemberItem,
     onCardClick: () -> Unit
 ) {
     Card(

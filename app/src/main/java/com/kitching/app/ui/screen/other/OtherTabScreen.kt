@@ -1,7 +1,5 @@
 package com.kitching.app.ui.screen.other
 
-import android.app.Activity
-import android.content.Intent
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -21,7 +19,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.kitching.app.LoginActivity
 import com.kitching.app.common.ActionIconInfo
 import com.kitching.app.common.CommonState
 import com.kitching.app.common.NavigationIconInfo.DRAWER
@@ -39,6 +36,7 @@ import kotlinx.coroutines.launch
 @Composable
 fun OtherMainScreen(
     commonState: CommonState,
+    navigateToEachItem: (OtherMenuItem) -> Unit,
     userViewModel: UserViewModel = viewModel(factory = viewModelFactory)
 ) {
     commonState.topAppBarState.value = commonState.topAppBarState.value.copy(
@@ -57,7 +55,7 @@ fun OtherMainScreen(
     val userState = userViewModel.user.collectAsStateWithLifecycle()
 
     LaunchedEffect(Unit) {
-        userId = PreferencesDataStore(commonState.navController.context).getUserId()
+        userId = PreferencesDataStore().getUserId()
         userViewModel.getUser(userId)
     }
 
@@ -93,27 +91,12 @@ fun OtherMainScreen(
                     ) {
                         OtherMenuItem.renderOtherMenuItems().forEach { otherMenu ->
                             OtherButtonItem(label = stringResource(otherMenu.tabName)) {
-                                commonState.navController.navigate(otherMenu.destination.route)
+                                navigateToEachItem(otherMenu)
                             }
-                        }
-
-                        OtherButtonItem(label = "로그아웃") {
-                            logout(commonState)
                         }
                     }
                 }
             }
         }
-    }
-}
-
-private fun logout(commonState: CommonState) {
-    commonState.coroutineScope.launch {
-        val context = commonState.navController.context
-        PreferencesDataStore(context).clearUserId()
-        PreferencesDataStore(context).clearTeamId()
-
-        context.startActivity(Intent(context, LoginActivity::class.java))
-        (context as? Activity)?.finish()
     }
 }

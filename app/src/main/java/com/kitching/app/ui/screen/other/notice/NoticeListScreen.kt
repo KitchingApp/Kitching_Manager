@@ -2,6 +2,7 @@ package com.kitching.app.ui.screen.other.notice
 
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -37,6 +38,7 @@ fun NoticeListScreen(
     commonState: CommonState,
     navigateToCreateNotice: () -> Unit,
     navigateToNoticeDetail: (notice: NoticeItem) -> Unit,
+    navigateToOther: () -> Unit,
     viewModel: NoticeViewModel = viewModel(factory = viewModelFactory)
 ) {
 
@@ -52,7 +54,7 @@ fun NoticeListScreen(
         containerColor = NeutralGray0,
         title = "공지사항",
         navIconInfo = NavigationIconInfo.BACK,
-        onClickNavIcon = { commonState.navController.popBackStack() },
+        onClickNavIcon = { navigateToOther() },
         actionIconInfo = ActionIconInfo.ADD,
         onClickActionIcon = { navigateToCreateNotice() }
     )
@@ -74,19 +76,17 @@ fun NoticeListScreen(
                     )
                 } else {
                     LazyColumn {
-                        notices.forEach { notice ->
-                            item(key = notice.noticeId) {
-                                NoticeItem(notice = notice) {
-                                    navigateToNoticeDetail(
-                                        NoticeItem(
-                                            noticeId = notice.noticeId,
-                                            writerName = notice.writerName,
-                                            date = notice.date,
-                                            title = notice.title,
-                                            content = notice.content
-                                        )
+                        items(items = notices, key = { it.noticeId }) {
+                            NoticeItem(notice = it) {
+                                navigateToNoticeDetail(
+                                    NoticeItem(
+                                        noticeId = it.noticeId,
+                                        writerName = it.writerName,
+                                        date = it.date,
+                                        title = it.title,
+                                        content = it.content
                                     )
-                                }
+                                )
                             }
                         }
                     }

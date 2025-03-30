@@ -10,9 +10,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import androidx.navigation.compose.currentBackStackEntryAsState
 import coil3.compose.AsyncImage
 import com.kitching.app.navgraph.BottomNavItem.Companion.renderBottomNavItems
 import com.kitching.app.ui.theme.NeutralGray200
@@ -23,6 +25,8 @@ import com.kitching.app.ui.theme.PrimaryGreen300
 fun CustomNavigationBar(
     navController: NavController,
 ) {
+    val currentDestination = navController.currentBackStackEntryAsState().value?.destination?.route
+
     NavigationBar(
         modifier = Modifier.drawBehind {
             drawLine(
@@ -37,7 +41,8 @@ fun CustomNavigationBar(
         renderBottomNavItems()
             .forEach { bottomNavItem ->
                 NavigationBarItem(
-                    selected = navController.currentDestination?.route == bottomNavItem.destination.route,
+                    selected = currentDestination?.split("_")
+                        ?.get(0) == bottomNavItem.destination.route.split("_")[0],
                     label = {
                         Text(
                             text = stringResource(bottomNavItem.tabName),
@@ -48,6 +53,11 @@ fun CustomNavigationBar(
                             modifier = Modifier.size(24.dp),
                             model = bottomNavItem.icon,
                             contentDescription = null,
+                            colorFilter = if (currentDestination?.split("_")
+                                    ?.get(0) == bottomNavItem.destination.route.split("_")[0]
+                            ) ColorFilter.tint(
+                                PrimaryGreen300
+                            ) else ColorFilter.tint(NeutralGray200)
                         )
                     },
                     onClick = {
