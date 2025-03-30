@@ -1,6 +1,5 @@
 package com.kitching.data.datasource
 
-import android.util.Log
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
 import com.kitching.data.dto.IngredientDTO

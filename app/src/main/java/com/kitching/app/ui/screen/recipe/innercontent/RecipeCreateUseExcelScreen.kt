@@ -128,8 +128,6 @@ fun RecipeCreateUseExcelScreen(
     var selectedRecipes by remember { mutableStateOf(emptyList<Int>()) }
     var teamId by remember { mutableStateOf("") }
 
-    val recipeCreateResultState by viewModel.createRecipeResult.collectAsStateWithLifecycle()
-
     LaunchedEffect(Unit) {
         teamId = PreferencesDataStore(commonState.navController.context).getTeamId()
     }

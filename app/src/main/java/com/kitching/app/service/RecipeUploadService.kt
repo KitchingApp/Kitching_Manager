@@ -5,24 +5,19 @@ import android.content.Intent
 import android.content.pm.ServiceInfo
 import android.os.Build
 import android.os.IBinder
-import android.util.Log
 import androidx.annotation.RequiresApi
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.kitching.app.notification.RecipeNotificationChannelDef
 import com.kitching.app.notification.values.RecipeNotification
-import com.kitching.app.ui.screen.recipe.innercontent.RecipeData
 import com.kitching.app.ui.screen.recipe.innercontent.RecipeServiceData
 import com.kitching.data.repository.RecipeRepositoryImpl
 import com.kitching.domain.usecase.RecipeUploadServiceUseCase
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.cancel
-import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import kotlinx.serialization.json.Json
 import java.io.File
-import java.io.InputStream
 
 class RecipeUploadService : Service() {
     private val recipeUploadServiceUseCase = RecipeUploadServiceUseCase(RecipeRepositoryImpl())

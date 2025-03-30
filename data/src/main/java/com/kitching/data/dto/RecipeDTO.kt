@@ -15,11 +15,11 @@ data class RecipeDTO(
      *
      */
     inner class RecipeCreateDTO(
-        val id: String = "",
-        val teamId: String = "",
-        val name: String = "",
-        val picture: String = "",
-        val steps: List<String> = emptyList(),
+        val id: String,
+        val teamId: String,
+        val name: String,
+        val picture: String,
+        val steps: List<String>,
     )
 
     fun toDomain(): Recipe {
