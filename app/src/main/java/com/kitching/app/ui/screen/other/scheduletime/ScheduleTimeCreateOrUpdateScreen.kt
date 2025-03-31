@@ -38,6 +38,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.kitching.app.common.ActionIconInfo
 import com.kitching.app.common.CommonState
 import com.kitching.app.common.NavigationIconInfo
+import com.kitching.app.navgraph.ScheduleTimeItem
 import com.kitching.app.ui.factory.viewModelFactory
 import com.kitching.app.ui.item.TimeInputItem
 import com.kitching.app.ui.model.ScheduleTimeViewModel
@@ -50,7 +51,6 @@ import com.kitching.app.ui.theme.NeutralGray800
 import com.kitching.app.ui.theme.PrimaryGreen300
 import com.kitching.app.ui.theme.defaultPadding
 import com.kitching.app.util.PreferencesDataStore
-import com.kitching.domain.entities.ScheduleTime
 import java.time.LocalTime
 import java.util.Locale
 
@@ -58,7 +58,7 @@ import java.util.Locale
 @Composable
 fun ScheduleTimeCreateOrUpdateScreen(
     commonState: CommonState,
-    scheduleTime: ScheduleTime?,
+    scheduleTime: ScheduleTimeItem?,
     navigateToScheduleTimeList: () -> Unit,
     viewModel: ScheduleTimeViewModel = viewModel(factory = viewModelFactory)
 ) {

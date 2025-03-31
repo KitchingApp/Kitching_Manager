@@ -9,25 +9,17 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.lifecycle.viewmodel.compose.viewModel
 import coil3.compose.AsyncImage
 import com.kitching.app.common.ActionIconInfo
-import com.kitching.app.common.AppResultHandler
 import com.kitching.app.common.CommonState
 import com.kitching.app.common.NavigationIconInfo
 import com.kitching.app.navgraph.RecipeDetailItem
-import com.kitching.app.ui.factory.viewModelFactory
-import com.kitching.app.ui.model.RecipeViewModel
 import com.kitching.app.ui.theme.H2
 import com.kitching.app.ui.theme.H4_m
 import com.kitching.app.ui.theme.KitchingManagerTheme
 import com.kitching.app.ui.theme.NeutralGray0
-import com.kitching.app.ui.theme.PrimaryGreen300
 
 @Composable
 fun RecipeDetailScreen(
@@ -57,7 +49,7 @@ fun RecipeDetailScreen(
             ) {
                 item {
                     AsyncImage(
-                        model = recipe.picture,
+                        model = recipe.picture.replace("recipeImage/", "recipeImage%2F"),
                         contentDescription = "${recipe.recipeName} 이미지",
                         modifier = Modifier.fillMaxWidth()
                     )

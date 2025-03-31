@@ -17,7 +17,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.rememberNavController
 import com.kitching.app.common.CommonState
 import com.kitching.app.common.TopAppBarState
-import com.kitching.app.navgraph.ScreenRouteDef
+import com.kitching.app.navgraph.Route
 import com.kitching.app.ui.factory.viewModelFactory
 import com.kitching.app.ui.model.TeamViewModel
 import com.kitching.app.ui.screen.common.ResultConditionScreen
@@ -75,12 +75,12 @@ fun EntryPointScreen(
             drawerState = drawerState,
             teamListState = teamListState,
             onTeamCreateClick = {
-                navController.navigate(ScreenRouteDef.CreateTeam)
+                navController.navigate(Route.CreateTeam)
             },
             onTeamItemClick = { team ->
                 selectedTeamId = team.teamId
                 title = team.teamName
-                navController.popBackStack(ScreenRouteDef.ScheduleGraph, false)
+                navController.popBackStack(Route.ScheduleGraph, false)
             }
         ) {
             Scaffold(

@@ -1,9 +1,11 @@
 package com.kitching.app.navgraph
 
+import android.os.Parcelable
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import androidx.navigation.navigation
+import androidx.navigation.toRoute
 import com.kitching.app.common.CommonState
 import com.kitching.app.common.getArgsFromSavedStateHandle
 import com.kitching.app.common.navigateWithArgs
@@ -27,17 +29,24 @@ import com.kitching.app.ui.screen.recipe.innercontent.RecipeDetailScreen
 import com.kitching.app.ui.screen.recipe.innercontent.RecipeEditScreen
 import com.kitching.app.ui.screen.recipe.innercontent.RecipeUploadInProgressScreen
 import com.kitching.app.ui.screen.schedule.ScheduleMainScreen
+import com.kitching.domain.entities.Notice
+import kotlin.reflect.typeOf
+
+
+/**
+ * Parcelable로 정의한 Type을 Map으로 변환하는 함수
+ *
+ */
+inline fun <reified T : Parcelable?> typeMap(isNullableAllowed: Boolean = false) =
+    mapOf(typeOf<T>() to parcelableNavType<T>(isNullableAllowed))
 
 fun NavGraphBuilder.scheduleSliceNavGraph(
     commonState: CommonState,
 ) {
-    navigation(
-        route = ScreenRouteDef.ScheduleGraph.route,
-        startDestination = ScreenRouteDef.ScheduleGraph.ScheduleMain.route
+    navigation<Route.ScheduleGraph>(
+        startDestination = Route.ScheduleGraph.ScheduleMain
     ) {
-        composable(
-            route = ScreenRouteDef.ScheduleGraph.ScheduleMain.route
-        ) {
+        composable<Route.ScheduleGraph.ScheduleMain> {
             ScheduleMainScreen(
                 commonState = commonState
             )
@@ -49,34 +58,25 @@ fun NavGraphBuilder.prepSliceNavGraph(
     commonState: CommonState,
     navController: NavController
 ) {
-
-    navigation(
-        route = ScreenRouteDef.PrepGraph.route,
-        startDestination = ScreenRouteDef.PrepGraph.PrepMain.route,
+    navigation<Route.PrepGraph>(
+        startDestination = Route.PrepGraph.PrepMain
     ) {
-        composable(
-            route = ScreenRouteDef.PrepGraph.PrepMain.route
-        ) {
+        composable<Route.PrepGraph.PrepMain> {
             PrepMainScreen(
                 commonState = commonState,
                 navigateToPrepDetail = { categoryItem ->
-                    navController.navigateWithArgs(
-                        route = ScreenRouteDef.PrepGraph.PrepDetail.route,
-                        args = categoryItem
-                    )
+                    navController.navigate(Route.PrepGraph.PrepDetail(categoryItem))
                 }
             )
         }
-        composable(
-            route = ScreenRouteDef.PrepGraph.PrepDetail.route,
-        ) {
-            navController.getArgsFromSavedStateHandle<CategoryItem>()?.let {
-                PrepDetailScreen(
-                    commonState = commonState,
-                    categoryItemForScreen = it,
-                    navigateToPrep = { navController.popBackStack() }
-                )
-            }
+        composable<Route.PrepGraph.PrepDetail>(
+            typeMap = typeMap<CategoryItem>()
+        ) { navBackStackEntry ->
+            PrepDetailScreen(
+                commonState = commonState,
+                categoryItemForScreen = navBackStackEntry.toRoute<Route.PrepGraph.PrepDetail>().categoryItem,
+                navigateToPrep = { navController.popBackStack() }
+            )
         }
     }
 }
@@ -85,75 +85,61 @@ fun NavGraphBuilder.recipeSliceNavGraph(
     commonState: CommonState,
     navController: NavController
 ) {
-    navigation(
-        route = ScreenRouteDef.RecipeGraph.route,
-        startDestination = ScreenRouteDef.RecipeGraph.RecipeMain.route
+    navigation<Route.RecipeGraph>(
+        startDestination = Route.RecipeGraph.RecipeMain
     ) {
-        composable(
-            route = ScreenRouteDef.RecipeGraph.RecipeMain.route
-        ) {
+        composable<Route.RecipeGraph.RecipeMain> {
             RecipeMainScreen(
                 commonState = commonState,
-                navigateToCreateUesDevice = { navController.navigate(ScreenRouteDef.RecipeGraph.RecipeCreate.route) },
-                navigateToCreateWithExcelFile = { navController.navigate(ScreenRouteDef.RecipeGraph.RecipeCreateUseExcel.route) },
+                navigateToCreateUesDevice = { navController.navigate(Route.RecipeGraph.RecipeCreate) },
+                navigateToCreateWithExcelFile = { navController.navigate(Route.RecipeGraph.RecipeCreateUseExcel) },
                 navigateToDetail = { recipe ->
-                    navController.navigateWithArgs(
-                        route = ScreenRouteDef.RecipeGraph.RecipeDetail.route,
-                        args = RecipeDetailItem.domainToItem(recipe)
+                    navController.navigate(
+                        Route.RecipeGraph.RecipeDetail(
+                            RecipeDetailItem.domainToItem(
+                                recipe
+                            )
+                        )
                     )
                 }
             )
         }
-        composable(
-            route = ScreenRouteDef.RecipeGraph.RecipeDetail.route
-        ) {
-            navController.getArgsFromSavedStateHandle<RecipeDetailItem>()?.let {
-                RecipeDetailScreen(
-                    recipe = it,
-                    commonState = commonState,
-                    navigateToEdit = {
-                        navController.navigateWithArgs(
-                            route = ScreenRouteDef.RecipeGraph.RecipeEdit.route,
-                            args = it
-                        )
-                    },
-                    naviagateToList = { navController.popBackStack() }
-                )
-            }
+        composable<Route.RecipeGraph.RecipeDetail>(
+            typeMap = typeMap<RecipeDetailItem>()
+        ) { navBackStackEntry ->
+            val recipe = navBackStackEntry.toRoute<Route.RecipeGraph.RecipeDetail>().recipe
+            RecipeDetailScreen(
+                recipe = recipe,
+                commonState = commonState,
+                navigateToEdit = { navController.navigate(Route.RecipeGraph.RecipeEdit(recipe)) },
+                naviagateToList = { navController.popBackStack() }
+            )
         }
-        composable(
-            route = ScreenRouteDef.RecipeGraph.RecipeEdit.route
-        ) {
-            navController.getArgsFromSavedStateHandle<RecipeDetailItem>()?.let {
-                RecipeEditScreen(
-                    commonState = commonState,
-                    recipe = it,
-                    navigateToDetail = { navController.popBackStack() },
-                    navigateToRecipe = { navController.navigate(ScreenRouteDef.RecipeGraph.RecipeMain.route) }
-                )
-            }
-
+        composable<Route.RecipeGraph.RecipeEdit>(
+            typeMap = typeMap<RecipeDetailItem>()
+        ) { navBackStackEntry ->
+            val recipe = navBackStackEntry.toRoute<Route.RecipeGraph.RecipeEdit>().recipe
+            RecipeEditScreen(
+                commonState = commonState,
+                recipe = recipe,
+                navigateToDetail = { navController.popBackStack() },
+                navigateToRecipe = { navController.navigate(Route.RecipeGraph.RecipeMain) }
+            )
         }
-        composable(
-            route = ScreenRouteDef.RecipeGraph.RecipeCreate.route
-        ) {
+        composable<Route.RecipeGraph.RecipeCreate> {
             RecipeCreateScreen(
                 commonState = commonState,
                 navigateToRecipe = { navController.popBackStack() }
             )
         }
-        composable(
-            route = ScreenRouteDef.RecipeGraph.RecipeCreateUseExcel.route
-        ) {
+        composable<Route.RecipeGraph.RecipeCreateUseExcel> {
             RecipeCreateUseExcelScreen(
                 commonState = commonState,
-                navigateToRecipeUploadInProgress = { navController.navigate(ScreenRouteDef.RecipeGraph.RecipeUploadInProgress.route) },
+                navigateToRecipeUploadInProgress = { navController.navigate(Route.RecipeGraph.RecipeUploadInProgress) },
                 navigateToRecipe = { navController.popBackStack() }
             )
         }
-        composable(
-            route = ScreenRouteDef.RecipeGraph.RecipeUploadInProgress.route
-        ) {
+        composable<Route.RecipeGraph.RecipeUploadInProgress> {
             RecipeUploadInProgressScreen(
                 commonState = commonState
             )
@@ -165,33 +151,25 @@ fun NavGraphBuilder.orderSliceNavGraph(
     commonState: CommonState,
     navController: NavController,
 ) {
-    navigation(
-        route = ScreenRouteDef.OrderGraph.route,
-        startDestination = ScreenRouteDef.OrderGraph.OrderMain.route
+    navigation<Route.OrderGraph>(
+        startDestination = Route.OrderGraph.OrderMain
     ) {
-        composable(
-            route = ScreenRouteDef.OrderGraph.OrderMain.route
-        ) {
+        composable<Route.OrderGraph.OrderMain> {
             OrderMainScreen(
                 commonState = commonState,
                 onClickItem = { categoryItem ->
-                    navController.navigateWithArgs(
-                        route = ScreenRouteDef.OrderGraph.OrderDetail.route,
-                        args = categoryItem
-                    )
+                    navController.navigate(Route.OrderGraph.OrderDetail(categoryItem))
                 }
             )
         }
-        composable(
-            route = ScreenRouteDef.OrderGraph.OrderDetail.route
-        ) {
-            navController.getArgsFromSavedStateHandle<CategoryItem>()?.let {
-                OrderDetailScreen(
-                    commonState = commonState,
-                    categoryItemForScreen = it,
-                    navigateToOrderMain = { navController.popBackStack() }
-                )
-            }
+        composable<Route.OrderGraph.OrderDetail>(
+            typeMap = typeMap<CategoryItem>()
+        ) { navBackStackEntry ->
+            OrderDetailScreen(
+                commonState = commonState,
+                categoryItemForScreen = navBackStackEntry.toRoute<Route.OrderGraph.OrderDetail>().categoryItem,
+                navigateToOrderMain = { navController.popBackStack() }
+            )
         }
     }
 }
@@ -200,113 +178,89 @@ fun NavGraphBuilder.otherSliceNavGraph(
     commonState: CommonState,
     navController: NavController
 ) {
-    navigation(
-        route = ScreenRouteDef.OtherGraph.route,
-        startDestination = ScreenRouteDef.OtherGraph.OtherMain.route
+    navigation<Route.OtherGraph>(
+        startDestination = Route.OtherGraph.OtherMain
     ) {
-        composable(
-            route = ScreenRouteDef.OtherGraph.OtherMain.route
-        ) {
+        composable<Route.OtherGraph.OtherMain> {
             OtherMainScreen(
                 commonState = commonState,
-                navigateToEachItem = { otherMenuItem -> navController.navigate(otherMenuItem.destination.route) }
+                navigateToEachItem = { navController.navigate(Route.OtherGraph.OtherMain) }
             )
         }
-        composable(
-            route = ScreenRouteDef.OtherGraph.InviteCode.route
-        ) {
+        composable<Route.OtherGraph.InviteCode> {
             InviteCodeScreen(
                 commonState = commonState,
                 navigateToOther = { navController.popBackStack() }
             )
         }
-        composable(
-            route = ScreenRouteDef.OtherGraph.NoticeList.route
-        ) {
+        composable<Route.OtherGraph.NoticeList> {
             NoticeListScreen(
                 commonState = commonState,
                 navigateToCreateNotice = {
-                    navController.navigate(
-                        ScreenRouteDef.OtherGraph.NoticeCreateOrUpdate.route
-                    )
+                    navController.navigate(Route.OtherGraph.NoticeCreateOrUpdate(null))
                 },
                 navigateToNoticeDetail = { notice ->
-                    navController.navigateWithArgs(
-                        route = ScreenRouteDef.OtherGraph.NoticeDetail.route,
-                        args = notice
-                    )
+                    navController.navigate(Route.OtherGraph.NoticeDetail(notice))
                 },
                 navigateToOther = { navController.popBackStack() }
             )
         }
-        composable(
-            route = ScreenRouteDef.OtherGraph.NoticeDetail.route
-        ) {
-            navController.getArgsFromSavedStateHandle<NoticeItem>()?.let {
-                NoticeDetailScreen(
-                    commonState = commonState,
-                    notice = it,
-                    navigateToNoticeList = { navController.navigate(ScreenRouteDef.OtherGraph.NoticeList.route) }
-                )
-            }
+        composable<Route.OtherGraph.NoticeDetail>(
+            typeMap = typeMap<NoticeItem>()
+        ) { navBackStackEntry ->
+            NoticeDetailScreen(
+                commonState = commonState,
+                notice = navBackStackEntry.toRoute<Route.OtherGraph.NoticeDetail>().notice,
+                navigateToNoticeList = { navController.navigate(Route.OtherGraph.NoticeList) },
+                navigateToNoticeModify = { navController.navigate(Route.OtherGraph.NoticeCreateOrUpdate)}
+            )
         }
-        composable(
-            route = ScreenRouteDef.OtherGraph.NoticeCreateOrUpdate.route
-        ) {
+        composable<Route.OtherGraph.NoticeCreateOrUpdate>(
+            typeMap = typeMap<NoticeItem?>(true)
+        ) { navBackStackEntry ->
             NoticeCreateOrModifyScreen(
                 commonState = commonState,
-                notice = navController.getArgsFromSavedStateHandle(),
+                notice = navBackStackEntry.toRoute<Route.OtherGraph.NoticeCreateOrUpdate>().notice,
                 navigateToNoticeList = { navController.popBackStack() },
                 popBackStack = { navController.popBackStack() }
             )
         }
-        composable(
-            route = ScreenRouteDef.OtherGraph.ScheduleTime.route
-        ) {
+        composable<Route.OtherGraph.ScheduleTime> {
             ScheduleTimeScreen(
                 commonState = commonState,
                 naviagateToCreateOfModifyScheduleTime = { scheduleTime ->
-                    navController.navigateWithArgs(
-                        route = ScreenRouteDef.OtherGraph.ScheduleTimeCreateOrUpdate.route,
-                        args = scheduleTime
-                    )
+                    navController.navigate(Route.OtherGraph.ScheduleTimeCreateOrUpdate(scheduleTime))
                 },
                 navigateToOther = { navController.popBackStack() }
             )
         }
-        composable(
-            route = ScreenRouteDef.OtherGraph.ScheduleTimeCreateOrUpdate.route
-        ) {
+        composable<Route.OtherGraph.ScheduleTimeCreateOrUpdate>(
+            typeMap = typeMap<ScheduleTimeItem?>(true)
+        ) { navBackStackEntry ->
+            val scheduleTime = navBackStackEntry.toRoute<Route.OtherGraph.ScheduleTimeCreateOrUpdate>().scheduleTime
             ScheduleTimeCreateOrUpdateScreen(
                 commonState = commonState,
-                navigateToScheduleTimeList = { navController.navigate(ScreenRouteDef.OtherGraph.ScheduleTime.route) },
-                scheduleTime = navController.getArgsFromSavedStateHandle()
+                navigateToScheduleTimeList = { navController.navigate(Route.OtherGraph.ScheduleTimeCreateOrUpdate(scheduleTime)) },
+                scheduleTime = scheduleTime
             )
         }
-        composable(
-            route = ScreenRouteDef.OtherGraph.MemberList.route
-        ) {
+        composable<Route.OtherGraph.MemberList> {
             MemberListScreen(
                 commonState = commonState,
                 navigateToMemberDetail = { member ->
-                    navController.navigateWithArgs(
-                        route = ScreenRouteDef.OtherGraph.MemberDetail.route,
-                        args = member
-                    )
+                    navController.navigate(Route.OtherGraph.MemberDetail(member))
                 },
                 navigateToOther = { navController.popBackStack() }
             )
         }
-        composable(
-            route = ScreenRouteDef.OtherGraph.MemberDetail.route
-        ) {
-            navController.getArgsFromSavedStateHandle<MemberItem>()?.let {
-                MemberDetailScreen(
-                    commonState = commonState,
-                    member = it,
-                    navigateToMemberList = { navController.popBackStack() }
-                )
-            }
+        composable<Route.OtherGraph.MemberDetail>(
+            typeMap = typeMap<MemberItem>()
+        ) { navBackStackEntry ->
+            MemberDetailScreen(
+                commonState = commonState,
+                member = navBackStackEntry.toRoute<Route.OtherGraph.MemberDetail>().member,
+                navigateToMemberList = { navController.popBackStack() }
+            )
         }
     }
 }

@@ -13,7 +13,7 @@ import com.kitching.app.R
 data class BottomNavItem(
     val tabName: Int,
     val icon: Int,
-    val destination: ScreenRouteDef
+    val destination: Route.BottomTab
 ) {
     companion object {
         @Composable
@@ -22,27 +22,27 @@ data class BottomNavItem(
                 BottomNavItem(
                     tabName = R.string.schedule,
                     icon = R.drawable.icon_bottom_nav_schedule,
-                    destination = ScreenRouteDef.ScheduleGraph
+                    destination = Route.ScheduleGraph
                 ),
                 BottomNavItem(
                     tabName = R.string.prep,
                     icon = R.drawable.icon_bottom_nav_prep,
-                    destination = ScreenRouteDef.PrepGraph
+                    destination = Route.PrepGraph
                 ),
                 BottomNavItem(
                     tabName = R.string.recipe,
                     icon = R.drawable.icon_bottom_nav_recipe,
-                    destination = ScreenRouteDef.RecipeGraph
+                    destination = Route.RecipeGraph
                 ),
                 BottomNavItem(
                     tabName = R.string.order,
                     icon = R.drawable.icon_bottom_nav_order,
-                    destination = ScreenRouteDef.OrderGraph
+                    destination = Route.OrderGraph
                 ),
                 BottomNavItem(
                     tabName = R.string.other,
                     icon = R.drawable.icon_bottom_nav_other,
-                    destination = ScreenRouteDef.OtherGraph
+                    destination = Route.OtherGraph
                 )
             )
         }

@@ -59,6 +59,7 @@ fun NoticeDetailScreen(
     commonState: CommonState,
     notice: NoticeItem,
     navigateToNoticeList: () -> Unit,
+    navigateToNoticeModify: () -> Unit,
     viewModel: NoticeViewModel = viewModel(factory = viewModelFactory)
 ) {
     var showDeleteDialog by remember { mutableStateOf(false) }
@@ -142,7 +143,7 @@ fun NoticeDetailScreen(
                                         .weight(1f)
                                         .height(40.dp),
                                     shape = RoundedCornerShape(20.dp),
-                                    onClick = { navigateToNoticeList() },
+                                    onClick = { navigateToNoticeModify() },
                                     colors = ButtonColors(
                                         containerColor = PrimaryGreen300,
                                         contentColor = NeutralGray0,

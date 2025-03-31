@@ -36,6 +36,7 @@ import kotlinx.coroutines.launch
 @Composable
 fun OtherMainScreen(
     commonState: CommonState,
+    otherMenuItems: List<OtherMenuItem> = OtherMenuItem.renderOtherMenuItems(),
     navigateToEachItem: (OtherMenuItem) -> Unit,
     userViewModel: UserViewModel = viewModel(factory = viewModelFactory)
 ) {
@@ -89,7 +90,7 @@ fun OtherMainScreen(
                     Column(
                         verticalArrangement = Arrangement.spacedBy(20.dp)
                     ) {
-                        OtherMenuItem.renderOtherMenuItems().forEach { otherMenu ->
+                        otherMenuItems.forEach { otherMenu ->
                             OtherButtonItem(label = stringResource(otherMenu.tabName)) {
                                 navigateToEachItem(otherMenu)
                             }

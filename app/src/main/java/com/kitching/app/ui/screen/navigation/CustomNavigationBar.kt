@@ -17,6 +17,7 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import coil3.compose.AsyncImage
 import com.kitching.app.navgraph.BottomNavItem.Companion.renderBottomNavItems
+import com.kitching.app.navgraph.Route
 import com.kitching.app.ui.theme.NeutralGray200
 import com.kitching.app.ui.theme.NeutralGray400
 import com.kitching.app.ui.theme.PrimaryGreen300
@@ -41,8 +42,7 @@ fun CustomNavigationBar(
         renderBottomNavItems()
             .forEach { bottomNavItem ->
                 NavigationBarItem(
-                    selected = currentDestination?.split("_")
-                        ?.get(0) == bottomNavItem.destination.route.split("_")[0],
+                    selected = false,
                     label = {
                         Text(
                             text = stringResource(bottomNavItem.tabName),
@@ -53,15 +53,16 @@ fun CustomNavigationBar(
                             modifier = Modifier.size(24.dp),
                             model = bottomNavItem.icon,
                             contentDescription = null,
-                            colorFilter = if (currentDestination?.split("_")
-                                    ?.get(0) == bottomNavItem.destination.route.split("_")[0]
-                            ) ColorFilter.tint(
-                                PrimaryGreen300
-                            ) else ColorFilter.tint(NeutralGray200)
+//                            colorFilter = if (currentDestination?.split("_")
+//                                    ?.get(0) == bottomNavItem.destination.route.split("_")[0]
+//                            ) ColorFilter.tint(
+//                                PrimaryGreen300
+//                            ) else ColorFilter.tint(NeutralGray200)
                         )
                     },
                     onClick = {
-                        navController.navigate(bottomNavItem.destination.route)
+//                        navController.navigate(bottomNavItem.destination.route)
+                        navController.navigate(bottomNavItem.destination)
                     },
                     colors = NavigationBarItemColors(
                         selectedIconColor = PrimaryGreen300,
