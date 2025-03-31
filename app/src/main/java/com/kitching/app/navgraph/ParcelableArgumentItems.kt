@@ -1,15 +1,10 @@
 package com.kitching.app.navgraph
 
 import android.net.Uri
-import android.os.Build
 import android.os.Build.VERSION.SDK_INT
 import android.os.Bundle
 import android.os.Parcelable
-import android.util.Log
-import androidx.annotation.RequiresApi
 import androidx.navigation.NavType
-import com.kitching.app.common.CoilImageRequest
-import com.kitching.app.common.KitchingApplication
 import com.kitching.app.util.customFormat
 import com.kitching.domain.entities.Ingredient
 import com.kitching.domain.entities.Member
@@ -19,10 +14,6 @@ import kotlinx.parcelize.Parcelize
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
-import kotlinx.serialization.json.jsonObject
-import kotlinx.serialization.json.jsonPrimitive
-import java.net.URLDecoder
-import java.net.URLEncoder
 import java.time.LocalTime
 
 @Serializable

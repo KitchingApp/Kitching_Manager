@@ -7,8 +7,6 @@ import androidx.navigation.compose.composable
 import androidx.navigation.navigation
 import androidx.navigation.toRoute
 import com.kitching.app.common.CommonState
-import com.kitching.app.common.getArgsFromSavedStateHandle
-import com.kitching.app.common.navigateWithArgs
 import com.kitching.app.ui.screen.order.OrderDetailScreen
 import com.kitching.app.ui.screen.order.OrderMainScreen
 import com.kitching.app.ui.screen.other.InviteCodeScreen
@@ -29,7 +27,6 @@ import com.kitching.app.ui.screen.recipe.innercontent.RecipeDetailScreen
 import com.kitching.app.ui.screen.recipe.innercontent.RecipeEditScreen
 import com.kitching.app.ui.screen.recipe.innercontent.RecipeUploadInProgressScreen
 import com.kitching.app.ui.screen.schedule.ScheduleMainScreen
-import com.kitching.domain.entities.Notice
 import kotlin.reflect.typeOf
 
 
