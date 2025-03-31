@@ -53,8 +53,6 @@ fun EntryPointScreen(
     val teamListState by teamViewModel.teamList.collectAsStateWithLifecycle()
 
     LaunchedEffect(Unit) {
-        if(destination.isNotEmpty()) navController.navigate(destination)
-
         userId = teamViewModel.dataStore.getUserId()
         selectedTeamId = teamViewModel.dataStore.getTeamId()
         title = teamViewModel.dataStore.getTeamName()
@@ -101,7 +99,8 @@ fun EntryPointScreen(
                 CustomNavHost(
                     paddingValues = paddingValues,
                     commonState = commonState,
-                    navController = navController
+                    navController = navController,
+                    destination = destination
                 )
             }
         }

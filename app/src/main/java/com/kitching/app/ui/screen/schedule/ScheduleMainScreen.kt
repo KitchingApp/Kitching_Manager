@@ -80,22 +80,28 @@ fun ScheduleMainScreen(
 
     LaunchedEffect(selectedDateTime) {
         teamId = PreferencesDataStore(KitchingApplication.getInstance()).getTeamId()
+    }
+
+    LaunchedEffect(selectedDateTime) {
         viewModel.getSchedules(teamId, selectedDateTime.toLocalDate().toString())
         viewModel.getMembers(teamId)
         viewModel.getScheduleTimes(teamId)
     }
 
     LaunchedEffect(rejectPushMessageResultState) {
-        if (rejectPushMessageResultState is AppResult.Success) viewModel.deleteSchedule(
-            targetSchedule.scheduleId
-        )
+//        if (rejectPushMessageResultState is AppResult.Success) {
+            viewModel.deleteSchedule(targetSchedule.scheduleId)
+            viewModel.getSchedules(teamId, selectedDateTime.toLocalDate().toString())
+//        }
     }
 
     LaunchedEffect(scheduleResultState) {
-        if (scheduleResultState is AppResult.Success) viewModel.getSchedules(
-            teamId,
-            selectedDateTime.toLocalDate().toString()
-        )
+        if (scheduleResultState is AppResult.Success) {
+            viewModel.getSchedules(
+                teamId,
+                selectedDateTime.toLocalDate().toString()
+            )
+        }
     }
 
     commonState.topAppBarState.value = commonState.topAppBarState.value.copy(
@@ -216,6 +222,7 @@ fun ScheduleMainScreen(
                             confirmText = stringResource(R.string.button_delete),
                             onClickConfirm = {
                                 viewModel.deleteSchedule(targetSchedule.scheduleId)
+                                viewModel.getSchedules(teamId, selectedDateTime.toLocalDate().toString())
                             },
                             cancelText = stringResource(R.string.button_cancel),
                             onClickCancel = { showDeleteDialog = false }

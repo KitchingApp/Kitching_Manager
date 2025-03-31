@@ -3,6 +3,7 @@ package com.kitching.app.ui.screen.navigation
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
@@ -21,8 +22,12 @@ import com.kitching.app.ui.screen.login.CreateTeamScreen
 fun CustomNavHost(
     paddingValues: PaddingValues,
     commonState: CommonState,
-    navController: NavHostController
+    navController: NavHostController,
+    destination: String
 ) {
+    LaunchedEffect(Unit) {
+        if(destination.isNotEmpty()) navController.navigate(destination)
+    }
     NavHost(
         navController = navController,
         startDestination = ScreenRouteDef.ScheduleGraph.route,
