@@ -81,7 +81,7 @@ class RecipeNotificationChannelDef() : NotificationChannelDef(
                 Intent(context, MainActivity::class.java).apply {
                     putExtra(NAVIGATE_TO_RECIPE_MAIN_KEY, ScreenRouteDef.RecipeGraph.route)
                 },
-                PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+                PendingIntent.FLAG_ONE_SHOT or PendingIntent.FLAG_IMMUTABLE
             )
 
             notificationManager.notify(
