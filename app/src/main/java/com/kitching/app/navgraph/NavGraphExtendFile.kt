@@ -25,6 +25,7 @@ import com.kitching.app.ui.screen.recipe.innercontent.RecipeCreateScreen
 import com.kitching.app.ui.screen.recipe.innercontent.RecipeCreateUseExcelScreen
 import com.kitching.app.ui.screen.recipe.innercontent.RecipeDetailScreen
 import com.kitching.app.ui.screen.recipe.innercontent.RecipeEditScreen
+import com.kitching.app.ui.screen.recipe.innercontent.RecipeUploadInProgressScreen
 import com.kitching.app.ui.screen.schedule.ScheduleMainScreen
 
 fun NavGraphBuilder.scheduleSliceNavGraph(
@@ -148,6 +149,13 @@ fun NavGraphBuilder.recipeSliceNavGraph(
                 commonState = commonState,
                 navigateToRecipeUploadInProgress = { navController.navigate(ScreenRouteDef.RecipeGraph.RecipeUploadInProgress.route) },
                 navigateToRecipe = { navController.popBackStack() }
+            )
+        }
+        composable(
+            route = ScreenRouteDef.RecipeGraph.RecipeUploadInProgress.route
+        ) {
+            RecipeUploadInProgressScreen(
+                commonState = commonState
             )
         }
     }
