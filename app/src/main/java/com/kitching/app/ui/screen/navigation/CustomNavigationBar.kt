@@ -10,7 +10,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
@@ -41,8 +40,7 @@ fun CustomNavigationBar(
         renderBottomNavItems()
             .forEach { bottomNavItem ->
                 NavigationBarItem(
-                    selected = currentDestination?.split("_")
-                        ?.get(0) == bottomNavItem.destination.route.split("_")[0],
+                    selected = false,
                     label = {
                         Text(
                             text = stringResource(bottomNavItem.tabName),
@@ -53,15 +51,16 @@ fun CustomNavigationBar(
                             modifier = Modifier.size(24.dp),
                             model = bottomNavItem.icon,
                             contentDescription = null,
-                            colorFilter = if (currentDestination?.split("_")
-                                    ?.get(0) == bottomNavItem.destination.route.split("_")[0]
-                            ) ColorFilter.tint(
-                                PrimaryGreen300
-                            ) else ColorFilter.tint(NeutralGray200)
+//                            colorFilter = if (currentDestination?.split("_")
+//                                    ?.get(0) == bottomNavItem.destination.route.split("_")[0]
+//                            ) ColorFilter.tint(
+//                                PrimaryGreen300
+//                            ) else ColorFilter.tint(NeutralGray200)
                         )
                     },
                     onClick = {
-                        navController.navigate(bottomNavItem.destination.route)
+//                        navController.navigate(bottomNavItem.destination.route)
+                        navController.navigate(bottomNavItem.destination)
                     },
                     colors = NavigationBarItemColors(
                         selectedIconColor = PrimaryGreen300,

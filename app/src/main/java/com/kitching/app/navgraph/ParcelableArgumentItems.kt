@@ -1,6 +1,10 @@
 package com.kitching.app.navgraph
 
+import android.net.Uri
+import android.os.Build.VERSION.SDK_INT
+import android.os.Bundle
 import android.os.Parcelable
+import androidx.navigation.NavType
 import com.kitching.app.util.customFormat
 import com.kitching.domain.entities.Ingredient
 import com.kitching.domain.entities.Member
@@ -8,14 +12,17 @@ import com.kitching.domain.entities.Recipe
 import com.kitching.domain.entities.ScheduleTime
 import kotlinx.parcelize.Parcelize
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.encodeToString
+import kotlinx.serialization.json.Json
 import java.time.LocalTime
 
+@Serializable
 @Parcelize
 data class CategoryItem(
     val categoryId: String,
     val categoryName: String,
     val categoryColor: String
-): Parcelable
+) : Parcelable
 
 @Serializable
 @Parcelize
@@ -82,6 +89,7 @@ data class IngredientItem(
     )
 }
 
+@Serializable
 @Parcelize
 data class MemberItem(
     val userTeamId: String,
@@ -91,7 +99,7 @@ data class MemberItem(
     val staffLevelId: String,
     val staffLevelName: String,
     val manager: Boolean
-): Parcelable {
+) : Parcelable {
     companion object {
         fun domainToItem(domain: Member) = MemberItem(
             userTeamId = domain.userTeamId,
@@ -105,6 +113,7 @@ data class MemberItem(
     }
 }
 
+@Serializable
 @Parcelize
 data class NoticeItem(
     val noticeId: String,
@@ -112,15 +121,16 @@ data class NoticeItem(
     val date: String,
     val title: String,
     val content: String,
-): Parcelable
+) : Parcelable
 
+@Serializable
 @Parcelize
 data class ScheduleTimeItem(
     val scheduleTimeId: String,
     val scheduleTimeName: String,
     val startTime: String,
     val endTime: String,
-): Parcelable {
+) : Parcelable {
     companion object {
         fun init() = ScheduleTimeItem(
             scheduleTimeId = "",
@@ -136,4 +146,26 @@ data class ScheduleTimeItem(
             endTime = scheduleTime.endTime
         )
     }
+}
+
+inline fun <reified T : Parcelable?> parcelableNavType(isNullableAllowed: Boolean = false): NavType<T> =
+    object : NavType<T>(
+        isNullableAllowed = isNullableAllowed,
+    ) {
+        override fun get(bundle: Bundle, key: String): T? =
+            bundle.parcelable(key)
+
+        override fun parseValue(value: String): T = Json.decodeFromString(Uri.decode(value))
+
+        override fun serializeAsValue(value: T): String = Uri.encode(Json.encodeToString(value))
+
+        override fun put(bundle: Bundle, key: String, value: T) {
+            bundle.putParcelable(key, value)
+        }
+    }
+
+inline fun <reified T : Parcelable> Bundle.parcelable(key: String): T? = when {
+    SDK_INT >= 33 -> getParcelable(key, T::class.java)
+    else -> @Suppress("DEPRECATION")
+    getParcelable(key) as? T
 }

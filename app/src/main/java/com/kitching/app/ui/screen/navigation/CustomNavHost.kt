@@ -9,12 +9,13 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.kitching.app.common.CommonState
-import com.kitching.app.navgraph.ScreenRouteDef
+import com.kitching.app.navgraph.Route
 import com.kitching.app.navgraph.orderSliceNavGraph
 import com.kitching.app.navgraph.otherSliceNavGraph
 import com.kitching.app.navgraph.prepSliceNavGraph
 import com.kitching.app.navgraph.recipeSliceNavGraph
 import com.kitching.app.navgraph.scheduleSliceNavGraph
+import com.kitching.app.service.NavigateToScreenIntent
 import com.kitching.app.ui.screen.login.CreateTeamScreen
 
 
@@ -26,14 +27,16 @@ fun CustomNavHost(
     destination: String
 ) {
     LaunchedEffect(Unit) {
-        if(destination.isNotEmpty()) navController.navigate(destination)
+        if (destination.isNotEmpty()) {
+            navController.navigate(NavigateToScreenIntent.findRouteByName(destination))
+        }
     }
     NavHost(
         navController = navController,
-        startDestination = ScreenRouteDef.ScheduleGraph.route,
+        startDestination = Route.ScheduleGraph,
         modifier = Modifier.padding(paddingValues = paddingValues)
     ) {
-        composable(route = ScreenRouteDef.CreateTeam.route) {
+        composable<Route.CreateTeam> {
             CreateTeamScreen(
                 coroutineScope = commonState.coroutineScope,
                 onNavigateBack = {
@@ -41,12 +44,13 @@ fun CustomNavHost(
                 },
                 onTeamCreated = {
                     navController.popBackStack(
-                        ScreenRouteDef.ScheduleGraph.route,
+                        Route.ScheduleGraph,
                         false
                     )
                 }
             )
         }
+
         scheduleSliceNavGraph(commonState = commonState)
         prepSliceNavGraph(
             commonState = commonState,
