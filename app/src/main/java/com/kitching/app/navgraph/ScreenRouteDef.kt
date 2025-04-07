@@ -1,5 +1,7 @@
 package com.kitching.app.navgraph
 
+import android.os.Parcelable
+import kotlinx.parcelize.Parcelize
 import kotlinx.serialization.Serializable
 
 sealed interface Route {
@@ -26,8 +28,9 @@ sealed interface Route {
         data class PrepDetail(val categoryItem: CategoryItem)
     }
 
+    @Parcelize
     @Serializable
-    data object RecipeGraph: BottomTab {
+    data object RecipeGraph: BottomTab, Parcelable {
         @Serializable
         data object RecipeMain: Route
         @Serializable

@@ -30,7 +30,7 @@ import kotlinx.coroutines.launch
 
 @Composable
 fun EntryPointScreen(
-    destination: String,
+    destination: Route.BottomTab = Route.ScheduleGraph,
     teamViewModel: TeamViewModel = viewModel(factory = viewModelFactory),
 ) {
     var userId by remember { mutableStateOf("") }

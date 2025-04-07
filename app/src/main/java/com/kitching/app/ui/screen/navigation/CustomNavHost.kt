@@ -15,7 +15,6 @@ import com.kitching.app.navgraph.otherSliceNavGraph
 import com.kitching.app.navgraph.prepSliceNavGraph
 import com.kitching.app.navgraph.recipeSliceNavGraph
 import com.kitching.app.navgraph.scheduleSliceNavGraph
-import com.kitching.app.service.NavigateToScreenIntent
 import com.kitching.app.ui.screen.login.CreateTeamScreen
 
 
@@ -24,12 +23,10 @@ fun CustomNavHost(
     paddingValues: PaddingValues,
     commonState: CommonState,
     navController: NavHostController,
-    destination: String
+    destination: Route.BottomTab
 ) {
     LaunchedEffect(Unit) {
-        if (destination.isNotEmpty()) {
-            navController.navigate(NavigateToScreenIntent.findRouteByName(destination))
-        }
+        navController.navigate(destination)
     }
     NavHost(
         navController = navController,

@@ -8,9 +8,9 @@ import android.content.Intent
 import androidx.core.app.NotificationCompat
 import com.kitching.app.MainActivity
 import com.kitching.app.R
+import com.kitching.app.navgraph.Route
 import com.kitching.app.notification.values.RecipeNotification
 import com.kitching.app.service.NAVIGATE_TO_SCREEN_KEY
-import com.kitching.app.service.NavigateToScreenIntent
 
 
 /**
@@ -79,7 +79,7 @@ class RecipeNotificationChannelDef() : NotificationChannelDef(
                 context,
                 0,
                 Intent(context, MainActivity::class.java).apply {
-                    putExtra(NAVIGATE_TO_SCREEN_KEY, NavigateToScreenIntent.RECIPE_GRAPH.name)
+                    putExtra(NAVIGATE_TO_SCREEN_KEY, Route.RecipeGraph)
                 },
                 PendingIntent.FLAG_ONE_SHOT or PendingIntent.FLAG_IMMUTABLE
             )
