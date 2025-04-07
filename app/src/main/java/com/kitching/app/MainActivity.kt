@@ -1,6 +1,8 @@
 package com.kitching.app
 
+import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.runtime.DisposableEffect
@@ -19,21 +21,17 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            var destination by remember { mutableStateOf(intent.getStringExtra(NAVIGATE_TO_SCREEN_KEY) ?: NavigateToScreenIntent.SCHEDULE_GRAPH.name) }
-
-            val currentIntent = rememberUpdatedState(intent)
-
-            DisposableEffect(currentIntent.value) {
-                destination = currentIntent.value.getStringExtra(NAVIGATE_TO_SCREEN_KEY) ?: NavigateToScreenIntent.SCHEDULE_GRAPH.name
-                onDispose {  }
-            }
-
-            LaunchedEffect(Unit) {
-            }
-
             KitchingManagerTheme {
-                EntryPointScreen(destination)
+                EntryPointScreen()
             }
+        }
+    }
+
+    override fun onNewIntent(intent: Intent) {
+        super.onNewIntent(intent)
+
+        setContent {
+            EntryPointScreen(intent.getStringExtra(NAVIGATE_TO_SCREEN_KEY) ?: NavigateToScreenIntent.SCHEDULE_GRAPH.name)
         }
     }
 }
