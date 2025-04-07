@@ -28,8 +28,9 @@ sealed interface Route {
         data class PrepDetail(val categoryItem: CategoryItem)
     }
 
+    @Parcelize
     @Serializable
-    data object RecipeGraph: BottomTab {
+    data object RecipeGraph: BottomTab, Parcelable {
         @Serializable
         data object RecipeMain: Route
         @Serializable

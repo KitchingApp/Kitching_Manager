@@ -18,7 +18,6 @@ import androidx.navigation.compose.rememberNavController
 import com.kitching.app.common.CommonState
 import com.kitching.app.common.TopAppBarState
 import com.kitching.app.navgraph.Route
-import com.kitching.app.service.NavigateToScreenIntent
 import com.kitching.app.ui.factory.viewModelFactory
 import com.kitching.app.ui.model.TeamViewModel
 import com.kitching.app.ui.screen.common.ResultConditionScreen
@@ -31,7 +30,7 @@ import kotlinx.coroutines.launch
 
 @Composable
 fun EntryPointScreen(
-    destination: NavigateToScreenIntent = NavigateToScreenIntent.SCHEDULE_GRAPH,
+    destination: Route.BottomTab = Route.ScheduleGraph,
     teamViewModel: TeamViewModel = viewModel(factory = viewModelFactory),
 ) {
     var userId by remember { mutableStateOf("") }
