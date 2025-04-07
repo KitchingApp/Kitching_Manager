@@ -24,12 +24,10 @@ fun CustomNavHost(
     paddingValues: PaddingValues,
     commonState: CommonState,
     navController: NavHostController,
-    destination: String
+    destination: NavigateToScreenIntent
 ) {
     LaunchedEffect(Unit) {
-        if (destination.isNotEmpty()) {
-            navController.navigate(NavigateToScreenIntent.findRouteByName(destination))
-        }
+        navController.navigate(destination.route)
     }
     NavHost(
         navController = navController,

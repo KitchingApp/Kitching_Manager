@@ -79,7 +79,7 @@ class RecipeNotificationChannelDef() : NotificationChannelDef(
                 context,
                 0,
                 Intent(context, MainActivity::class.java).apply {
-                    putExtra(NAVIGATE_TO_SCREEN_KEY, NavigateToScreenIntent.RECIPE_GRAPH.name)
+                    putExtra(NAVIGATE_TO_SCREEN_KEY, NavigateToScreenIntent.RECIPE_GRAPH)
                 },
                 PendingIntent.FLAG_ONE_SHOT or PendingIntent.FLAG_IMMUTABLE
             )

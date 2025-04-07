@@ -1,5 +1,7 @@
 package com.kitching.app.navgraph
 
+import android.os.Parcelable
+import kotlinx.parcelize.Parcelize
 import kotlinx.serialization.Serializable
 
 sealed interface Route {

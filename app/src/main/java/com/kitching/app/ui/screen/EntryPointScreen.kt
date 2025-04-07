@@ -31,7 +31,7 @@ import kotlinx.coroutines.launch
 
 @Composable
 fun EntryPointScreen(
-    destination: String = NavigateToScreenIntent.SCHEDULE_GRAPH.name,
+    destination: NavigateToScreenIntent = NavigateToScreenIntent.SCHEDULE_GRAPH,
     teamViewModel: TeamViewModel = viewModel(factory = viewModelFactory),
 ) {
     var userId by remember { mutableStateOf("") }

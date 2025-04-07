@@ -1,10 +1,12 @@
 package com.kitching.app
 
 import android.content.Intent
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.annotation.RequiresApi
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -31,7 +33,12 @@ class MainActivity : ComponentActivity() {
         super.onNewIntent(intent)
 
         setContent {
-            EntryPointScreen(intent.getStringExtra(NAVIGATE_TO_SCREEN_KEY) ?: NavigateToScreenIntent.SCHEDULE_GRAPH.name)
+            val destination =
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) intent.getSerializableExtra(
+                    NAVIGATE_TO_SCREEN_KEY,
+                    NavigateToScreenIntent::class.java
+                ) else intent.getSerializableExtra(NAVIGATE_TO_SCREEN_KEY) as NavigateToScreenIntent
+            EntryPointScreen(destination ?: NavigateToScreenIntent.SCHEDULE_GRAPH)
         }
     }
 }
