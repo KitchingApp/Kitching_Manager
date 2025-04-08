@@ -1,6 +1,7 @@
 package com.kitching.app.common
 
 import androidx.compose.material3.DrawerState
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.MutableState
 import androidx.compose.ui.graphics.Color
 import com.kitching.app.R
@@ -35,6 +36,7 @@ data class TopAppBarState(
 data class CommonState(
     var topAppBarState: MutableState<TopAppBarState>,
     val coroutineScope: CoroutineScope,
+    val snackbarHostState: SnackbarHostState
     )
 
 data class TeamSize(val label: String, val value: Int)
