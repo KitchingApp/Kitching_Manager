@@ -77,19 +77,21 @@ fun ScheduleMainScreen(
     val rejectPushMessageResultState by viewModel.rejectPushMessageResult.collectAsStateWithLifecycle()
     val allMembersState by viewModel.members.collectAsStateWithLifecycle()
     val scheduleTimesState by viewModel.scheduleTimes.collectAsStateWithLifecycle()
-
-    LaunchedEffect(selectedDateTime) {
+    
+    LaunchedEffect(Unit) {
         teamId = PreferencesDataStore(KitchingApplication.getInstance()).getTeamId()
+    }
+    LaunchedEffect(selectedDateTime) {
         viewModel.getSchedules(teamId, selectedDateTime.toLocalDate().toString())
         viewModel.getMembers(teamId)
         viewModel.getScheduleTimes(teamId)
     }
 
     LaunchedEffect(rejectPushMessageResultState) {
-//        if (rejectPushMessageResultState is AppResult.Success) {
+        if (rejectPushMessageResultState is AppResult.Success) {
             viewModel.deleteSchedule(targetSchedule.scheduleId)
             viewModel.getSchedules(teamId, selectedDateTime.toLocalDate().toString())
-//        }
+        }
     }
 
     LaunchedEffect(scheduleResultState) {
