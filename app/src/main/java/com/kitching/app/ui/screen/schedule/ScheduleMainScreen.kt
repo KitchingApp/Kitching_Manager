@@ -80,9 +80,6 @@ fun ScheduleMainScreen(
 
     LaunchedEffect(selectedDateTime) {
         teamId = PreferencesDataStore(KitchingApplication.getInstance()).getTeamId()
-    }
-
-    LaunchedEffect(selectedDateTime) {
         viewModel.getSchedules(teamId, selectedDateTime.toLocalDate().toString())
         viewModel.getMembers(teamId)
         viewModel.getScheduleTimes(teamId)
