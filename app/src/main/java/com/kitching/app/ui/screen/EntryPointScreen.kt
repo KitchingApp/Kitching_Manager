@@ -1,8 +1,12 @@
 package com.kitching.app.ui.screen
 
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Snackbar
+import androidx.compose.material3.SnackbarDefaults
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.rememberDrawerState
@@ -14,6 +18,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.rememberNavController
@@ -27,6 +32,11 @@ import com.kitching.app.ui.screen.navigation.CustomNavHost
 import com.kitching.app.ui.screen.navigation.CustomNavigationBar
 import com.kitching.app.ui.screen.navigation.CustomNavigationDrawer
 import com.kitching.app.ui.screen.navigation.CustomTopAppBar
+import com.kitching.app.ui.theme.NeutralGray0
+import com.kitching.app.ui.theme.NeutralGray300
+import com.kitching.app.ui.theme.NeutralGray400
+import com.kitching.app.ui.theme.NeutralGray800
+import com.kitching.app.ui.theme.PrimaryGreen300
 import com.kitching.domain.AppResult
 import kotlinx.coroutines.launch
 
@@ -99,7 +109,19 @@ fun EntryPointScreen(
                         navController = navController
                     )
                 },
-                snackbarHost = { SnackbarHost(hostState = snackbarHostState) }
+                snackbarHost = { SnackbarHost(
+                    hostState = snackbarHostState,
+                    snackbar = {
+                        Snackbar(
+                            shape = RoundedCornerShape(8.dp),
+                            snackbarData = it,
+                            containerColor = NeutralGray0,
+                            contentColor = NeutralGray800,
+                            actionColor = PrimaryGreen300,
+                            dismissActionContentColor = NeutralGray400
+                        )
+                    }
+                ) }
             ) { paddingValues ->
                 CustomNavHost(
                     paddingValues = paddingValues,

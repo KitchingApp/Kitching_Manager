@@ -6,6 +6,8 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
+import androidx.compose.material3.SnackbarDuration
+import androidx.compose.material3.SnackbarResult
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -77,20 +79,39 @@ fun ScheduleMainScreen(
     val rejectPushMessageResultState by viewModel.rejectPushMessageResult.collectAsStateWithLifecycle()
     val allMembersState by viewModel.members.collectAsStateWithLifecycle()
     val scheduleTimesState by viewModel.scheduleTimes.collectAsStateWithLifecycle()
-    
+
+    val pushMessageFailedSnackbarMessage = stringResource(R.string.reject_schedule_snackbar_message)
+    val pushMessageFailedSnackbarActionLabel = stringResource(R.string.reject_schedule_snackbar_action_label)
+
     LaunchedEffect(Unit) {
         teamId = PreferencesDataStore(KitchingApplication.getInstance()).getTeamId()
-    }
-    LaunchedEffect(selectedDateTime) {
         viewModel.getSchedules(teamId, selectedDateTime.toLocalDate().toString())
         viewModel.getMembers(teamId)
         viewModel.getScheduleTimes(teamId)
+    }
+
+    LaunchedEffect(selectedDateTime) {
+        viewModel.getSchedules(teamId, selectedDateTime.toLocalDate().toString())
     }
 
     LaunchedEffect(rejectPushMessageResultState) {
         if (rejectPushMessageResultState is AppResult.Success) {
             viewModel.deleteSchedule(targetSchedule.scheduleId)
             viewModel.getSchedules(teamId, selectedDateTime.toLocalDate().toString())
+        } else if(rejectPushMessageResultState is AppResult.Failure) {
+            val result = commonState.snackbarHostState.showSnackbar(
+                message = pushMessageFailedSnackbarMessage,
+                actionLabel = pushMessageFailedSnackbarActionLabel,
+                duration = SnackbarDuration.Indefinite,
+                withDismissAction = true
+            )
+            when(result) {
+                SnackbarResult.Dismissed -> {}
+                SnackbarResult.ActionPerformed -> {
+                    viewModel.deleteSchedule(targetSchedule.scheduleId)
+                    viewModel.getSchedules(teamId, selectedDateTime.toLocalDate().toString())
+                }
+            }
         }
     }
 
