@@ -143,4 +143,10 @@ class RecipeDataSourceImpl(
                 .await()
         }
     }.getOrElse { throw FailedCRUDInFirebaseException(it).getException() }
+
+    override suspend fun deleteRecipe(recipeId: String): Unit = runCatching {
+        db.collection(COLLECTION_RECIPE).document(recipeId).delete().await()
+
+        Unit
+    }.getOrElse { throw FailedCRUDInFirebaseException(it).getException() }
 }

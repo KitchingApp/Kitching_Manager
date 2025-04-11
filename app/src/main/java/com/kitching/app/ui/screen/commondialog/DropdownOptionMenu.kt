@@ -36,10 +36,8 @@ fun DropdownOptionMenu(
     onClickModify: () -> Unit,
     onClickDelete: () -> Unit
 ) {
-    Box() {
+    Box {
         DropdownMenu(
-//            modifier = Modifier.padding(0.dp).crop(vertical = 8.dp),
-//            shape = RectangleShape,
             expanded = true,
             onDismissRequest = onDismissRequest,
             containerColor = NeutralGray50

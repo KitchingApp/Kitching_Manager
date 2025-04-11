@@ -73,4 +73,15 @@ class RecipeViewModel(
             }
         }
     }
+
+    private val _deleteResult = MutableStateFlow<AppResult<Unit>>(AppResult.Initial)
+    val deleteResult get() = _deleteResult.asStateFlow()
+
+    fun deleteRecipe(recipeId: String) {
+        viewModelScope.launch {
+            recipeRepository.deleteRecipe(recipeId).collectLatest {
+                _deleteResult.value = it
+            }
+        }
+    }
 }
