@@ -29,13 +29,13 @@ class RecipeUploadService : Service() {
         notiChannel.createChannel(this)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
             startForeground(
-                RecipeNotification.RECIPE_UPLOAD_ID,
+                RecipeNotification.RECIPE_UPLOAD_IN_PROGRESS_ID,
                 notiChannel.getInitialedNotification(this),
                 ServiceInfo.FOREGROUND_SERVICE_TYPE_DATA_SYNC
             )
         } else {
             startForeground(
-                RecipeNotification.RECIPE_UPLOAD_ID,
+                RecipeNotification.RECIPE_UPLOAD_IN_PROGRESS_ID,
                 notiChannel.getInitialedNotification(this)
             )
         }
@@ -80,11 +80,11 @@ class RecipeUploadService : Service() {
                     }
 
 
+                    stopForeground(STOP_FOREGROUND_REMOVE)
                     notification.showCompleteNotification()
 
                     uri.path?.let { path -> File(path).delete() }
 
-                    stopForeground(STOP_FOREGROUND_DETACH)
                 }
             }
         }
