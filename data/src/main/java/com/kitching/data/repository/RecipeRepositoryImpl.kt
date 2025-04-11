@@ -61,4 +61,11 @@ class RecipeRepositoryImpl(
     }.catch {
         emit(AppResult.Failure(it))
     }
+
+    override fun deleteRecipe(recipeId: String) = flow {
+        emit(AppResult.Loading)
+        emit(AppResult.Success(recipeDataSource.deleteRecipe(recipeId)))
+    }.catch {
+        emit(AppResult.Failure(it))
+    }
 }
