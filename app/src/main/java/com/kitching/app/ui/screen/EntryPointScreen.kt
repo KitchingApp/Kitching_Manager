@@ -1,21 +1,26 @@
 package com.kitching.app.ui.screen
 
-import androidx.compose.foundation.border
+import android.os.SystemClock
+import android.util.Log
+import androidx.activity.ComponentActivity
+import androidx.activity.addCallback
+import androidx.activity.compose.LocalOnBackPressedDispatcherOwner
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Snackbar
-import androidx.compose.material3.SnackbarDefaults
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
@@ -33,7 +38,6 @@ import com.kitching.app.ui.screen.navigation.CustomNavigationBar
 import com.kitching.app.ui.screen.navigation.CustomNavigationDrawer
 import com.kitching.app.ui.screen.navigation.CustomTopAppBar
 import com.kitching.app.ui.theme.NeutralGray0
-import com.kitching.app.ui.theme.NeutralGray300
 import com.kitching.app.ui.theme.NeutralGray400
 import com.kitching.app.ui.theme.NeutralGray800
 import com.kitching.app.ui.theme.PrimaryGreen300
@@ -55,6 +59,7 @@ fun EntryPointScreen(
     val coroutineScope = rememberCoroutineScope()
     val topAppBarState =
         remember { mutableStateOf(TopAppBarState(drawerState = drawerState, title = title)) }
+    val lastBackPressedTime = remember { mutableLongStateOf(0L) }
     val commonState by remember {
         mutableStateOf(
             CommonState(
@@ -66,6 +71,11 @@ fun EntryPointScreen(
     }
     val teamListState by teamViewModel.teamList.collectAsStateWithLifecycle()
 
+    val currentRoute by navController.currentBackStackEntryFlow
+        .collectAsStateWithLifecycle(navController.currentDestination?.route)
+
+    val backPressedDispatcher = LocalOnBackPressedDispatcherOwner.current?.onBackPressedDispatcher
+
     LaunchedEffect(Unit) {
         userId = teamViewModel.dataStore.getUserId()
         selectedTeamId = teamViewModel.dataStore.getTeamId()
@@ -73,6 +83,31 @@ fun EntryPointScreen(
 
         teamViewModel.getTeam(selectedTeamId)
         teamViewModel.getTeamList(userId)
+    }
+
+    LaunchedEffect(currentRoute) {
+        backPressedDispatcher?.addCallback {
+            Log.d("backPressedDispatcher", currentRoute.toString())
+            val currentTime = SystemClock.elapsedRealtime()
+            if(drawerState.isOpen) {
+                coroutineScope.launch {
+                    drawerState.close()
+                }
+            } else {
+                if (currentTime - lastBackPressedTime.longValue < 2000) {
+                    (navController.context as? ComponentActivity)?.finish()
+                } else {
+                    if (currentRoute.toString().contains("Main")) {
+                        coroutineScope.launch {
+                            snackbarHostState.showSnackbar("한 번 더 누르면 종료됩니다.")
+                        }
+                    } else {
+                        navController.popBackStack()
+                    }
+                }
+                lastBackPressedTime.longValue = currentTime
+            }
+        }
     }
 
     ResultConditionScreen(
