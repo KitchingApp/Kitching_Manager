@@ -4,7 +4,7 @@
 ### 🚀개발 환경
 <img src="https://img.shields.io/badge/Android-3DDC84?style=flat-square&logo=android&logoColor=FFFFFF"/>
 
-![image](https://github.com/user-attachments/assets/83c636a4-33dc-48fe-aba4-0e4d2b1c5899)
+![image](https://github.com/user-attachments/assets/7e8deac8-b192-41cc-a518-26de4a846f46)
 
 ### ✅기능 소개
 #### 🗓️스케줄

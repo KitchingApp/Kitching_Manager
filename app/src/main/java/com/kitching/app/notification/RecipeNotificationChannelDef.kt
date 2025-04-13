@@ -41,8 +41,6 @@ class RecipeNotificationChannelDef() : NotificationChannelDef(
         private val context: Context,
         private val recipeDataSize: Int
     ) {
-        private val notificationId = RecipeNotification.RECIPE_UPLOAD_ID
-
         private val notificationManager =
             context.getSystemService(NOTIFICATION_SERVICE) as NotificationManager
 
@@ -56,7 +54,7 @@ class RecipeNotificationChannelDef() : NotificationChannelDef(
         /** 업로드 시작 노티피케이션 띄우기 */
         fun showStartNotification() {
             notificationManager.notify(
-                notificationId,
+                RecipeNotification.RECIPE_UPLOAD_IN_PROGRESS_ID,
                 getInitialedNotification(context)
             )
         }
@@ -64,7 +62,7 @@ class RecipeNotificationChannelDef() : NotificationChannelDef(
         /** 진행률 표시하기 */
         fun showProgressNotification(progress: Int) {
             notificationManager.notify(
-                notificationId,
+                RecipeNotification.RECIPE_UPLOAD_IN_PROGRESS_ID,
                 progressNotificationBuilder
                     .setProgress(recipeDataSize, progress, true)
                     .setPriority(NotificationCompat.PRIORITY_DEFAULT)
@@ -85,13 +83,14 @@ class RecipeNotificationChannelDef() : NotificationChannelDef(
             )
 
             notificationManager.notify(
-                notificationId,
+                RecipeNotification.RECIPE_UPLOAD_COMPLETE_ID,
                 createBasicNotificationBuilder(
                     context = context,
                     title = context.getString(R.string.recipe_upload_service_complete_notification_title),
                     text = context.getString(R.string.recipe_upload_service_complete_notification_content)
                 )
                     .setContentIntent(pendingIntent)
+                    .setAutoCancel(true)
                     .build()
             )
         }

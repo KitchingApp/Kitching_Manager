@@ -25,4 +25,6 @@ interface RecipeRepository {
         teamId: String,
         ingredients: List<Ingredient>
     ): Flow<AppResult<Unit>>
+
+    fun deleteRecipe(recipeId: String): Flow<AppResult<Unit>>
 }

@@ -6,5 +6,6 @@ package com.kitching.app.notification.values
 object RecipeNotification {
     const val CHANNEL_ID = "RECIPE"
 
-    const val RECIPE_UPLOAD_ID = 2000
+    const val RECIPE_UPLOAD_IN_PROGRESS_ID = 2000
+    const val RECIPE_UPLOAD_COMPLETE_ID = 2001
 }

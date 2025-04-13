@@ -23,4 +23,8 @@ interface RecipeDataSource {
         teamId: String,
         ingredients: List<IngredientDTO>
     )
+
+    suspend fun deleteRecipe(
+        recipeId: String
+    )
 }
