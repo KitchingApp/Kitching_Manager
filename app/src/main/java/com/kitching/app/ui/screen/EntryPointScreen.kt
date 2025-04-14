@@ -87,7 +87,6 @@ fun EntryPointScreen(
 
     LaunchedEffect(currentRoute) {
         backPressedDispatcher?.addCallback {
-            Log.d("backPressedDispatcher", currentRoute.toString())
             val currentTime = SystemClock.elapsedRealtime()
             if(drawerState.isOpen) {
                 coroutineScope.launch {
