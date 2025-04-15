@@ -1,17 +1,23 @@
 package com.kitching.app.ui.screen.navigation
 
+import android.util.Log
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.NavigationBarItemColors
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import coil3.compose.AsyncImage
@@ -24,7 +30,8 @@ import com.kitching.app.ui.theme.PrimaryGreen300
 fun CustomNavigationBar(
     navController: NavController,
 ) {
-    val currentDestination = navController.currentBackStackEntryAsState().value?.destination?.route
+    val currentRoute by navController.currentBackStackEntryFlow
+        .collectAsStateWithLifecycle(navController.currentDestination?.route)
 
     NavigationBar(
         modifier = Modifier.drawBehind {
@@ -39,8 +46,9 @@ fun CustomNavigationBar(
     ) {
         renderBottomNavItems()
             .forEach { bottomNavItem ->
+                val isSelected = currentRoute.toString().contains(bottomNavItem.destination.toString())
                 NavigationBarItem(
-                    selected = false,
+                    selected = isSelected,
                     label = {
                         Text(
                             text = stringResource(bottomNavItem.tabName),
@@ -51,11 +59,9 @@ fun CustomNavigationBar(
                             modifier = Modifier.size(24.dp),
                             model = bottomNavItem.icon,
                             contentDescription = null,
-//                            colorFilter = if (currentDestination?.split("_")
-//                                    ?.get(0) == bottomNavItem.destination.route.split("_")[0]
-//                            ) ColorFilter.tint(
-//                                PrimaryGreen300
-//                            ) else ColorFilter.tint(NeutralGray200)
+                            colorFilter = if (isSelected) ColorFilter.tint(
+                                PrimaryGreen300
+                            ) else ColorFilter.tint(NeutralGray200)
                         )
                     },
                     onClick = {
