@@ -10,6 +10,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.kitching.app.MainActivity
+import com.kitching.app.common.navIfNew
 import com.kitching.app.navgraph.LoginRouteDef
 import com.kitching.app.ui.factory.viewModelFactory
 import com.kitching.app.ui.model.LoginViewModel
@@ -32,7 +33,7 @@ fun LoginNavHost() {
         composable(LoginRouteDef.Splash.routeName) {
             SplashScreen(
                 onNavigateToLogin = {
-                    navController.navigate(LoginRouteDef.Login.routeName) {
+                    navController.navIfNew(LoginRouteDef.Login.routeName) {
                         popUpTo(LoginRouteDef.Splash.routeName) { inclusive = true }
                     }
                 },
@@ -50,7 +51,7 @@ fun LoginNavHost() {
                 viewModel = viewModel,
                 coroutineScope = coroutineScope,
                 onNavigateToSelectTeam = {
-                    navController.navigate(LoginRouteDef.SelectTeam.routeName) {
+                    navController.navIfNew(LoginRouteDef.SelectTeam.routeName) {
                         popUpTo(LoginRouteDef.Login.routeName) { inclusive = true }
                     }
                 }
@@ -62,7 +63,7 @@ fun LoginNavHost() {
                 viewModel = viewModel,
                 coroutineScope = coroutineScope,
                 onNavigateToCreateTeam = {
-                    navController.navigate(LoginRouteDef.CreateTeam.routeName)
+                    navController.navIfNew(LoginRouteDef.CreateTeam.routeName)
                 },
                 onNavigateToMain = {
                     val context = navController.context

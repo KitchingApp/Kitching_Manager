@@ -18,6 +18,7 @@
     <string name="recipe">레시피</string>
     <string name="order">발주목록</string>
     <string name="other">Other</string>
+    <string name="back_pressed_message">뒤로가기 버튼을 한번 더 누르면 종료됩니다.</string>
     <string name="schedule_tab_item_fixed_schedule">스케줄 확정</string>
     <string name="schedule_tab_item_applied_schedule">스케줄 신청</string>
     <string name="schedule_delete_dialog_message">스케줄을 삭제하시겠습니까?</string>

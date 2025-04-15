@@ -9,6 +9,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.kitching.app.common.CommonState
+import com.kitching.app.common.navIfNew
 import com.kitching.app.navgraph.Route
 import com.kitching.app.navgraph.orderSliceNavGraph
 import com.kitching.app.navgraph.otherSliceNavGraph
@@ -26,7 +27,7 @@ fun CustomNavHost(
     destination: Route.BottomTab
 ) {
     LaunchedEffect(Unit) {
-        navController.navigate(destination)
+        navController.navIfNew(destination)
     }
     NavHost(
         navController = navController,
