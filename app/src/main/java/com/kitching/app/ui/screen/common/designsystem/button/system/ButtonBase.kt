@@ -1,4 +1,4 @@
-package com.kitching.app.ui.screen.common.button.system
+package com.kitching.app.ui.screen.common.designsystem.button.system
 
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.height
