@@ -7,6 +7,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.navigation
 import androidx.navigation.toRoute
 import com.kitching.app.common.CommonState
+import com.kitching.app.common.navIfNew
 import com.kitching.app.ui.screen.order.OrderDetailScreen
 import com.kitching.app.ui.screen.order.OrderMainScreen
 import com.kitching.app.ui.screen.other.InviteCodeScreen
@@ -62,7 +63,7 @@ fun NavGraphBuilder.prepSliceNavGraph(
             PrepMainScreen(
                 commonState = commonState,
                 navigateToPrepDetail = { categoryItem ->
-                    navController.navigate(Route.PrepGraph.PrepDetail(categoryItem))
+                    navController.navIfNew(Route.PrepGraph.PrepDetail(categoryItem))
                 }
             )
         }
@@ -88,10 +89,10 @@ fun NavGraphBuilder.recipeSliceNavGraph(
         composable<Route.RecipeGraph.RecipeMain> {
             RecipeMainScreen(
                 commonState = commonState,
-                navigateToCreateUesDevice = { navController.navigate(Route.RecipeGraph.RecipeCreate) },
-                navigateToCreateWithExcelFile = { navController.navigate(Route.RecipeGraph.RecipeCreateUseExcel) },
+                navigateToCreateUesDevice = { navController.navIfNew(Route.RecipeGraph.RecipeCreate) },
+                navigateToCreateWithExcelFile = { navController.navIfNew(Route.RecipeGraph.RecipeCreateUseExcel) },
                 navigateToDetail = { recipe ->
-                    navController.navigate(
+                    navController.navIfNew(
                         Route.RecipeGraph.RecipeDetail(
                             RecipeDetailItem.domainToItem(
                                 recipe
@@ -108,7 +109,7 @@ fun NavGraphBuilder.recipeSliceNavGraph(
             RecipeDetailScreen(
                 recipe = recipe,
                 commonState = commonState,
-                navigateToEdit = { navController.navigate(Route.RecipeGraph.RecipeEdit(recipe)) },
+                navigateToEdit = { navController.navIfNew(Route.RecipeGraph.RecipeEdit(recipe)) },
                 naviagateToList = { navController.popBackStack() }
             )
         }
@@ -120,7 +121,7 @@ fun NavGraphBuilder.recipeSliceNavGraph(
                 commonState = commonState,
                 recipe = recipe,
                 navigateToDetail = { navController.popBackStack() },
-                navigateToRecipe = { navController.navigate(Route.RecipeGraph.RecipeMain) }
+                navigateToRecipe = { navController.navIfNew(Route.RecipeGraph.RecipeMain) }
             )
         }
         composable<Route.RecipeGraph.RecipeCreate> {
@@ -132,7 +133,7 @@ fun NavGraphBuilder.recipeSliceNavGraph(
         composable<Route.RecipeGraph.RecipeCreateUseExcel> {
             RecipeCreateUseExcelScreen(
                 commonState = commonState,
-                navigateToRecipeUploadInProgress = { navController.navigate(Route.RecipeGraph.RecipeUploadInProgress) },
+                navigateToRecipeUploadInProgress = { navController.navIfNew(Route.RecipeGraph.RecipeUploadInProgress) },
                 navigateToRecipe = { navController.popBackStack() }
             )
         }
@@ -155,7 +156,7 @@ fun NavGraphBuilder.orderSliceNavGraph(
             OrderMainScreen(
                 commonState = commonState,
                 onClickItem = { categoryItem ->
-                    navController.navigate(Route.OrderGraph.OrderDetail(categoryItem))
+                    navController.navIfNew(Route.OrderGraph.OrderDetail(categoryItem))
                 }
             )
         }
@@ -181,7 +182,7 @@ fun NavGraphBuilder.otherSliceNavGraph(
         composable<Route.OtherGraph.OtherMain> {
             OtherMainScreen(
                 commonState = commonState,
-                navigateToEachItem = { navController.navigate(Route.OtherGraph.OtherMain) }
+                navigateToEachItem = { navController.navIfNew(Route.OtherGraph.OtherMain) }
             )
         }
         composable<Route.OtherGraph.InviteCode> {
@@ -194,10 +195,10 @@ fun NavGraphBuilder.otherSliceNavGraph(
             NoticeListScreen(
                 commonState = commonState,
                 navigateToCreateNotice = {
-                    navController.navigate(Route.OtherGraph.NoticeCreateOrUpdate(null))
+                    navController.navIfNew(Route.OtherGraph.NoticeCreateOrUpdate(null))
                 },
                 navigateToNoticeDetail = { notice ->
-                    navController.navigate(Route.OtherGraph.NoticeDetail(notice))
+                    navController.navIfNew(Route.OtherGraph.NoticeDetail(notice))
                 },
                 navigateToOther = { navController.popBackStack() }
             )
@@ -208,8 +209,8 @@ fun NavGraphBuilder.otherSliceNavGraph(
             NoticeDetailScreen(
                 commonState = commonState,
                 notice = navBackStackEntry.toRoute<Route.OtherGraph.NoticeDetail>().notice,
-                navigateToNoticeList = { navController.navigate(Route.OtherGraph.NoticeList) },
-                navigateToNoticeModify = { navController.navigate(Route.OtherGraph.NoticeCreateOrUpdate)}
+                navigateToNoticeList = { navController.navIfNew(Route.OtherGraph.NoticeList) },
+                navigateToNoticeModify = { navController.navIfNew(Route.OtherGraph.NoticeCreateOrUpdate)}
             )
         }
         composable<Route.OtherGraph.NoticeCreateOrUpdate>(
@@ -226,7 +227,7 @@ fun NavGraphBuilder.otherSliceNavGraph(
             ScheduleTimeScreen(
                 commonState = commonState,
                 naviagateToCreateOfModifyScheduleTime = { scheduleTime ->
-                    navController.navigate(Route.OtherGraph.ScheduleTimeCreateOrUpdate(scheduleTime))
+                    navController.navIfNew(Route.OtherGraph.ScheduleTimeCreateOrUpdate(scheduleTime))
                 },
                 navigateToOther = { navController.popBackStack() }
             )
@@ -237,7 +238,7 @@ fun NavGraphBuilder.otherSliceNavGraph(
             val scheduleTime = navBackStackEntry.toRoute<Route.OtherGraph.ScheduleTimeCreateOrUpdate>().scheduleTime
             ScheduleTimeCreateOrUpdateScreen(
                 commonState = commonState,
-                navigateToScheduleTimeList = { navController.navigate(Route.OtherGraph.ScheduleTimeCreateOrUpdate(scheduleTime)) },
+                navigateToScheduleTimeList = { navController.navIfNew(Route.OtherGraph.ScheduleTimeCreateOrUpdate(scheduleTime)) },
                 scheduleTime = scheduleTime
             )
         }
@@ -245,7 +246,7 @@ fun NavGraphBuilder.otherSliceNavGraph(
             MemberListScreen(
                 commonState = commonState,
                 navigateToMemberDetail = { member ->
-                    navController.navigate(Route.OtherGraph.MemberDetail(member))
+                    navController.navIfNew(Route.OtherGraph.MemberDetail(member))
                 },
                 navigateToOther = { navController.popBackStack() }
             )

@@ -1,24 +1,30 @@
 package com.kitching.app.common
 
-import android.os.Parcelable
 import androidx.navigation.NavController
-
-const val ARG_KEY = "args"
+import androidx.navigation.NavGraph
+import androidx.navigation.NavOptionsBuilder
 
 /**
- * Parcelable 객체를 NavController의 SavedStateHandle에 저장하고 해당 화면으로 이동하는 확장 함수
+ * 이동할 경로가 현재 경로와 같으면 이동하지 않고,
+ * 스택의 마지막이 경로와 같으면 재사용하는 navigate 함수
  *
- * @param route
- * @param args
- */
-fun NavController.navigateWithArgs(route: String, args: Parcelable) {
-    this.currentBackStackEntry?.savedStateHandle?.set(ARG_KEY, args)
-    this.navigate(route)
-}
-
-/**
- * NavController의 SavedStateHandle에서 Parcelable 객체를 가져오는 확장 함수
+ * 만약 이동할 경로가 그래프라면,
+ * 해당 그래프의 startDestination과 비교하여 중복 이동을 방지
  *
  * @param T
+ * @param route 이동할 경로
+ * @param builder 추가적인 Navigation 옵션 설정
  */
-fun <T>NavController.getArgsFromSavedStateHandle(): T? = this.previousBackStackEntry?.savedStateHandle?.get<T>(ARG_KEY)
+fun <T : Any> NavController.navIfNew(
+    route: T,
+    builder: (NavOptionsBuilder.() -> Unit)? = null
+) {
+    val currentRoute = this.currentBackStackEntry?.destination
+    val currentRouteString = if(currentRoute is NavGraph) currentRoute.startDestinationRoute else currentRoute?.route
+    if(currentRouteString != route.toString()) {
+        this.navigate(route = route) {
+            launchSingleTop = true
+            builder?.invoke(this)
+        }
+    }
+}

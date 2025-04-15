@@ -1,14 +1,11 @@
 package com.kitching.app.ui.screen.navigation
 
-import android.util.Log
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.NavigationBarItemColors
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawBehind
@@ -19,8 +16,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
-import androidx.navigation.compose.currentBackStackEntryAsState
 import coil3.compose.AsyncImage
+import com.kitching.app.common.navIfNew
 import com.kitching.app.navgraph.BottomNavItem.Companion.renderBottomNavItems
 import com.kitching.app.ui.theme.NeutralGray200
 import com.kitching.app.ui.theme.NeutralGray400
@@ -65,8 +62,9 @@ fun CustomNavigationBar(
                         )
                     },
                     onClick = {
-//                        navController.navigate(bottomNavItem.destination.route)
-                        navController.navigate(bottomNavItem.destination)
+                        navController.navIfNew(bottomNavItem.destination) {
+                            popUpTo(0) { inclusive = true }
+                        }
                     },
                     colors = NavigationBarItemColors(
                         selectedIconColor = PrimaryGreen300,
