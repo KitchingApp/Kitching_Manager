@@ -52,7 +52,7 @@ fun TeamCardItem(
         ) {
             Icon(
                 imageVector = ImageVector.vectorResource(R.drawable.icon_spatula_spoon),
-                contentDescription = "spatula and spoon icon",
+                contentDescription = null,
                 tint = PrimaryGreen300
             )
             Text(

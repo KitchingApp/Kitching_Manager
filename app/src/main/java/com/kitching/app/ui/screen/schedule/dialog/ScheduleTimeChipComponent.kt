@@ -21,27 +21,12 @@ import com.kitching.app.ui.theme.PrimaryGreen300
 import com.kitching.app.ui.theme.SecondaryLightGreen100
 import com.kitching.domain.entities.ScheduleTime
 
-//@Preview
 @Composable
 fun ScheduleTimeChipComponent(
     scheduleTimes: List<ScheduleTime>,
-    selectedScheduleTime: MutableState<ScheduleTime>
+    onScheduleTimeSelected: (scheduleTime: ScheduleTime) -> Unit,
+    selectedScheduleTime: ScheduleTime
 ) {
-
-//    val scheduleTimeListMockData = listOf(
-//        ScheduleTimeChipsDTO(
-//            scheduleTimeId = "1",
-//            scheduleTimeName = "오픈"
-//        ),
-//        ScheduleTimeChipsDTO(
-//            scheduleTimeId = "2",
-//            scheduleTimeName = "미들"
-//        ),
-//        ScheduleTimeChipsDTO(
-//            scheduleTimeId = "3",
-//            scheduleTimeName = "마감"
-//        )
-//    )
 
     Row(
         modifier = Modifier.width(240.dp),
@@ -50,7 +35,7 @@ fun ScheduleTimeChipComponent(
         scheduleTimes.forEach { scheduleTime ->
             FilterChip(
                 onClick = {
-                    selectedScheduleTime.value = scheduleTime
+                    onScheduleTimeSelected(scheduleTime)
                 },
                 label = {
                     Text(
@@ -58,7 +43,7 @@ fun ScheduleTimeChipComponent(
                         style = H5_m
                     )
                 },
-                selected = selectedScheduleTime.value == scheduleTime,
+                selected = selectedScheduleTime == scheduleTime,
                 colors = SelectableChipColors(
                     containerColor = SecondaryLightGreen100,
                     labelColor = NeutralGray800,

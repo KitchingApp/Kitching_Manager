@@ -32,9 +32,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.kitching.app.R
 import com.kitching.app.ui.theme.Body1_m
-import com.kitching.app.ui.theme.H3_m
 import com.kitching.app.ui.theme.NeutralGray0
-import com.kitching.app.ui.theme.NeutralGray200
 import com.kitching.app.ui.theme.NeutralGray800
 import com.kitching.app.ui.theme.ShadowColor
 import com.kitching.app.util.dropShadow
@@ -118,11 +116,11 @@ fun StaffLevelDropdownComponent(
                 LazyColumn(
                     modifier = Modifier.fillMaxWidth().heightIn(max = 150.dp)
                 ) {
-                    items(staffLevels) { staffLevel ->
+                    items(items = staffLevels, key = {it.staffLevelId}) {
                         DropDownStaffLevelItem(
-                            staffLevel = staffLevel,
+                            staffLevel = it,
                             onClickItem = {
-                                selectedStaffLevel.value = staffLevel
+                                selectedStaffLevel.value = it
                                 isExpanded.value = false
                             }
                         )

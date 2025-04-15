@@ -7,9 +7,9 @@ import kotlinx.coroutines.flow.Flow
 interface PrepRepository {
     fun getPrepList(categoryId: String): Flow<AppResult<List<Prep>>>
 
-    fun createPrep(categoryId: String, name: String): Flow<AppResult<Boolean>>
+    fun createPrep(categoryId: String, name: String): Flow<AppResult<Unit>>
 
-    fun updatePrep(prepId: String, name: String): Flow<AppResult<Boolean>>
+    fun updatePrep(prepId: String, name: String): Flow<AppResult<Unit>>
 
-    fun deletePrep(prepId: String): Flow<AppResult<Boolean>>
+    fun deletePrep(prepId: String): Flow<AppResult<Unit>>
 }

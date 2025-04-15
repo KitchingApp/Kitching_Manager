@@ -21,7 +21,7 @@ class UserTeamRepositoryImpl(
         emit(AppResult.Loading)
         emit(AppResult.Success(
             userTeamDataSource.getAllMembers(teamId).map {
-                val user = userDataSource.getUser(it.userId) ?: throw Throwable("User not Exist")
+                val user = userDataSource.getUser(it.userId)
                 Member(
                     userTeamId = it.id,
                     userId = it.userId,

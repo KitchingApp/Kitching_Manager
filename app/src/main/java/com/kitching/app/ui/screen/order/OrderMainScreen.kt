@@ -16,10 +16,9 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.kitching.app.common.ActionIconInfo
 import com.kitching.app.common.CommonState
 import com.kitching.app.common.NavigationIconInfo
-import com.kitching.app.navgraph.ScreenRouteDef
+import com.kitching.app.navgraph.CategoryItem
 import com.kitching.app.ui.factory.viewModelFactory
 import com.kitching.app.ui.model.OrderCategoryViewModel
-import com.kitching.app.ui.screen.categoryscreen.CategoryItemForScreen
 import com.kitching.app.ui.screen.categoryscreen.CategoryScreen
 import com.kitching.app.ui.screen.common.EmptyScreen
 import com.kitching.app.ui.screen.common.ResultConditionScreen
@@ -31,18 +30,18 @@ import com.kitching.app.util.PreferencesDataStore
 import com.kitching.app.util.hexToArgb
 import com.kitching.domain.AppResult
 import kotlinx.coroutines.launch
-import java.net.URLEncoder
-import java.nio.charset.StandardCharsets
 
 /**
- * Order tab screen
+ * Order main screen
  *
  * @param commonState 네비게이션 컨트롤러, 앱바 상태, 코루틴 스코프를 갖는 data class
+ * @param onClickItem
  * @param viewModel
  */
 @Composable
-fun OrderTabScreen(
+fun OrderMainScreen(
     commonState: CommonState,
+    onClickItem: (categoryItemForScreen: CategoryItem) -> Unit,
     viewModel: OrderCategoryViewModel = viewModel(factory = viewModelFactory)
 ) {
 
@@ -66,14 +65,14 @@ fun OrderTabScreen(
     }
 
     commonState.topAppBarState.value = commonState.topAppBarState.value.copy(
-        title = "Kitching",
+        title = "Approach",
         containerColor = NeutralGray0,
         navIconInfo = NavigationIconInfo.DRAWER,
         onClickNavIcon = {
             if (commonState.topAppBarState.value.drawerState.isOpen) {
-                commonState.scope.launch { commonState.topAppBarState.value.drawerState.close() }
+                commonState.coroutineScope.launch { commonState.topAppBarState.value.drawerState.close() }
             } else {
-                commonState.scope.launch { commonState.topAppBarState.value.drawerState.open() }
+                commonState.coroutineScope.launch { commonState.topAppBarState.value.drawerState.open() }
             }
         },
         actionIconInfo = ActionIconInfo.ADD,
@@ -97,28 +96,24 @@ fun OrderTabScreen(
                     CategoryScreen(
                         title = "발주",
                         categoryList = categories.map { category ->
-                            CategoryItemForScreen(
+                            CategoryItem(
                                 categoryId = category.categoryId,
                                 categoryName = category.categoryName,
                                 categoryColor = category.color
                             )
                         },
-                        onCardClick = { categoryId, categoryName, categoryColor ->
-                            val encodedColor = URLEncoder.encode(
-                                categoryColor,
-                                StandardCharsets.UTF_8.toString()
-                            )
-                            commonState.navController.navigate("${ScreenRouteDef.InnerContent.OrderDetail.routeName}/${categoryId}/${categoryName}/${encodedColor}")
+                        onCardClick = { categoryItemForScreen ->
+                            onClickItem(categoryItemForScreen)
                         },
                         onCardOptionBtnClick = { categoryId ->
                             optionMenuId.value =
                                 if (optionMenuId.value == categoryId) "" else categoryId
                         },
                         optionMenuId = optionMenuId,
-                        onClickModify = { categoryId, categoryName, categoryColor ->
-                            optionMenuId.value = categoryId
-                            textState.value = TextFieldValue(categoryName)
-                            colorState.value = Color(hexToArgb(categoryColor))
+                        onClickModify = { categoryItemForScreen ->
+                            optionMenuId.value = categoryItemForScreen.categoryId
+                            textState.value = TextFieldValue(categoryItemForScreen.categoryName)
+                            colorState.value = Color(hexToArgb(categoryItemForScreen.categoryColor))
                             showModifyDialog = true
                         },
                         onClickDelete = { categoryId ->

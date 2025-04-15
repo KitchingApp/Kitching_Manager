@@ -1,5 +1,6 @@
 package com.kitching.data.repository
 
+import android.util.Log
 import com.kitching.data.datasource.TeamDataSource
 import com.kitching.data.datasource.TeamDataSourceImpl
 import com.kitching.data.datasource.UserTeamDataSource
@@ -17,19 +18,11 @@ class TeamRepositoryImpl(
 ) : TeamRepository {
     override fun getTeamsByUserId(userId: String) = flow {
         emit(AppResult.Loading)
-
-        val userTeams = userTeamDataSource.getUserTeams(userId)
-
-        val teamList = userTeams.flatMap { userTeamDTO ->
-            teamDataSource.getTeamList(userTeamDTO.teamId).map { dto ->
-                Team(
-                    teamId = dto.id,
-                    teamName = dto.teamName,
-                    teamAmount = dto.teamAmount
-                )
+        emit(AppResult.Success(
+            userTeamDataSource.getUserTeams(userId).map { userTeam ->
+                teamDataSource.getTeam(userTeam.teamId).toDomain()
             }
-        }
-        emit(AppResult.Success(teamList))
+        ))
     }.catch {
         emit(AppResult.Failure(it))
     }
@@ -37,18 +30,16 @@ class TeamRepositoryImpl(
     override fun getTeam(teamId: String) = flow {
         emit(AppResult.Loading)
         val team = teamDataSource.getTeam(teamId)
-        if (team != null) {
-            emit(
-                AppResult.Success(
-                    Team(
-                        teamId = team.id,
-                        teamName = team.teamName,
-                        teamAmount = team.teamAmount,
-                        inviteCode = team.inviteCode
-                    )
+        emit(
+            AppResult.Success(
+                Team(
+                    teamId = team.id,
+                    teamName = team.teamName,
+                    teamAmount = team.teamAmount,
+                    inviteCode = team.inviteCode
                 )
             )
-        } else throw Throwable("team is not exists")
+        )
     }.catch {
         emit(AppResult.Failure(it))
     }
@@ -58,20 +49,18 @@ class TeamRepositoryImpl(
     ) = flow {
         emit(AppResult.Loading)
         val inviteCode = UUID.randomUUID().toString().replace("-", "")
-            emit(
-                AppResult.Success(
-                    userTeamDataSource.createUserTeams(
-                        userId = ownerId,
-                        teamId = teamDataSource.createTeam(
-                            inviteCode,
-                            ownerId,
-                            teamName,
-                            teamAmount
-                        ),
-                        staffLevelId = ""
-                    )
-                )
-            )
+        val teamId = teamDataSource.createTeam(
+            inviteCode,
+            ownerId,
+            teamName,
+            teamAmount
+        )
+        userTeamDataSource.createUserTeams(
+            userId = ownerId,
+            teamId = teamId,
+            staffLevelId = ""
+        )
+        emit(AppResult.Success(teamId))
     }.catch {
         emit(AppResult.Failure(it))
     }

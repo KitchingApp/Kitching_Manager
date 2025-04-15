@@ -3,43 +3,65 @@ package com.kitching.app.ui.screen.navigation
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
+import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.kitching.app.common.CommonState
-import com.kitching.app.navgraph.ScreenRouteDef
-import com.kitching.app.navgraph.sliceNavGraph
-import com.kitching.app.ui.screen.order.OrderTabScreen
-import com.kitching.app.ui.screen.other.OtherTabScreen
-import com.kitching.app.ui.screen.prep.PrepTabScreen
-import com.kitching.app.ui.screen.recipe.RecipeTabScreen
-import com.kitching.app.ui.screen.schedule.ScheduleTabScreen
+import com.kitching.app.common.navIfNew
+import com.kitching.app.navgraph.Route
+import com.kitching.app.navgraph.orderSliceNavGraph
+import com.kitching.app.navgraph.otherSliceNavGraph
+import com.kitching.app.navgraph.prepSliceNavGraph
+import com.kitching.app.navgraph.recipeSliceNavGraph
+import com.kitching.app.navgraph.scheduleSliceNavGraph
+import com.kitching.app.ui.screen.login.CreateTeamScreen
+
 
 @Composable
 fun CustomNavHost(
     paddingValues: PaddingValues,
-    commonState: CommonState
+    commonState: CommonState,
+    navController: NavHostController,
+    destination: Route.BottomTab
 ) {
+    LaunchedEffect(Unit) {
+        navController.navIfNew(destination)
+    }
     NavHost(
-        navController = commonState.navController,
-        startDestination = ScreenRouteDef.ScheduleTab.routeName,
+        navController = navController,
+        startDestination = Route.ScheduleGraph,
         modifier = Modifier.padding(paddingValues = paddingValues)
     ) {
-        composable(ScreenRouteDef.ScheduleTab.routeName) {
-            ScheduleTabScreen(commonState = commonState)
+        composable<Route.CreateTeam> {
+            CreateTeamScreen(
+                coroutineScope = commonState.coroutineScope,
+                onNavigateBack = {
+                    navController.popBackStack()
+                },
+                onTeamCreated = {
+                    navController.popBackStack(
+                        Route.ScheduleGraph,
+                        false
+                    )
+                }
+            )
         }
-        composable(ScreenRouteDef.PrepTab.routeName) {
-            PrepTabScreen(commonState = commonState)
-        }
-        composable(ScreenRouteDef.RecipeTab.routeName) {
-            RecipeTabScreen(commonState = commonState)
-        }
-        composable(ScreenRouteDef.OrderTab.routeName) {
-            OrderTabScreen(commonState = commonState)
-        }
-        composable(ScreenRouteDef.OtherTab.routeName) {
-            OtherTabScreen(commonState = commonState)
-        }
-        sliceNavGraph(commonState = commonState)
+
+        scheduleSliceNavGraph(commonState = commonState)
+        prepSliceNavGraph(
+            commonState = commonState,
+            navController = navController
+        )
+        recipeSliceNavGraph(
+            commonState = commonState,
+            navController = navController
+        )
+        orderSliceNavGraph(
+            commonState = commonState,
+            navController = navController
+        )
+        otherSliceNavGraph(commonState = commonState, navController = navController)
     }
 }

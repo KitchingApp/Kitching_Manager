@@ -9,30 +9,27 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import com.kitching.app.R
+import com.kitching.app.navgraph.CategoryItem
 import com.kitching.app.ui.item.CategoryCardItem
 import com.kitching.app.ui.screen.commondialog.DropdownOptionMenu
 import com.kitching.app.ui.theme.H2
 import com.kitching.app.ui.theme.NeutralGray800
 import com.kitching.app.ui.theme.defaultPadding
 
-data class CategoryItemForScreen(
-    val categoryId: String,
-    val categoryName: String,
-    val categoryColor: String
-)
-
 /**
  * Category screen
  *
  * @param title 카테고리 이름
- * @param categoryList [CategoryItemForScreen]으로 변환된 카테고리 목록
+ * @param categoryList [CategoryItem]으로 변환된 카테고리 목록
  * @param onCardClick 카드 클릭 시 액션
  * @param onCardOptionBtnClick 옵션버튼 클릭 시 액션
  * @param optionMenuId 선택된 옵션버튼의 아이템 ID(선택하지 않을 시 "")
@@ -42,11 +39,11 @@ data class CategoryItemForScreen(
 @Composable
 fun CategoryScreen(
     title: String,
-    categoryList: List<CategoryItemForScreen>,
-    onCardClick: (categoryId: String, categoryName: String, color: String) -> Unit,
+    categoryList: List<CategoryItem>,
+    onCardClick: (categoryItemForScreen: CategoryItem) -> Unit,
     onCardOptionBtnClick: (categoryId: String) -> Unit,
     optionMenuId: MutableState<String>,
-    onClickModify: (categoryId: String, categoryName: String, categoryColor: String) -> Unit,
+    onClickModify: (categoryItemForScreen: CategoryItem) -> Unit,
     onClickDelete: (categoryId: String) -> Unit
 ) {
 
@@ -66,7 +63,7 @@ fun CategoryScreen(
                 modifier = Modifier
                     .fillMaxSize()
                     .wrapContentHeight(),
-                text = "$title 카테고리",
+                text = stringResource(R.string.category_detail_screen_title, title),
                 style = H2.copy(color = NeutralGray800)
             )
         }
@@ -74,7 +71,7 @@ fun CategoryScreen(
             modifier = Modifier.weight(1f),
             verticalArrangement = Arrangement.spacedBy(20.dp)
         ) {
-            itemsIndexed(categoryList) { _, category ->
+            items(items = categoryList, key = {it.categoryId}) { category ->
                 Column(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalAlignment = Alignment.End
@@ -82,24 +79,16 @@ fun CategoryScreen(
                     CategoryCardItem(
                         cardText = category.categoryName,
                         cardColor = category.categoryColor,
-                        onCardClick = {
-                            onCardClick(
-                                category.categoryId,
-                                category.categoryName,
-                                category.categoryColor
-                            )
-                        },
+                        onCardClick = { onCardClick(category) },
                         onOptionBtnClick = { onCardOptionBtnClick(category.categoryId) },
                     )
                     if (optionMenuId.value == category.categoryId) {
                         DropdownOptionMenu(
                             onDismissRequest = { optionMenuId.value = "" },
                             onClickModify = {
-                                onClickModify(category.categoryId, category.categoryName, category.categoryColor)
+                                onClickModify(category)
                             },
-                            onClickDelete = {
-                                onClickDelete(category.categoryId)
-                            }
+                            onClickDelete = { onClickDelete(category.categoryId) }
                         )
                     }
                 }

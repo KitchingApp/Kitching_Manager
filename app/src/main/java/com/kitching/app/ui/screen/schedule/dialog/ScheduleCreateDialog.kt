@@ -2,35 +2,38 @@ package com.kitching.app.ui.screen.schedule.dialog
 
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.unit.dp
 import com.kitching.app.ui.screen.commondialog.CommonDialogComponent
 import com.kitching.app.ui.theme.H5
 import com.kitching.app.ui.theme.NeutralGray800
-import com.kitching.domain.AppResult
 import com.kitching.domain.entities.Member
 import com.kitching.domain.entities.ScheduleTime
 import java.time.LocalDateTime
 
-//@Preview
 @Composable
 fun ScheduleCreateDialog(
     selectedDateTime: LocalDateTime,
-    isExpanded: MutableState<Boolean>,
     onDismissRequest: () -> Unit,
-    onClickConfirm: () -> Unit,
-    selectedMember: MutableState<Member>,
+    onClickConfirm: (selectedMember: Member, selectedScheduleTime: ScheduleTime) -> Unit,
     members: List<Member>,
-    scheduleTimes: List<ScheduleTime>,
-    selectedScheduleTimes: MutableState<ScheduleTime>
+    scheduleTimes: List<ScheduleTime>
 ) {
+    /** 드롭다운에서 선택된 멤버 */
+    var selectedMember by remember { mutableStateOf(Member.init()) }
+    /** 선택된 스케줄타임 */
+    var selectedScheduleTime by remember { mutableStateOf(scheduleTimes.firstOrNull() ?: ScheduleTime.init()) }
+
     CommonDialogComponent(
         height = 237.dp,
         paddingTop = 24.dp,
         paddingBottom = 32.dp,
         radius = 20.dp,
         confirmText = "배정",
-        onClickConfirm = { onClickConfirm() },
+        onClickConfirm = { onClickConfirm(selectedMember, selectedScheduleTime) },
         cancelText = "취소",
         onClickCancel = { onDismissRequest() }
     ) {
@@ -41,9 +44,12 @@ fun ScheduleCreateDialog(
         )
         MemberSearchComponent(
             members = members,
-            selectedMember = selectedMember,
-            isExpanded = isExpanded
+            onMemberSelected = { member -> selectedMember = member },
+            selectedMember = selectedMember
         )
-        ScheduleTimeChipComponent(scheduleTimes, selectedScheduleTimes)
+        ScheduleTimeChipComponent(
+            scheduleTimes = scheduleTimes,
+            selectedScheduleTime = selectedScheduleTime,
+            onScheduleTimeSelected = { scheduleTime -> selectedScheduleTime = scheduleTime })
     }
 }

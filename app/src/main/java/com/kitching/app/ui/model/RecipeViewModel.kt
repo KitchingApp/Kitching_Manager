@@ -38,7 +38,7 @@ class RecipeViewModel(
         }
     }
 
-    private val _updateResult = MutableStateFlow<AppResult<Boolean>>(AppResult.Initial)
+    private val _updateResult = MutableStateFlow<AppResult<Unit>>(AppResult.Initial)
     val updateResult get() = _updateResult.asStateFlow()
 
     fun updateRecipe(
@@ -54,7 +54,7 @@ class RecipeViewModel(
         }
     }
 
-    private val _createRecipeResult = MutableStateFlow<AppResult<Boolean>>(AppResult.Initial)
+    private val _createRecipeResult = MutableStateFlow<AppResult<Unit>>(AppResult.Initial)
     val createRecipeResult get() = _createRecipeResult.asStateFlow()
 
     fun createRecipe(
@@ -66,20 +66,21 @@ class RecipeViewModel(
         ingredients: List<Ingredient>,
     ) {
         viewModelScope.launch {
-            val ingMapList = ingredients.map { ing ->
-                mapOf(
-                    "id" to "",
-                    "name" to ing.ingredientName,
-                    "once" to ing.once.toString(),
-                    "twice" to ing.twice.toString(),
-                    "unit" to ing.unit
-                )
-            }
-
             recipeRepository.createRecipe(
-                imageData, imageName, recipeName, steps, teamId, ingMapList
+                imageData, imageName, recipeName, steps, teamId, ingredients
             ).collectLatest {
                 _createRecipeResult.value = it
+            }
+        }
+    }
+
+    private val _deleteResult = MutableStateFlow<AppResult<Unit>>(AppResult.Initial)
+    val deleteResult get() = _deleteResult.asStateFlow()
+
+    fun deleteRecipe(recipeId: String) {
+        viewModelScope.launch {
+            recipeRepository.deleteRecipe(recipeId).collectLatest {
+                _deleteResult.value = it
             }
         }
     }

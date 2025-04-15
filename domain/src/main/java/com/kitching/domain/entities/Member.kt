@@ -1,8 +1,5 @@
 package com.kitching.domain.entities
 
-import kotlinx.serialization.Serializable
-
-@Serializable
 data class Member(
     val userTeamId: String,
     val userId: String,
@@ -11,4 +8,16 @@ data class Member(
     val staffLevelId: String,
     val staffLevelName: String,
     val manager: Boolean
-)
+) {
+    companion object {
+        fun init() = Member(
+            userTeamId = "",
+            userId = "",
+            userName = "",
+            userImage = "",
+            staffLevelId = "",
+            staffLevelName = "",
+            manager = false
+        )
+    }
+}

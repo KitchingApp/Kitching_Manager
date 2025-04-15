@@ -2,21 +2,29 @@ package com.kitching.data.datasource
 
 import com.google.firebase.firestore.FirebaseFirestore
 import com.kitching.data.dto.ScheduleDTO
+import com.kitching.data.exception.FailedCRUDInFirebaseException
+import com.kitching.data.exception.ScheduleNotFoundException
 import com.kitching.data.firebase.COLLECTION_SCHEDULE
 import kotlinx.coroutines.tasks.await
 
 class ScheduleDataSourceImpl(private val db: FirebaseFirestore = FirebaseFirestore.getInstance()) :
     ScheduleDataSource {
     override suspend fun getSchedules(teamId: String, dateString: String): List<ScheduleDTO> =
-        db.collection(COLLECTION_SCHEDULE)
-            .whereEqualTo("teamId", teamId)
-            .whereEqualTo("date", dateString)
-            .get()
-            .await()
-            .toObjects(ScheduleDTO::class.java)
+        runCatching {
+            db.collection(COLLECTION_SCHEDULE)
+                .whereEqualTo("teamId", teamId)
+                .whereEqualTo("date", dateString)
+                .get()
+                .await()
+                .toObjects(ScheduleDTO::class.java)
+        }.getOrElse { throw FailedCRUDInFirebaseException(it).getException() }
 
-    override suspend fun getSchedule(scheduleId: String): ScheduleDTO  = db.collection(
-        COLLECTION_SCHEDULE).document(scheduleId).get().await().toObject(ScheduleDTO::class.java) ?: throw Throwable("cannot find schedule")
+    override suspend fun getSchedule(scheduleId: String): ScheduleDTO  = runCatching {
+        db.collection(
+            COLLECTION_SCHEDULE
+        ).document(scheduleId).get().await().toObject(ScheduleDTO::class.java)
+            ?: throw ScheduleNotFoundException(scheduleId).getException()
+    }.getOrElse { throw FailedCRUDInFirebaseException(it).getException() }
 
     override suspend fun createSchedule(
         teamId: String,
@@ -25,7 +33,7 @@ class ScheduleDataSourceImpl(private val db: FirebaseFirestore = FirebaseFiresto
         scheduleTimeId: String,
         fix: Boolean
     ) = runCatching {
-        db.collection(COLLECTION_SCHEDULE).add(
+        val docRef = db.collection(COLLECTION_SCHEDULE).add(
             ScheduleDTO(
                 id = "",
                 date = dateString,
@@ -34,16 +42,22 @@ class ScheduleDataSourceImpl(private val db: FirebaseFirestore = FirebaseFiresto
                 userId = userId,
                 fix = fix,
             )
-        ).await().apply {
-            this.update("id", this.id).await()
-        }
-    }.isSuccess
+        ).await()
+
+        docRef.update("id", docRef.id).await()
+
+        Unit
+    }.getOrElse { throw FailedCRUDInFirebaseException(it).getException() }
 
     override suspend fun deleteSchedule(scheduleId: String) = runCatching {
         db.collection(COLLECTION_SCHEDULE).document(scheduleId).delete()
-    }.isSuccess
+
+        Unit
+    }.getOrElse { throw FailedCRUDInFirebaseException(it).getException() }
 
     override suspend fun applySchedule(scheduleId: String) = runCatching {
         db.collection(COLLECTION_SCHEDULE).document(scheduleId).update("fix", true).await()
-    }.isSuccess
+
+        Unit
+    }.getOrElse { throw FailedCRUDInFirebaseException(it).getException() }
 }

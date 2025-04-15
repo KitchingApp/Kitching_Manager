@@ -6,6 +6,8 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
+import androidx.compose.material3.SnackbarDuration
+import androidx.compose.material3.SnackbarResult
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -15,9 +17,11 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.kitching.app.R
 import com.kitching.app.common.ActionIconInfo
 import com.kitching.app.common.CommonState
 import com.kitching.app.common.KitchingApplication
@@ -40,7 +44,6 @@ import com.kitching.domain.entities.ScheduleTime
 import kotlinx.coroutines.launch
 import java.time.Instant
 import java.time.LocalDateTime
-import java.time.LocalTime
 import java.time.ZoneId
 
 /**
@@ -50,7 +53,7 @@ import java.time.ZoneId
  * @param viewModel
  */
 @Composable
-fun ScheduleTabScreen(
+fun ScheduleMainScreen(
     commonState: CommonState,
     viewModel: ScheduleViewModel = viewModel(factory = viewModelFactory)
 ) {
@@ -59,51 +62,10 @@ fun ScheduleTabScreen(
     var showDeleteDialog by remember { mutableStateOf(false) }
     var showRejectDialog by remember { mutableStateOf(false) }
 
-    /** 드롭다운 메뉴가 열려있는지 저장 */
-    val isExpanded = remember { mutableStateOf(false) }
-
     var selectedDateTime by remember { mutableStateOf(LocalDateTime.now()) }
 
-    var targetSchedule by remember {
-        mutableStateOf(
-            Schedule(
-                scheduleId = "",
-                userId = "",
-                userName = "",
-                date = "",
-                scheduleTimeName = "",
-                fix = false
-            )
-        )
-    }
+    var targetSchedule by remember { mutableStateOf(Schedule()) }
     val rejectReasonState = remember { mutableStateOf(TextFieldValue("")) }
-
-    /** 드롭다운에서 선택된 멤버 */
-    val selectedMember = remember {
-        mutableStateOf(
-            Member(
-                userTeamId = "",
-                userId = "",
-                userName = "",
-                userImage = "",
-                staffLevelId = "",
-                staffLevelName = "",
-                manager = false
-            )
-        )
-    }
-
-    /** 선택된 스케줄타임 */
-    val selectedScheduleTime = remember {
-        mutableStateOf(
-            ScheduleTime(
-                scheduleTimeId = "",
-                scheduleTimeName = "",
-                startTime = LocalTime.now().toString(),
-                endTime = LocalTime.now().toString()
-            )
-        )
-    }
 
     val tabItems = ScheduleTabItem().renderTabItems()
     val tabPageState = rememberPagerState(
@@ -118,22 +80,48 @@ fun ScheduleTabScreen(
     val allMembersState by viewModel.members.collectAsStateWithLifecycle()
     val scheduleTimesState by viewModel.scheduleTimes.collectAsStateWithLifecycle()
 
-    LaunchedEffect(selectedDateTime) {
+    val pushMessageFailedSnackbarMessage = stringResource(R.string.reject_schedule_snackbar_message)
+    val pushMessageFailedSnackbarActionLabel = stringResource(R.string.reject_schedule_snackbar_action_label)
+
+    LaunchedEffect(Unit) {
         teamId = PreferencesDataStore(KitchingApplication.getInstance()).getTeamId()
         viewModel.getSchedules(teamId, selectedDateTime.toLocalDate().toString())
         viewModel.getMembers(teamId)
         viewModel.getScheduleTimes(teamId)
     }
 
+    LaunchedEffect(selectedDateTime) {
+        viewModel.getSchedules(teamId, selectedDateTime.toLocalDate().toString())
+    }
+
     LaunchedEffect(rejectPushMessageResultState) {
-        if (rejectPushMessageResultState is AppResult.Success) viewModel.deleteSchedule(targetSchedule.scheduleId)
+        if (rejectPushMessageResultState is AppResult.Success) {
+            viewModel.deleteSchedule(targetSchedule.scheduleId)
+            viewModel.getSchedules(teamId, selectedDateTime.toLocalDate().toString())
+        } else if(rejectPushMessageResultState is AppResult.Failure) {
+            val result = commonState.snackbarHostState.showSnackbar(
+                message = pushMessageFailedSnackbarMessage,
+                actionLabel = pushMessageFailedSnackbarActionLabel,
+                duration = SnackbarDuration.Indefinite,
+                withDismissAction = true
+            )
+            when(result) {
+                SnackbarResult.Dismissed -> {}
+                SnackbarResult.ActionPerformed -> {
+                    viewModel.deleteSchedule(targetSchedule.scheduleId)
+                    viewModel.getSchedules(teamId, selectedDateTime.toLocalDate().toString())
+                }
+            }
+        }
     }
 
     LaunchedEffect(scheduleResultState) {
-        if (scheduleResultState is AppResult.Success) viewModel.getSchedules(
-            teamId,
-            selectedDateTime.toLocalDate().toString()
-        )
+        if (scheduleResultState is AppResult.Success) {
+            viewModel.getSchedules(
+                teamId,
+                selectedDateTime.toLocalDate().toString()
+            )
+        }
     }
 
     commonState.topAppBarState.value = commonState.topAppBarState.value.copy(
@@ -141,9 +129,9 @@ fun ScheduleTabScreen(
         navIconInfo = NavigationIconInfo.DRAWER,
         onClickNavIcon = {
             if (commonState.topAppBarState.value.drawerState.isOpen) {
-                commonState.scope.launch { commonState.topAppBarState.value.drawerState.close() }
+                commonState.coroutineScope.launch { commonState.topAppBarState.value.drawerState.close() }
             } else {
-                commonState.scope.launch { commonState.topAppBarState.value.drawerState.open() }
+                commonState.coroutineScope.launch { commonState.topAppBarState.value.drawerState.open() }
             }
         },
         actionIconInfo = ActionIconInfo.ADD,
@@ -184,7 +172,7 @@ fun ScheduleTabScreen(
                         tabItems = tabItems,
                         tabPageState = tabPageState,
                         onClickTabs = { index ->
-                            commonState.scope.launch {
+                            commonState.coroutineScope.launch {
                                 tabPageState.animateScrollToPage(index)
                             }
                         }
@@ -231,38 +219,32 @@ fun ScheduleTabScreen(
                     }
                     if (showCreateDialog) {
                         ScheduleCreateDialog(
-                            isExpanded = isExpanded,
                             onDismissRequest = {
-                                if (isExpanded.value) {
-                                    isExpanded.value = false
-                                } else {
-                                    showCreateDialog = false
-                                }
+                                showCreateDialog = false
                             },
                             selectedDateTime = selectedDateTime,
                             members = (allMembersState as AppResult.Success<List<Member>>).data,
-                            onClickConfirm = {
+                            onClickConfirm = { selectedMember, selectedScheduleTime ->
                                 viewModel.createSchedule(
                                     teamId = teamId,
                                     dateString = selectedDateTime.toLocalDate().toString(),
-                                    userId = selectedMember.value.userId,
-                                    scheduleTimeId = selectedScheduleTime.value.scheduleTimeId,
+                                    userId = selectedMember.userId,
+                                    scheduleTimeId = selectedScheduleTime.scheduleTimeId,
                                     fix = true
                                 )
                             },
-                            selectedMember = selectedMember,
                             scheduleTimes = (scheduleTimesState as AppResult.Success<List<ScheduleTime>>).data,
-                            selectedScheduleTimes = selectedScheduleTime
                         )
                     }
                     if (showDeleteDialog) {
                         BasicConfirmDialog(
-                            message = "스케줄을 삭제하시겠습니까?",
-                            confirmText = "삭제",
+                            message = stringResource(R.string.schedule_delete_dialog_message),
+                            confirmText = stringResource(R.string.button_delete),
                             onClickConfirm = {
                                 viewModel.deleteSchedule(targetSchedule.scheduleId)
+                                viewModel.getSchedules(teamId, selectedDateTime.toLocalDate().toString())
                             },
-                            cancelText = "취소",
+                            cancelText = stringResource(R.string.button_cancel),
                             onClickCancel = { showDeleteDialog = false }
                         )
                     }

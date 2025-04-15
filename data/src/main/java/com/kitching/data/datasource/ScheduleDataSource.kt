@@ -7,9 +7,9 @@ interface ScheduleDataSource {
 
     suspend fun getSchedule(scheduleId: String): ScheduleDTO
 
-    suspend fun createSchedule(teamId: String, dateString: String, userId: String, scheduleTimeId: String, fix: Boolean = true): Boolean
+    suspend fun createSchedule(teamId: String, dateString: String, userId: String, scheduleTimeId: String, fix: Boolean = true)
 
-    suspend fun deleteSchedule(scheduleId: String): Boolean
+    suspend fun deleteSchedule(scheduleId: String)
 
-    suspend fun applySchedule(scheduleId: String): Boolean
+    suspend fun applySchedule(scheduleId: String)
 }

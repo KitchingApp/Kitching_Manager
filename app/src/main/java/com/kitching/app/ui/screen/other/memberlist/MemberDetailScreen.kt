@@ -35,6 +35,7 @@ import com.kitching.app.common.ActionIconInfo
 import com.kitching.app.common.CoilImageRequest
 import com.kitching.app.common.CommonState
 import com.kitching.app.common.NavigationIconInfo
+import com.kitching.app.navgraph.MemberItem
 import com.kitching.app.ui.factory.viewModelFactory
 import com.kitching.app.ui.model.MemberViewModel
 import com.kitching.app.ui.screen.common.ResultConditionScreen
@@ -49,7 +50,6 @@ import com.kitching.app.ui.theme.PrimaryGreen300
 import com.kitching.app.ui.theme.defaultPadding
 import com.kitching.app.util.PreferencesDataStore
 import com.kitching.domain.AppResult
-import com.kitching.domain.entities.Member
 import com.kitching.domain.entities.StaffLevel
 
 /**
@@ -62,11 +62,19 @@ import com.kitching.domain.entities.StaffLevel
 @Composable
 fun MemberDetailScreen(
     commonState: CommonState,
-    member: Member,
+    member: MemberItem,
+    navigateToMemberList: () -> Unit,
     viewModel: MemberViewModel = viewModel(factory = viewModelFactory)
 ) {
     var isManager by remember { mutableStateOf(member.manager) }
-    val selectedStaffLevel = remember { mutableStateOf(StaffLevel(staffLevelId = member.staffLevelId, staffLevelName = member.staffLevelName)) }
+    val selectedStaffLevel = remember {
+        mutableStateOf(
+            StaffLevel(
+                staffLevelId = member.staffLevelId,
+                staffLevelName = member.staffLevelName
+            )
+        )
+    }
     val isExpended = remember { mutableStateOf(false) }
 
     var teamId by remember { mutableStateOf("") }
@@ -82,7 +90,7 @@ fun MemberDetailScreen(
         title = "멤버수정",
         containerColor = NeutralGray0,
         navIconInfo = NavigationIconInfo.BACK,
-        onClickNavIcon = { commonState.navController.popBackStack() },
+        onClickNavIcon = { navigateToMemberList() },
         actionIconInfo = ActionIconInfo.NULL
     )
 
@@ -110,7 +118,9 @@ fun MemberDetailScreen(
                             .background(color = NeutralGray300, shape = RoundedCornerShape(20.dp))
                     ) {
                         AsyncImage(
-                            modifier = Modifier.fillMaxSize().clip(RoundedCornerShape(20.dp)),
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .clip(RoundedCornerShape(20.dp)),
                             model = CoilImageRequest.getImageRequest(member.userImage),
                             contentScale = ContentScale.Crop,
                             contentDescription = null
@@ -133,7 +143,9 @@ fun MemberDetailScreen(
                         isExpanded = isExpended
                     )
                     Row(
-                        modifier = Modifier.fillMaxWidth().padding(horizontal = defaultPadding),
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = defaultPadding),
                         verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.SpaceBetween
                     ) {
@@ -155,11 +167,17 @@ fun MemberDetailScreen(
                         )
                     }
                     TextButton(
-                        modifier = Modifier.width(162.dp).height(40.dp),
+                        modifier = Modifier
+                            .width(162.dp)
+                            .height(40.dp),
                         onClick = {
-                            viewModel.updateMember(member.userTeamId, selectedStaffLevel.value.staffLevelId, isManager)
-                            if(memberResultState is AppResult.Success) {
-                                commonState.navController.popBackStack()
+                            viewModel.updateMember(
+                                member.userTeamId,
+                                selectedStaffLevel.value.staffLevelId,
+                                isManager
+                            )
+                            if (memberResultState is AppResult.Success) {
+                                navigateToMemberList()
                             }
                         },
                         colors = ButtonDefaults.buttonColors(
@@ -168,7 +186,7 @@ fun MemberDetailScreen(
                         )
                     ) {
                         Text(
-                            text ="수정완료",
+                            text = "수정완료",
                             style = H5
                         )
                     }

@@ -1,17 +1,17 @@
 package com.kitching.app.navgraph
 
-import android.util.Base64
+import android.os.Parcelable
+import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
-import androidx.navigation.NavType
 import androidx.navigation.compose.composable
-import androidx.navigation.navArgument
 import androidx.navigation.navigation
+import androidx.navigation.toRoute
 import com.kitching.app.common.CommonState
-import com.kitching.app.ui.screen.recipe.innercontent.RecipeDetailScreen
-import com.kitching.app.ui.screen.recipe.innercontent.RecipeEditScreen
+import com.kitching.app.common.navIfNew
 import com.kitching.app.ui.screen.order.OrderDetailScreen
+import com.kitching.app.ui.screen.order.OrderMainScreen
 import com.kitching.app.ui.screen.other.InviteCodeScreen
-import com.kitching.app.ui.screen.other.StaffLevelScreen
+import com.kitching.app.ui.screen.other.OtherMainScreen
 import com.kitching.app.ui.screen.other.memberlist.MemberDetailScreen
 import com.kitching.app.ui.screen.other.memberlist.MemberListScreen
 import com.kitching.app.ui.screen.other.notice.NoticeCreateOrModifyScreen
@@ -19,183 +19,245 @@ import com.kitching.app.ui.screen.other.notice.NoticeDetailScreen
 import com.kitching.app.ui.screen.other.notice.NoticeListScreen
 import com.kitching.app.ui.screen.other.scheduletime.ScheduleTimeCreateOrUpdateScreen
 import com.kitching.app.ui.screen.other.scheduletime.ScheduleTimeScreen
+import com.kitching.app.ui.screen.prep.PrepMainScreen
 import com.kitching.app.ui.screen.prep.subdivisionscreen.PrepDetailScreen
+import com.kitching.app.ui.screen.recipe.RecipeMainScreen
 import com.kitching.app.ui.screen.recipe.innercontent.RecipeCreateScreen
 import com.kitching.app.ui.screen.recipe.innercontent.RecipeCreateUseExcelScreen
-import com.kitching.domain.entities.Notice
-import com.kitching.domain.entities.ScheduleTime
-import kotlinx.serialization.json.Json
+import com.kitching.app.ui.screen.recipe.innercontent.RecipeDetailScreen
+import com.kitching.app.ui.screen.recipe.innercontent.RecipeEditScreen
+import com.kitching.app.ui.screen.recipe.innercontent.RecipeUploadInProgressScreen
+import com.kitching.app.ui.screen.schedule.ScheduleMainScreen
+import kotlin.reflect.typeOf
 
-fun NavGraphBuilder.sliceNavGraph(
-    commonState: CommonState
+
+/**
+ * Parcelable로 정의한 Type을 Map으로 변환하는 함수
+ *
+ */
+inline fun <reified T : Parcelable?> typeMap(isNullableAllowed: Boolean = false) =
+    mapOf(typeOf<T>() to parcelableNavType<T>(isNullableAllowed))
+
+fun NavGraphBuilder.scheduleSliceNavGraph(
+    commonState: CommonState,
 ) {
-    navigation(
-        startDestination = ScreenRouteDef.RecipeTab.routeName,
-        route = "recipe_create"
+    navigation<Route.ScheduleGraph>(
+        startDestination = Route.ScheduleGraph.getStartDestination()
     ) {
-        composable(
-            ScreenRouteDef.InnerContent.RecipeCreate.routeName,
-        ) { backStackEntry ->
-            RecipeCreateScreen(
-                commonState = commonState
-            )
-        }
-        composable(
-            ScreenRouteDef.InnerContent.RecipeCreateUseExcel.routeName
-        ) { navBackStackEntry ->
-            RecipeCreateUseExcelScreen(
+        composable<Route.ScheduleGraph.ScheduleMain> {
+            ScheduleMainScreen(
                 commonState = commonState
             )
         }
     }
-    navigation(
-        startDestination = ScreenRouteDef.RecipeTab.routeName,
-        route = "recipe_detail"
-    ) {
-        composable(
-            ScreenRouteDef.InnerContent.RecipeDetail.routeName + "/{recipeId}", // detail/1
-            arguments = listOf(navArgument("recipeId") { NavType.StringType })
-        ) { backStackEntry ->
-            RecipeDetailScreen(
-                recipeId = backStackEntry.arguments?.getString("recipeId").toString(),
-                commonState = commonState
-            )
-        }
+}
 
-        composable(
-            route = ScreenRouteDef.InnerContent.RecipeEdit.routeName + "/{recipeId}",
-            arguments = listOf(navArgument("recipeId") { type = NavType.StringType })
-        ) { backStackEntry ->
-            val recipeId = backStackEntry.arguments?.getString("recipeId").toString()
-            RecipeEditScreen(recipeId = recipeId, commonState = commonState)
-        }
-    }
-    navigation(
-        startDestination = ScreenRouteDef.PrepTab.routeName,
-        route = "prep_detail"
+fun NavGraphBuilder.prepSliceNavGraph(
+    commonState: CommonState,
+    navController: NavController
+) {
+    navigation<Route.PrepGraph>(
+        startDestination = Route.PrepGraph.getStartDestination()
     ) {
-        composable(
-            ScreenRouteDef.InnerContent.PrepDetail.routeName + "/{categoryId}/{categoryName}/{categoryColor}",
-            arguments = listOf(
-                navArgument("categoryId") { NavType.StringType },
-                navArgument("categoryName") { NavType.StringType },
-                navArgument("categoryColor") { NavType.StringType }
+        composable<Route.PrepGraph.PrepMain> {
+            PrepMainScreen(
+                commonState = commonState,
+                navigateToPrepDetail = { categoryItem ->
+                    navController.navIfNew(Route.PrepGraph.PrepDetail(categoryItem))
+                }
             )
-        ) { backStackEntry ->
+        }
+        composable<Route.PrepGraph.PrepDetail>(
+            typeMap = typeMap<CategoryItem>()
+        ) { navBackStackEntry ->
             PrepDetailScreen(
                 commonState = commonState,
-                categoryId = backStackEntry.arguments?.getString("categoryId"),
-                categoryName = backStackEntry.arguments?.getString("categoryName"),
-                categoryColor = backStackEntry.arguments?.getString("categoryColor"),
+                categoryItemForScreen = navBackStackEntry.toRoute<Route.PrepGraph.PrepDetail>().categoryItem,
+                navigateToPrep = { navController.popBackStack() }
             )
         }
     }
-    navigation(
-        startDestination = ScreenRouteDef.OrderTab.routeName,
-        route = "order_detail"
+}
+
+fun NavGraphBuilder.recipeSliceNavGraph(
+    commonState: CommonState,
+    navController: NavController
+) {
+    navigation<Route.RecipeGraph>(
+        startDestination = Route.RecipeGraph.getStartDestination()
     ) {
-        composable(
-            ScreenRouteDef.InnerContent.OrderDetail.routeName + "/{categoryId}/{categoryName}/{categoryColor}",
-            arguments = listOf(
-                navArgument("categoryId") { NavType.StringType },
-                navArgument("categoryName") { NavType.StringType },
-                navArgument("categoryColor") { NavType.StringType }
+        composable<Route.RecipeGraph.RecipeMain> {
+            RecipeMainScreen(
+                commonState = commonState,
+                navigateToCreateUesDevice = { navController.navIfNew(Route.RecipeGraph.RecipeCreate) },
+                navigateToCreateWithExcelFile = { navController.navIfNew(Route.RecipeGraph.RecipeCreateUseExcel) },
+                navigateToDetail = { recipe ->
+                    navController.navIfNew(
+                        Route.RecipeGraph.RecipeDetail(
+                            RecipeDetailItem.domainToItem(
+                                recipe
+                            )
+                        )
+                    )
+                }
             )
-        ) { backStackEntry ->
+        }
+        composable<Route.RecipeGraph.RecipeDetail>(
+            typeMap = typeMap<RecipeDetailItem>()
+        ) { navBackStackEntry ->
+            val recipe = navBackStackEntry.toRoute<Route.RecipeGraph.RecipeDetail>().recipe
+            RecipeDetailScreen(
+                recipe = recipe,
+                commonState = commonState,
+                navigateToEdit = { navController.navIfNew(Route.RecipeGraph.RecipeEdit(recipe)) },
+                naviagateToList = { navController.popBackStack() }
+            )
+        }
+        composable<Route.RecipeGraph.RecipeEdit>(
+            typeMap = typeMap<RecipeDetailItem>()
+        ) { navBackStackEntry ->
+            val recipe = navBackStackEntry.toRoute<Route.RecipeGraph.RecipeEdit>().recipe
+            RecipeEditScreen(
+                commonState = commonState,
+                recipe = recipe,
+                navigateToDetail = { navController.popBackStack() },
+                navigateToRecipe = { navController.navIfNew(Route.RecipeGraph.RecipeMain) }
+            )
+        }
+        composable<Route.RecipeGraph.RecipeCreate> {
+            RecipeCreateScreen(
+                commonState = commonState,
+                navigateToRecipe = { navController.popBackStack() }
+            )
+        }
+        composable<Route.RecipeGraph.RecipeCreateUseExcel> {
+            RecipeCreateUseExcelScreen(
+                commonState = commonState,
+                navigateToRecipeUploadInProgress = { navController.navIfNew(Route.RecipeGraph.RecipeUploadInProgress) },
+                navigateToRecipe = { navController.popBackStack() }
+            )
+        }
+        composable<Route.RecipeGraph.RecipeUploadInProgress> {
+            RecipeUploadInProgressScreen(
+                commonState = commonState
+            )
+        }
+    }
+}
+
+fun NavGraphBuilder.orderSliceNavGraph(
+    commonState: CommonState,
+    navController: NavController,
+) {
+    navigation<Route.OrderGraph>(
+        startDestination = Route.OrderGraph.getStartDestination()
+    ) {
+        composable<Route.OrderGraph.OrderMain> {
+            OrderMainScreen(
+                commonState = commonState,
+                onClickItem = { categoryItem ->
+                    navController.navIfNew(Route.OrderGraph.OrderDetail(categoryItem))
+                }
+            )
+        }
+        composable<Route.OrderGraph.OrderDetail>(
+            typeMap = typeMap<CategoryItem>()
+        ) { navBackStackEntry ->
             OrderDetailScreen(
                 commonState = commonState,
-                categoryId = backStackEntry.arguments?.getString("categoryId"),
-                categoryName = backStackEntry.arguments?.getString("categoryName"),
-                categoryColor = backStackEntry.arguments?.getString("categoryColor"),
+                categoryItemForScreen = navBackStackEntry.toRoute<Route.OrderGraph.OrderDetail>().categoryItem,
+                navigateToOrderMain = { navController.popBackStack() }
             )
         }
     }
-    navigation(
-        startDestination = ScreenRouteDef.OtherTab.routeName,
-        route = "other_menus"
+}
+
+fun NavGraphBuilder.otherSliceNavGraph(
+    commonState: CommonState,
+    navController: NavController
+) {
+    navigation<Route.OtherGraph>(
+        startDestination = Route.OtherGraph.getStartDestination()
     ) {
-        composable(
-            ScreenRouteDef.InnerContent.InviteCode.routeName
-        ) {
-            InviteCodeScreen(commonState = commonState)
-        }
-
-        composable(
-            ScreenRouteDef.InnerContent.NoticeList.routeName
-        ) {
-            NoticeListScreen(commonState = commonState)
-        }
-
-        composable(
-            route = ScreenRouteDef.InnerContent.NoticeDetail.routeName + "/{notice}",
-            arguments = listOf(navArgument("notice") { type = NavType.StringType})
-        ) { backStackEntry ->
-            NoticeDetailScreen(notice = Json.decodeFromString<Notice>(backStackEntry.arguments?.getString("notice") ?: ""), commonState = commonState)
-        }
-
-        composable(
-            route = ScreenRouteDef.InnerContent.NoticeCreateOrUpdate.routeName + "/{notice}",
-            arguments = listOf(
-                navArgument("notice") { type = NavType.StringType; nullable }
+        composable<Route.OtherGraph.OtherMain> {
+            OtherMainScreen(
+                commonState = commonState,
+                navigateToEachItem = { navController.navIfNew(Route.OtherGraph.OtherMain) }
             )
-        ) { backStackEntry ->
-            val json = backStackEntry.arguments?.getString("notice")
-            val notice = if (!json.isNullOrEmpty()) {
-                Json.decodeFromString<Notice>(json) // 빈 문자열이 아니면 변환
-            } else {
-                null // 빈 문자열이면 null 처리
-            }
+        }
+        composable<Route.OtherGraph.InviteCode> {
+            InviteCodeScreen(
+                commonState = commonState,
+                navigateToOther = { navController.popBackStack() }
+            )
+        }
+        composable<Route.OtherGraph.NoticeList> {
+            NoticeListScreen(
+                commonState = commonState,
+                navigateToCreateNotice = {
+                    navController.navIfNew(Route.OtherGraph.NoticeCreateOrUpdate(null))
+                },
+                navigateToNoticeDetail = { notice ->
+                    navController.navIfNew(Route.OtherGraph.NoticeDetail(notice))
+                },
+                navigateToOther = { navController.popBackStack() }
+            )
+        }
+        composable<Route.OtherGraph.NoticeDetail>(
+            typeMap = typeMap<NoticeItem>()
+        ) { navBackStackEntry ->
+            NoticeDetailScreen(
+                commonState = commonState,
+                notice = navBackStackEntry.toRoute<Route.OtherGraph.NoticeDetail>().notice,
+                navigateToNoticeList = { navController.navIfNew(Route.OtherGraph.NoticeList) },
+                navigateToNoticeModify = { navController.navIfNew(Route.OtherGraph.NoticeCreateOrUpdate)}
+            )
+        }
+        composable<Route.OtherGraph.NoticeCreateOrUpdate>(
+            typeMap = typeMap<NoticeItem?>(true)
+        ) { navBackStackEntry ->
             NoticeCreateOrModifyScreen(
                 commonState = commonState,
-                notice = notice
+                notice = navBackStackEntry.toRoute<Route.OtherGraph.NoticeCreateOrUpdate>().notice,
+                navigateToNoticeList = { navController.popBackStack() },
+                popBackStack = { navController.popBackStack() }
             )
         }
-
-        composable(
-            ScreenRouteDef.InnerContent.StaffLevel.routeName
-        ) {
-            StaffLevelScreen(commonState = commonState)
-        }
-
-        composable(
-            ScreenRouteDef.InnerContent.ScheduleTime.routeName
-        ) {
-            ScheduleTimeScreen(commonState = commonState)
-        }
-
-        composable(
-            route = ScreenRouteDef.InnerContent.ScheduleTimeCreateOrUpdate.routeName + "/{scheduleTime}",
-            arguments = listOf(
-                navArgument("scheduleTime") { type = NavType.StringType; nullable }
+        composable<Route.OtherGraph.ScheduleTime> {
+            ScheduleTimeScreen(
+                commonState = commonState,
+                naviagateToCreateOfModifyScheduleTime = { scheduleTime ->
+                    navController.navIfNew(Route.OtherGraph.ScheduleTimeCreateOrUpdate(scheduleTime))
+                },
+                navigateToOther = { navController.popBackStack() }
             )
-        ) { backStackEntry ->
-            val json = backStackEntry.arguments?.getString("scheduleTime")
-            val scheduleTime = if (!json.isNullOrEmpty()) {
-                Json.decodeFromString<ScheduleTime>(json)
-            } else {
-                null
-            }
+        }
+        composable<Route.OtherGraph.ScheduleTimeCreateOrUpdate>(
+            typeMap = typeMap<ScheduleTimeItem?>(true)
+        ) { navBackStackEntry ->
+            val scheduleTime = navBackStackEntry.toRoute<Route.OtherGraph.ScheduleTimeCreateOrUpdate>().scheduleTime
             ScheduleTimeCreateOrUpdateScreen(
                 commonState = commonState,
-                scheduleTime = scheduleTime,
+                navigateToScheduleTimeList = { navController.navIfNew(Route.OtherGraph.ScheduleTimeCreateOrUpdate(scheduleTime)) },
+                scheduleTime = scheduleTime
             )
         }
-
-        composable(
-            ScreenRouteDef.InnerContent.MemberList.routeName
-        ) {
-            MemberListScreen(commonState = commonState)
+        composable<Route.OtherGraph.MemberList> {
+            MemberListScreen(
+                commonState = commonState,
+                navigateToMemberDetail = { member ->
+                    navController.navIfNew(Route.OtherGraph.MemberDetail(member))
+                },
+                navigateToOther = { navController.popBackStack() }
+            )
         }
-
-        composable(
-            route = ScreenRouteDef.InnerContent.MemberDetail.routeName + "/{member}",
-            arguments = listOf(navArgument("member") { type = NavType.StringType})
-        ) { backStackEntry ->
-            val encodedMember = backStackEntry.arguments?.getString("member") ?: ""
-            val decodedJson = String(Base64.decode(encodedMember, Base64.URL_SAFE or Base64.NO_WRAP))
+        composable<Route.OtherGraph.MemberDetail>(
+            typeMap = typeMap<MemberItem>()
+        ) { navBackStackEntry ->
             MemberDetailScreen(
                 commonState = commonState,
-                member = Json.decodeFromString(decodedJson)
+                member = navBackStackEntry.toRoute<Route.OtherGraph.MemberDetail>().member,
+                navigateToMemberList = { navController.popBackStack() }
             )
         }
     }

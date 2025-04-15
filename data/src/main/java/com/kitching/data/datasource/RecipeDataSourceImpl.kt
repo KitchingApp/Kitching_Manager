@@ -4,6 +4,8 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
 import com.kitching.data.dto.IngredientDTO
 import com.kitching.data.dto.RecipeDTO
+import com.kitching.data.exception.FailedCRUDInFirebaseException
+import com.kitching.data.exception.RecipeNotFoundException
 import com.kitching.data.firebase.COLLECTION_INGREDIENT
 import com.kitching.data.firebase.COLLECTION_RECIPE
 import kotlinx.coroutines.tasks.await
@@ -12,42 +14,43 @@ class RecipeDataSourceImpl(
     private val db: FirebaseFirestore = FirebaseFirestore.getInstance(),
     private val storage: FirebaseStorage = FirebaseStorage.getInstance()
 ) : RecipeDataSource {
-    override suspend fun getRecipes(teamId: String): List<RecipeDTO> {
-        val recipeDocuments = db.collection(COLLECTION_RECIPE)
+
+    override suspend fun getRecipes(teamId: String) = runCatching {
+
+        db.collection(COLLECTION_RECIPE)
             .whereEqualTo("teamId", teamId)
             .get()
-            .await()
+            .await().documents.mapNotNull { documentSnapshot ->
+                val recipeDTO = documentSnapshot.toObject(RecipeDTO::class.java)
 
-        return recipeDocuments.documents.mapNotNull { documentSnapshot ->
-            val recipeDTO = documentSnapshot.toObject(RecipeDTO::class.java)
+                val ingredientsSnapshot = documentSnapshot.reference
+                    .collection(COLLECTION_INGREDIENT)
+                    .get()
+                    .await()
 
-            val ingredientsSnapshot = documentSnapshot.reference
-                .collection(COLLECTION_INGREDIENT)
-                .get()
-                .await()
+                val ingredients = ingredientsSnapshot.toObjects(IngredientDTO::class.java)
 
-            val ingredients = ingredientsSnapshot.toObjects(IngredientDTO::class.java)
+                recipeDTO?.copy(ingredient = ingredients)
+            }.toList()
 
-            recipeDTO?.copy(ingredient = ingredients)
-        }.toList()
-    }
+    }.getOrElse { throw FailedCRUDInFirebaseException(it).getException() }
 
-    override suspend fun getRecipeById(recipeId: String): RecipeDTO {
+    override suspend fun getRecipeById(recipeId: String) = runCatching {
         val documentSnapshot = db.collection(COLLECTION_RECIPE)
             .document(recipeId)
             .get()
             .await()
 
-        val recipeDTO = documentSnapshot.toObject(RecipeDTO::class.java)!!
-
-        val ingredientsSnapshot = documentSnapshot.reference
+        val ingredients = documentSnapshot.reference
             .collection(COLLECTION_INGREDIENT)
             .get()
-            .await()
+            .await().toObjects(IngredientDTO::class.java)
 
-        val ingredients = ingredientsSnapshot.toObjects(IngredientDTO::class.java)
-
-        return recipeDTO.copy(ingredient = ingredients)
+        documentSnapshot.toObject(RecipeDTO::class.java)?.copy(ingredient = ingredients)
+            ?: throw RecipeNotFoundException(recipeId)
+    }.getOrElse {
+        throw if (it is RecipeNotFoundException) it.getException()
+        else FailedCRUDInFirebaseException(it).getException()
     }
 
     override suspend fun updateRecipe(
@@ -55,7 +58,7 @@ class RecipeDataSourceImpl(
         name: String,
         steps: List<String>,
         ingredients: List<IngredientDTO>,
-    ): Boolean = runCatching {
+    ) = runCatching {
         val recipeRef = db.collection(COLLECTION_RECIPE).document(recipeId)
 
         // 1) 레시피 문서 업데이트
@@ -89,7 +92,7 @@ class RecipeDataSourceImpl(
                 .update("id", ingDoc.id)
                 .await()
         }
-    }.isSuccess
+    }.getOrElse { throw FailedCRUDInFirebaseException(it).getException() }
 
     override suspend fun createRecipe(
         imageData: ByteArray?,
@@ -97,8 +100,8 @@ class RecipeDataSourceImpl(
         recipeName: String,
         steps: List<String>,
         teamId: String,
-        ingredients: List<Map<String, String>>,
-    ): Boolean = runCatching {
+        ingredients: List<IngredientDTO>,
+    ) = runCatching {
         // (1) 이미지 업로드
         val pictureUrl = if (imageData != null) {
             val storageRef = storage.reference.child("recipeImage/$imageName")
@@ -108,17 +111,16 @@ class RecipeDataSourceImpl(
             ""
         }
 
-        // (2) 레시피 생성
-        val recipeData = mapOf(
-            "id" to "",
-            "name" to recipeName,
-            "picture" to pictureUrl,
-            "steps" to steps,
-            "teamId" to teamId
-        )
-
         val recipeDocument = db.collection(COLLECTION_RECIPE)
-            .add(recipeData)
+            .add(
+                RecipeDTO(
+                    id = "",
+                    name = recipeName,
+                    picture = pictureUrl,
+                    steps = steps,
+                    teamId = teamId
+                ).toCreateDTO()
+            )
             .await()
 
         // 문서 id 필드 업데이트
@@ -135,16 +137,16 @@ class RecipeDataSourceImpl(
             .collection(COLLECTION_INGREDIENT)
 
         ingredients.forEach { ingredient ->
-            val mapped = ingredient.mapValues { (key, value) ->
-                when (key) {
-                    "once", "twice" -> value.toIntOrNull() ?: -1
-                    else -> value
-                }
-            }
-            val ingredientDoc = ingredientCollection.add(mapped).await()
+            val ingredientDoc = ingredientCollection.add(ingredient).await()
             ingredientCollection.document(ingredientDoc.id)
                 .update("id", ingredientDoc.id)
                 .await()
         }
-    }.isSuccess
+    }.getOrElse { throw FailedCRUDInFirebaseException(it).getException() }
+
+    override suspend fun deleteRecipe(recipeId: String): Unit = runCatching {
+        db.collection(COLLECTION_RECIPE).document(recipeId).delete().await()
+
+        Unit
+    }.getOrElse { throw FailedCRUDInFirebaseException(it).getException() }
 }

@@ -33,14 +33,14 @@ class OrderCategoryRepositoryImpl(
         teamId: String,
         categoryName: String,
         color: String
-    ): Flow<AppResult<Boolean>> = flow {
+    ) = flow {
         emit(AppResult.Loading)
         emit(AppResult.Success(orderCategoryDataSource.createOrderCategory(teamId, categoryName, color)))
     }.catch {
         emit(AppResult.Failure(it))
     }
 
-    override fun deleteOrderCategory(categoryId: String): Flow<AppResult<Boolean>> = flow {
+    override fun deleteOrderCategory(categoryId: String) = flow {
         emit(AppResult.Loading)
         emit(AppResult.Success(orderCategoryDataSource.deleteOrderCategory(categoryId)))
     }.catch {
@@ -51,7 +51,7 @@ class OrderCategoryRepositoryImpl(
         categoryId: String,
         categoryName: String,
         color: String
-    ): Flow<AppResult<Boolean>> = flow {
+    ) = flow {
         emit(AppResult.Loading)
         emit(AppResult.Success(orderCategoryDataSource.updateOrderCategory(categoryId, categoryName, color)))
     }.catch {

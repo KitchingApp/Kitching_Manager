@@ -13,7 +13,7 @@ interface RecipeDataSource {
         name: String,
         steps: List<String>,
         ingredients: List<IngredientDTO>,
-    ): Boolean
+    )
 
     suspend fun createRecipe(
         imageData: ByteArray?,
@@ -21,6 +21,10 @@ interface RecipeDataSource {
         recipeName: String,
         steps: List<String>,
         teamId: String,
-        ingredients: List<Map<String, String>>
-    ): Boolean
+        ingredients: List<IngredientDTO>
+    )
+
+    suspend fun deleteRecipe(
+        recipeId: String
+    )
 }

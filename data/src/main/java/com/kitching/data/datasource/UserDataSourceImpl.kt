@@ -2,15 +2,21 @@ package com.kitching.data.datasource
 
 import com.google.firebase.firestore.FirebaseFirestore
 import com.kitching.data.dto.UserDTO
+import com.kitching.data.exception.FailedCRUDInFirebaseException
+import com.kitching.data.exception.UserNotFoundException
 import com.kitching.data.firebase.COLLECTION_USER
 import com.kitching.domain.entities.User
 import kotlinx.coroutines.tasks.await
 
 class UserDataSourceImpl(private val db: FirebaseFirestore = FirebaseFirestore.getInstance()) :
     UserDataSource {
-    override suspend fun getUser(userId: String) =
+    override suspend fun getUser(userId: String) = runCatching {
         db.collection(COLLECTION_USER).document(userId).get().await()
-            .toObject(UserDTO::class.java) ?: throw Throwable("User Not Exist")
+            .toObject(UserDTO::class.java) ?: throw UserNotFoundException(userId)
+    }.getOrElse {
+        throw if(it is UserNotFoundException) it.getException()
+        else FailedCRUDInFirebaseException(it).getException()
+    }
 
     override suspend fun checkAndSaveUser(
         userId: String,
@@ -23,5 +29,5 @@ class UserDataSourceImpl(private val db: FirebaseFirestore = FirebaseFirestore.g
             db.collection(COLLECTION_USER)
                 .add(UserDTO(id = userId, userName = userName, userImage = userImage)).await()
         }
-    }.isSuccess
+    }.getOrElse { throw FailedCRUDInFirebaseException(it).getException() }
 }

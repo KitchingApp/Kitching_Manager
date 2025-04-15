@@ -15,7 +15,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardOptions
@@ -26,7 +25,6 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -53,19 +51,22 @@ import com.kitching.domain.entities.Member
 @Composable
 fun MemberSearchComponent(
     members: List<Member>,
-    selectedMember: MutableState<Member>,
-    isExpanded: MutableState<Boolean>
+    selectedMember: Member,
+    onMemberSelected: (member: Member) -> Unit
 ) {
 
     /** 사용자가 입력한 텍스트를 저장 */
     var textState by remember { mutableStateOf(TextFieldValue("")) }
 
+    /** 드롭다운 펼쳐짐 상태 */
+    var isExpanded by remember { mutableStateOf(false) }
+
     /** 드롭다운 열림 상태가 변경될때마다 실행 */
-    LaunchedEffect(isExpanded.value) {
-        if (!isExpanded.value) {
+    LaunchedEffect(isExpanded) {
+        if (!isExpanded) {
             textState = TextFieldValue(
-                text = selectedMember.value.userName,
-                selection = TextRange(selectedMember.value.userName.length)
+                text = selectedMember.userName,
+                selection = TextRange(selectedMember.userName.length)
             )
         }
     }
@@ -107,7 +108,7 @@ fun MemberSearchComponent(
                     value = textState,
                     onValueChange = {
                         textState = it
-                        isExpanded.value = true
+                        isExpanded = true
                     },
                     textStyle = H3_m.copy(color = NeutralGray800),
                     singleLine = true,
@@ -120,13 +121,14 @@ fun MemberSearchComponent(
             }
             IconButton(
                 modifier = Modifier
-                    .size(24.dp).align(Alignment.CenterVertically),
-                onClick = { isExpanded.value = !isExpanded.value }
+                    .size(24.dp)
+                    .align(Alignment.CenterVertically),
+                onClick = { isExpanded = !isExpanded }
             ) {
                 Icon(
                     modifier = Modifier.size(20.dp),
                     imageVector = ImageVector.vectorResource(
-                        if (isExpanded.value) R.drawable.icon_up_triangle
+                        if (isExpanded) R.drawable.icon_up_triangle
                         else R.drawable.icon_down_triangle
                     ),
                     contentDescription = "arrow",
@@ -135,7 +137,7 @@ fun MemberSearchComponent(
             }
         }
 
-        AnimatedVisibility(visible = isExpanded.value) {
+        AnimatedVisibility(visible = isExpanded) {
             Card(
                 modifier = Modifier
                     .width(240.dp),
@@ -150,22 +152,22 @@ fun MemberSearchComponent(
                 LazyColumn(
                     modifier = Modifier.heightIn(max = 150.dp)
                 ) {
-                    items(
-                        members
-                            .filter { it.userName.contains(textState.text.lowercase()) || textState.text.isEmpty() }
-                            .sortedBy { it.userName }
-                    ) { member ->
-                        DropDownMemberList(
-                            member = member,
-                        ) { memberItem ->
-                            textState = TextFieldValue(
-                                text = memberItem.userName,
-                                selection = TextRange(memberItem.userName.length)
-                            )
-                            selectedMember.value = memberItem
-                            isExpanded.value = false
+                    members
+                        .filter { it.userName.contains(textState.text.lowercase()) || textState.text.isEmpty() }
+                        .sortedBy { it.userName }.forEach { member ->
+                            item(key = member.userId) {
+                                DropDownMemberList(
+                                    member = member,
+                                ) { memberItem ->
+                                    textState = TextFieldValue(
+                                        text = memberItem.userName,
+                                        selection = TextRange(memberItem.userName.length)
+                                    )
+                                    onMemberSelected(memberItem)
+                                    isExpanded = false
+                                }
+                            }
                         }
-                    }
                 }
             }
         }

@@ -21,7 +21,7 @@ class PrepRepositoryImpl(
             emit(AppResult.Failure(it))
         }
 
-    override fun createPrep(categoryId: String, name: String): Flow<AppResult<Boolean>> =
+    override fun createPrep(categoryId: String, name: String) =
         flow {
             emit(AppResult.Loading)
             val result = prepDataSource.createPrepList(categoryId, name)
@@ -30,7 +30,7 @@ class PrepRepositoryImpl(
             emit(AppResult.Failure(it))
         }
 
-    override fun updatePrep(prepId: String, name: String): Flow<AppResult<Boolean>> = flow {
+    override fun updatePrep(prepId: String, name: String) = flow {
         emit(AppResult.Loading)
         val result = prepDataSource.updatePrepList(prepId, name)
         emit(AppResult.Success(result))
@@ -38,7 +38,7 @@ class PrepRepositoryImpl(
         emit(AppResult.Failure(it))
     }
 
-    override fun deletePrep(prepId: String): Flow<AppResult<Boolean>> = flow {
+    override fun deletePrep(prepId: String) = flow {
         emit(AppResult.Loading)
         val result = prepDataSource.deletePrepList(prepId)
         emit(AppResult.Success(result))

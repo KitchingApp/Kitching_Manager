@@ -38,7 +38,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.kitching.app.common.ActionIconInfo
 import com.kitching.app.common.CommonState
 import com.kitching.app.common.NavigationIconInfo
-import com.kitching.app.navgraph.ScreenRouteDef
+import com.kitching.app.navgraph.ScheduleTimeItem
 import com.kitching.app.ui.factory.viewModelFactory
 import com.kitching.app.ui.item.TimeInputItem
 import com.kitching.app.ui.model.ScheduleTimeViewModel
@@ -51,7 +51,6 @@ import com.kitching.app.ui.theme.NeutralGray800
 import com.kitching.app.ui.theme.PrimaryGreen300
 import com.kitching.app.ui.theme.defaultPadding
 import com.kitching.app.util.PreferencesDataStore
-import com.kitching.domain.entities.ScheduleTime
 import java.time.LocalTime
 import java.util.Locale
 
@@ -59,7 +58,8 @@ import java.util.Locale
 @Composable
 fun ScheduleTimeCreateOrUpdateScreen(
     commonState: CommonState,
-    scheduleTime: ScheduleTime?,
+    scheduleTime: ScheduleTimeItem?,
+    navigateToScheduleTimeList: () -> Unit,
     viewModel: ScheduleTimeViewModel = viewModel(factory = viewModelFactory)
 ) {
     val textState =
@@ -67,21 +67,21 @@ fun ScheduleTimeCreateOrUpdateScreen(
 
     val currentTime = Calendar.getInstance()
     val startTimeState = rememberTimePickerState(
-        initialHour = if (scheduleTime !== null) LocalTime.parse(scheduleTime.startTime).hour else (currentTime.get(
-            Calendar.HOUR_OF_DAY
-        )),
-        initialMinute = if (scheduleTime !== null) LocalTime.parse(scheduleTime.startTime).minute else (currentTime.get(
-            Calendar.MINUTE
-        )),
+        initialHour = scheduleTime?.let {
+            LocalTime.parse(it.startTime).hour
+        } ?: currentTime.get(Calendar.HOUR_OF_DAY),
+        initialMinute = scheduleTime?.let {
+            LocalTime.parse(it.startTime).minute
+        } ?: currentTime.get(Calendar.MINUTE),
         is24Hour = false
     )
     val endTimeState = rememberTimePickerState(
-        initialHour = if (scheduleTime !== null) LocalTime.parse(scheduleTime.endTime).hour else (currentTime.get(
-            Calendar.HOUR_OF_DAY
-        )),
-        initialMinute = if (scheduleTime !== null) LocalTime.parse(scheduleTime.endTime).minute else (currentTime.get(
-            Calendar.MINUTE
-        )),
+        initialHour = scheduleTime?.let {
+            LocalTime.parse(it.endTime).hour
+        } ?: currentTime.get(Calendar.HOUR_OF_DAY),
+        initialMinute = scheduleTime?.let {
+            LocalTime.parse(it.endTime).minute
+        } ?: currentTime.get(Calendar.MINUTE),
         is24Hour = false
     )
 
@@ -96,7 +96,7 @@ fun ScheduleTimeCreateOrUpdateScreen(
         title = if (scheduleTime == null) "스케줄타임 생성" else "스케줄타임 수정",
         containerColor = NeutralGray0,
         navIconInfo = NavigationIconInfo.BACK,
-        onClickNavIcon = { commonState.navController.popBackStack() },
+        onClickNavIcon = { navigateToScheduleTimeList() },
         actionIconInfo = ActionIconInfo.NULL
     )
 
@@ -193,7 +193,7 @@ fun ScheduleTimeCreateOrUpdateScreen(
                                     endTime = String.format(Locale.KOREA, "%02d:%02d", endTimeState.hour, endTimeState.minute)
                                 )
                             }
-                            commonState.navController.navigate(ScreenRouteDef.InnerContent.ScheduleTime.routeName)
+                            navigateToScheduleTimeList()
                         }
                     ) {
                         Text(
@@ -214,7 +214,7 @@ fun ScheduleTimeCreateOrUpdateScreen(
                         ),
                         contentPadding = PaddingValues(0.dp),
                         border = BorderStroke(1.dp, NeutralGray300),
-                        onClick = { commonState.navController.navigate(ScreenRouteDef.InnerContent.ScheduleTime.routeName) }
+                        onClick = { navigateToScheduleTimeList() }
                     ) {
                         Text(
                             text = "취소",

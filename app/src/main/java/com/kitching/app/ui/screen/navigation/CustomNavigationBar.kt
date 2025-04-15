@@ -1,28 +1,35 @@
 package com.kitching.app.ui.screen.navigation
 
-import androidx.compose.material3.Icon
+import androidx.compose.foundation.layout.size
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.NavigationBarItemColors
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
-import androidx.navigation.NavDestination
-import androidx.navigation.NavGraph.Companion.findStartDestination
-import androidx.navigation.NavHostController
-import com.kitching.app.navgraph.BottomNavItem
+import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.navigation.NavController
+import coil3.compose.AsyncImage
+import com.kitching.app.common.navIfNew
+import com.kitching.app.navgraph.BottomNavItem.Companion.renderBottomNavItems
 import com.kitching.app.ui.theme.NeutralGray200
 import com.kitching.app.ui.theme.NeutralGray400
 import com.kitching.app.ui.theme.PrimaryGreen300
 
 @Composable
 fun CustomNavigationBar(
-    navController: NavHostController,
-    currentDestination: NavDestination?
+    navController: NavController,
 ) {
+    val currentRoute by navController.currentBackStackEntryFlow
+        .collectAsStateWithLifecycle(navController.currentDestination?.route)
+
     NavigationBar(
         modifier = Modifier.drawBehind {
             drawLine(
@@ -34,28 +41,29 @@ fun CustomNavigationBar(
         containerColor = Color.White,
         contentColor = NeutralGray200,
     ) {
-        BottomNavItem().renderBottomNavItems()
-            .forEachIndexed { _, bottomNavItem ->
+        renderBottomNavItems()
+            .forEach { bottomNavItem ->
+                val isSelected = currentRoute.toString().contains(bottomNavItem.destination.toString())
                 NavigationBarItem(
-                    selected = bottomNavItem.routeName == currentDestination?.route,
+                    selected = isSelected,
                     label = {
                         Text(
-                            text = bottomNavItem.tabName,
+                            text = stringResource(bottomNavItem.tabName),
                         )
                     },
                     icon = {
-                        Icon(
-                            bottomNavItem.icon,
-                            contentDescription = bottomNavItem.tabName,
+                        AsyncImage(
+                            modifier = Modifier.size(24.dp),
+                            model = bottomNavItem.icon,
+                            contentDescription = null,
+                            colorFilter = if (isSelected) ColorFilter.tint(
+                                PrimaryGreen300
+                            ) else ColorFilter.tint(NeutralGray200)
                         )
                     },
                     onClick = {
-                        navController.navigate(bottomNavItem.routeName) {
-                            popUpTo(navController.graph.findStartDestination().id) {
-                                saveState = true
-                            }
-                            launchSingleTop = true
-                            restoreState = true
+                        navController.navIfNew(bottomNavItem.destination) {
+                            popUpTo(0) { inclusive = true }
                         }
                     },
                     colors = NavigationBarItemColors(

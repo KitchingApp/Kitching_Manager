@@ -22,7 +22,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.kitching.app.common.ActionIconInfo
 import com.kitching.app.common.CommonState
 import com.kitching.app.common.NavigationIconInfo
-import com.kitching.app.navgraph.ScreenRouteDef
+import com.kitching.app.navgraph.ScheduleTimeItem
 import com.kitching.app.ui.factory.viewModelFactory
 import com.kitching.app.ui.item.ScheduleTimeItem
 import com.kitching.app.ui.model.ScheduleTimeViewModel
@@ -34,16 +34,14 @@ import com.kitching.app.ui.theme.KitchingManagerTheme
 import com.kitching.app.ui.theme.NeutralGray0
 import com.kitching.app.ui.theme.defaultPadding
 import com.kitching.app.util.PreferencesDataStore
-import com.kitching.app.util.customFormat
 import com.kitching.domain.AppResult
 import com.kitching.domain.entities.ScheduleTime
-import kotlinx.serialization.encodeToString
-import kotlinx.serialization.json.Json
-import java.time.LocalTime
 
 @Composable
 fun ScheduleTimeScreen(
     commonState: CommonState,
+    naviagateToCreateOfModifyScheduleTime: (scheduleTime: ScheduleTimeItem) -> Unit,
+    navigateToOther: () -> Unit,
     viewModel: ScheduleTimeViewModel = viewModel(factory = viewModelFactory)
 ) {
 
@@ -63,18 +61,10 @@ fun ScheduleTimeScreen(
         title = "스케줄타임",
         containerColor = NeutralGray0,
         navIconInfo = NavigationIconInfo.BACK,
-        onClickNavIcon = { commonState.navController.popBackStack() },
+        onClickNavIcon = { navigateToOther() },
         actionIconInfo = ActionIconInfo.ADD,
         onClickActionIcon = {
-            selectedScheduleTime = ScheduleTime(
-                scheduleTimeId = "",
-                scheduleTimeName = "",
-                startTime = LocalTime.now().customFormat(),
-                endTime = LocalTime.now().customFormat()
-            )
-            commonState.navController.navigate(
-                ScreenRouteDef.InnerContent.ScheduleTimeCreateOrUpdate.routeName + "/${""}"
-            )
+            naviagateToCreateOfModifyScheduleTime(ScheduleTimeItem.init())
         }
     )
 
@@ -103,7 +93,7 @@ fun ScheduleTimeScreen(
                             modifier = Modifier.weight(1f),
                             verticalArrangement = Arrangement.spacedBy(12.dp),
                         ) {
-                            items(scheduleTimeData) { scheduleTime ->
+                            items(items = scheduleTimeData, key = {it.scheduleTimeId}) { scheduleTime ->
                                 Column(
                                     modifier = Modifier.fillMaxWidth(),
                                     horizontalAlignment = Alignment.End
@@ -120,10 +110,7 @@ fun ScheduleTimeScreen(
                                         DropdownOptionMenu(
                                             onDismissRequest = { selectedScheduleTime = ScheduleTime() },
                                             onClickModify = {
-                                                commonState.navController.navigate(
-                                                    ScreenRouteDef.InnerContent.ScheduleTimeCreateOrUpdate.routeName +
-                                                            "/${if (selectedScheduleTime.scheduleTimeId.isEmpty()) null else Json.encodeToString(selectedScheduleTime)}"
-                                                )
+                                                naviagateToCreateOfModifyScheduleTime(ScheduleTimeItem.domainToItem(selectedScheduleTime))
                                             },
                                             onClickDelete = {
                                                 showDeleteDialog = true

@@ -1,6 +1,5 @@
 package com.kitching.app.ui.screen.other.memberlist
 
-import android.util.Base64
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -20,7 +19,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.kitching.app.common.ActionIconInfo
 import com.kitching.app.common.CommonState
 import com.kitching.app.common.NavigationIconInfo
-import com.kitching.app.navgraph.ScreenRouteDef
+import com.kitching.app.navgraph.MemberItem
 import com.kitching.app.ui.factory.viewModelFactory
 import com.kitching.app.ui.item.MemberCardItem
 import com.kitching.app.ui.model.MemberViewModel
@@ -30,8 +29,6 @@ import com.kitching.app.ui.theme.NeutralGray0
 import com.kitching.app.ui.theme.defaultPadding
 import com.kitching.app.util.PreferencesDataStore
 import com.kitching.domain.AppResult
-import kotlinx.serialization.encodeToString
-import kotlinx.serialization.json.Json
 
 /**
  * Member list screen
@@ -42,6 +39,8 @@ import kotlinx.serialization.json.Json
 @Composable
 fun MemberListScreen(
     commonState: CommonState,
+    navigateToMemberDetail: (member: MemberItem) -> Unit,
+    navigateToOther: () -> Unit,
     viewModel: MemberViewModel = viewModel(factory = viewModelFactory)
 ) {
     var teamId by remember { mutableStateOf("") }
@@ -56,7 +55,7 @@ fun MemberListScreen(
         title = "멤버관리",
         containerColor = NeutralGray0,
         navIconInfo = NavigationIconInfo.BACK,
-        onClickNavIcon = { commonState.navController.popBackStack() },
+        onClickNavIcon = { navigateToOther() },
         actionIconInfo = ActionIconInfo.NULL
     )
 
@@ -80,15 +79,11 @@ fun MemberListScreen(
                         modifier = Modifier.fillMaxSize(),
                         verticalArrangement = Arrangement.spacedBy(defaultPadding)
                     ) {
-                        items(membersData) { member ->
+                        items(items = membersData, key = {it.userId}) {
                             MemberCardItem(
-                                member = member,
+                                member = MemberItem.domainToItem(it),
                                 onCardClick = {
-                                    val json = Json.encodeToString(member)
-                                    val encodedJson = Base64.encodeToString(json.toByteArray(), Base64.URL_SAFE or Base64.NO_WRAP)
-                                    commonState.navController.navigate(
-                                        ScreenRouteDef.InnerContent.MemberDetail.routeName + "/$encodedJson"
-                                    )
+                                    navigateToMemberDetail(MemberItem.domainToItem(it))
                                 }
                             )
                         }

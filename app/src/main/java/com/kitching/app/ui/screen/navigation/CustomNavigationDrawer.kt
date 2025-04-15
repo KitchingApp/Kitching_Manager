@@ -7,7 +7,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.DrawerState
@@ -19,36 +19,38 @@ import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.kitching.app.R
 import com.kitching.app.ui.item.TeamCardItem
 import com.kitching.app.ui.theme.H1
 import com.kitching.app.ui.theme.NeutralGray0
 import com.kitching.app.ui.theme.NeutralGray800
 import com.kitching.app.ui.theme.PrimaryGreen300
+import com.kitching.app.ui.theme.defaultPadding
+import com.kitching.app.ui.theme.drawerWidth
+import com.kitching.domain.AppResult
+import com.kitching.domain.entities.Team
 
 @Composable
 fun CustomNavigationDrawer(
     drawerState: DrawerState,
+    teamListState: AppResult<List<Team>>,
+    onTeamItemClick: (Team) -> Unit,
+onTeamCreateClick: () -> Unit,
     content: @Composable () -> Unit
 ) {
-    val teamListMockData = listOf(
-        "A 레스토랑",
-        "B 레스토랑",
-        "C 레스토랑",
-        "D 레스토랑",
-        "E 레스토랑"
-    )
-
     ModalNavigationDrawer(
         drawerContent = {
             ModalDrawerSheet(
+                drawerContainerColor = NeutralGray0
             ) {
                 Column(
                     modifier = Modifier
-                        .width(300.dp)
-                        .padding(20.dp, 50.dp),
+                        .width(drawerWidth)
+                        .padding(defaultPadding),
                     horizontalAlignment = Alignment.CenterHorizontally,
                     verticalArrangement = Arrangement.SpaceBetween
                 ) {
@@ -71,10 +73,11 @@ fun CustomNavigationDrawer(
                         modifier = Modifier.fillMaxWidth().weight(1f),
                         verticalArrangement = Arrangement.spacedBy(20.dp)
                     ) {
-                        itemsIndexed(teamListMockData) { index, team ->
+                        val teamListdata = if(teamListState is AppResult.Success) teamListState.data else emptyList<Team>()
+                        items(items = teamListdata, key = {it.teamId}) {
                             TeamCardItem(
-                                teamName = team,
-                                onCardClick = {}
+                                teamName = it.teamName,
+                                onCardClick = { onTeamItemClick(it) }
                             )
                         }
                     }
@@ -89,10 +92,10 @@ fun CustomNavigationDrawer(
                             disabledContainerColor = PrimaryGreen300,
                             disabledContentColor = NeutralGray0
                         ),
-                        onClick = {},
+                        onClick = { onTeamCreateClick() },
                     ) {
                         Text(
-                            text = "팀 생성",
+                            text = stringResource(R.string.button_create_team),
                             color = NeutralGray0,
                             style = H1.copy(
                                 color = NeutralGray800,

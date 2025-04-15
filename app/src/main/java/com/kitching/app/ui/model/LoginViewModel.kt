@@ -74,7 +74,7 @@ class LoginViewModel(
         }
     }
 
-    private val _createTeamResult = MutableStateFlow<AppResult<Boolean>>(AppResult.Initial)
+    private val _createTeamResult = MutableStateFlow<AppResult<String>>(AppResult.Initial)
     val createTeamResult get() = _createTeamResult.asStateFlow()
 
     fun createTeam(ownerId: String, teamName: String, teamAmount: Int) {

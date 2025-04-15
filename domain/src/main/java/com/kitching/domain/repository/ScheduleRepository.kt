@@ -13,9 +13,9 @@ interface ScheduleRepository {
         userId: String,
         scheduleTimeId: String,
         fix: Boolean = true
-    ): Flow<AppResult<Boolean>>
+    ): Flow<AppResult<Unit>>
 
-    fun deleteSchedule(scheduleId: String): Flow<AppResult<Boolean>>
+    fun deleteSchedule(scheduleId: String): Flow<AppResult<Unit>>
 
-    fun applySchedule(scheduleId: String): Flow<AppResult<Boolean>>
+    fun applySchedule(scheduleId: String): Flow<AppResult<Unit>>
 }

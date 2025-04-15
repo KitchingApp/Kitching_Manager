@@ -1,6 +1,7 @@
 package com.kitching.app.ui.screen.recipe.innercontent
 
 import android.content.Context
+import android.content.Intent
 import android.net.Uri
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
@@ -9,7 +10,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.Surface
@@ -23,13 +23,16 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.core.content.FileProvider
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.kitching.app.common.ActionIconInfo
 import com.kitching.app.common.CommonState
 import com.kitching.app.common.KitchingApplication
 import com.kitching.app.common.NavigationIconInfo
-import com.kitching.app.navgraph.ScreenRouteDef
+import com.kitching.app.navgraph.IngredientItem
+import com.kitching.app.navgraph.RecipeCreateItem
+import com.kitching.app.navgraph.RecipeServiceItem
+import com.kitching.app.service.RecipeUploadService
 import com.kitching.app.ui.factory.viewModelFactory
 import com.kitching.app.ui.item.RecipeSheetInfoExpandableCardItem
 import com.kitching.app.ui.model.RecipeViewModel
@@ -37,6 +40,8 @@ import com.kitching.app.ui.theme.KitchingManagerTheme
 import com.kitching.app.ui.theme.defaultPadding
 import com.kitching.app.util.PreferencesDataStore
 import com.kitching.domain.entities.Ingredient
+import kotlinx.serialization.encodeToString
+import kotlinx.serialization.json.Json
 import org.apache.poi.hssf.usermodel.HSSFPatriarch
 import org.apache.poi.hssf.usermodel.HSSFPicture
 import org.apache.poi.hssf.usermodel.HSSFSheet
@@ -46,7 +51,9 @@ import org.apache.poi.ss.usermodel.WorkbookFactory
 import org.apache.poi.xssf.usermodel.XSSFDrawing
 import org.apache.poi.xssf.usermodel.XSSFPicture
 import org.apache.poi.xssf.usermodel.XSSFSheet
+import java.io.File
 import java.util.UUID
+
 
 data class RecipeSheetInfo(
     val sheetName: String,
@@ -55,42 +62,56 @@ data class RecipeSheetInfo(
     val recipeName: String,
     val ingredients: List<Ingredient>,
     val recipeSteps: List<String>
-)
+) {
+    fun toRecipeData() = RecipeCreateItem(
+        imageData = imageData,
+        imageName = imageName,
+        recipeName = recipeName,
+        ingredients = ingredients.map { IngredientItem.domainToParcelize(it) },
+        recipeSteps = recipeSteps
+    )
+}
 
 @Composable
 fun RecipeCreateUseExcelScreen(
     commonState: CommonState,
+    navigateToRecipeUploadInProgress: () -> Unit,
+    navigateToRecipe: () -> Unit,
     viewModel: RecipeViewModel = viewModel(factory = viewModelFactory)
 ) {
     var recipeInfos by remember { mutableStateOf((emptyList<RecipeSheetInfo>())) }
     var selectedRecipes by remember { mutableStateOf(emptyList<Int>()) }
     var teamId by remember { mutableStateOf("") }
 
-    val recipeCreateResultState by viewModel.createRecipeResult.collectAsStateWithLifecycle()
-
     LaunchedEffect(Unit) {
-        teamId = PreferencesDataStore(commonState.navController.context).getTeamId()
+        teamId = PreferencesDataStore().getTeamId()
     }
 
     commonState.topAppBarState.value = commonState.topAppBarState.value.copy(
         navIconInfo = NavigationIconInfo.BACK,
         onClickNavIcon = {
-            commonState.navController.popBackStack()
+            navigateToRecipe()
         },
         actionIconInfo = ActionIconInfo.CHECK,
         onClickActionIcon = {
-            selectedRecipes.forEach {
-                val recipeInfo = recipeInfos[it]
-                viewModel.createRecipe(
-                    imageData = recipeInfo.imageData,
-                    imageName = recipeInfo.imageName,
-                    recipeName = recipeInfo.recipeName,
-                    steps = recipeInfo.recipeSteps,
-                    ingredients = recipeInfo.ingredients,
-                    teamId = teamId
+            val file = File(KitchingApplication.getInstance().cacheDir, "recipe_data.json")
+            file.writeText(Json.encodeToString(RecipeServiceItem(
+                teamId = teamId,
+                recipes = selectedRecipes.map { recipeInfos[it].toRecipeData() }
+            )))
+            KitchingApplication.getInstance().startForegroundService(
+                Intent(
+                    KitchingApplication.getInstance(),
+                    RecipeUploadService::class.java
                 )
-            }
-            commonState.navController.navigate(ScreenRouteDef.RecipeTab.routeName)
+                    .setData(FileProvider.getUriForFile(
+                        KitchingApplication.getInstance(),
+                        "com.kitching.app.fileprovider",
+                        file
+                    ))
+                    .addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION or Intent.FLAG_GRANT_WRITE_URI_PERMISSION or Intent.FLAG_GRANT_PERSISTABLE_URI_PERMISSION)
+            )
+            navigateToRecipeUploadInProgress()
         }
     )
 
@@ -105,7 +126,8 @@ fun RecipeCreateUseExcelScreen(
                     val sheet = sheetIterator.next()
                     val sheetName = sheet.sheetName
                     val recipeName = runCatching { getRecipeTitle(sheet) }.getOrElse { "" }
-                    val ingredients = runCatching { getIngredients(sheet) }.getOrElse { emptyList() }
+                    val ingredients =
+                        runCatching { getIngredients(sheet) }.getOrElse { emptyList() }
                     val recipeSteps = runCatching { getSteps(sheet) }.getOrElse { emptyList() }
                     val fileName = UUID.randomUUID().toString().replace("-", "")
                     val imageUri = runCatching { getImageFromSheet(sheet) }.getOrNull()
@@ -153,15 +175,17 @@ fun RecipeCreateUseExcelScreen(
                 LazyColumn(
                     verticalArrangement = Arrangement.spacedBy(defaultPadding)
                 ) {
-                    itemsIndexed(recipeInfos) { index, recipeInfo ->
-                        RecipeSheetInfoExpandableCardItem(recipeInfo) {
-                            val newList = selectedRecipes.toMutableList()
-                            if(newList.contains(index)) {
-                                newList.remove(index)
-                            } else {
-                                newList.add(index)
+                    recipeInfos.forEachIndexed { index, recipeInfo ->
+                        item(key = recipeInfo.sheetName) {
+                            RecipeSheetInfoExpandableCardItem(recipeInfo) {
+                                val newList = selectedRecipes.toMutableList()
+                                if (newList.contains(index)) {
+                                    newList.remove(index)
+                                } else {
+                                    newList.add(index)
+                                }
+                                selectedRecipes = newList
                             }
-                            selectedRecipes = newList
                         }
                     }
                 }
@@ -228,7 +252,7 @@ fun getImageFromSheet(sheet: Sheet): ByteArray {
                 }
             }
         }
-    } else if(sheet is HSSFSheet) {
+    } else if (sheet is HSSFSheet) {
         val patriarch: HSSFPatriarch = sheet.drawingPatriarch
         val shapes = patriarch.children
 

@@ -1,3 +1,5 @@
 package com.kitching.domain.entities
 
-data class StaffLevel(val staffLevelId: String, val staffLevelName: String)
+data class StaffLevel(val staffLevelId: String, val staffLevelName: String) {
+    fun noStaffLevel() = StaffLevel("", "")
+}

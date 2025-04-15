@@ -1,9 +1,9 @@
 package com.kitching.app.common
 
 import androidx.compose.material3.DrawerState
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.MutableState
 import androidx.compose.ui.graphics.Color
-import androidx.navigation.NavHostController
 import com.kitching.app.R
 import com.kitching.app.ui.theme.NeutralGray0
 import kotlinx.coroutines.CoroutineScope
@@ -18,12 +18,13 @@ enum class ActionIconInfo(val icon: Int, val description: String) {
 
 enum class NavigationIconInfo(val icon: Int, val description: String) {
     DRAWER(R.drawable.icon_hamburger_menu, "drawer icon"),
-    BACK(R.drawable.icon_arrow_back, "back button")
+    BACK(R.drawable.icon_arrow_back, "back button"),
+    NULL(-1, "no action")
 }
 
 data class TopAppBarState(
     val containerColor: Color = NeutralGray0,
-    val title: String = "Kitching",
+    val title: String = "Approach",
     val drawerState: DrawerState,
     val navIconInfo: NavigationIconInfo = NavigationIconInfo.DRAWER,
     val onClickNavIcon: () -> Unit = {},
@@ -31,11 +32,11 @@ data class TopAppBarState(
     val onClickActionIcon: () -> Unit = {}
 )
 
-/** 네비게이션 컨트롤러, 앱바 상태, 코루틴 스코프를 갖는 data class */
+/** 앱바 상태, 코루틴 스코프를 갖는 data class */
 data class CommonState(
-    val navController: NavHostController,
     var topAppBarState: MutableState<TopAppBarState>,
-    val scope: CoroutineScope,
+    val coroutineScope: CoroutineScope,
+    val snackbarHostState: SnackbarHostState
     )
 
 data class TeamSize(val label: String, val value: Int)

@@ -26,8 +26,7 @@ class NoticeRepositoryImpl(
                     title = it.title,
                     content = it.content,
                     date = it.date,
-                    writerName = userDataSource.getUser(it.writerId)?.userName
-                        ?: throw Throwable("User Not Exist")
+                    writerName = userDataSource.getUser(it.writerId).userName
                 )
             }
         ))

@@ -2,7 +2,7 @@ package com.kitching.app.ui.screen.other.notice
 
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -16,7 +16,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.kitching.app.common.ActionIconInfo
 import com.kitching.app.common.CommonState
 import com.kitching.app.common.NavigationIconInfo
-import com.kitching.app.navgraph.ScreenRouteDef
+import com.kitching.app.navgraph.NoticeItem
 import com.kitching.app.ui.factory.viewModelFactory
 import com.kitching.app.ui.item.NoticeItem
 import com.kitching.app.ui.model.NoticeViewModel
@@ -26,8 +26,6 @@ import com.kitching.app.ui.theme.KitchingManagerTheme
 import com.kitching.app.ui.theme.NeutralGray0
 import com.kitching.app.util.PreferencesDataStore
 import com.kitching.domain.AppResult
-import kotlinx.serialization.encodeToString
-import kotlinx.serialization.json.Json
 
 /**
  * Notice list screen
@@ -38,6 +36,9 @@ import kotlinx.serialization.json.Json
 @Composable
 fun NoticeListScreen(
     commonState: CommonState,
+    navigateToCreateNotice: () -> Unit,
+    navigateToNoticeDetail: (notice: NoticeItem) -> Unit,
+    navigateToOther: () -> Unit,
     viewModel: NoticeViewModel = viewModel(factory = viewModelFactory)
 ) {
 
@@ -53,9 +54,9 @@ fun NoticeListScreen(
         containerColor = NeutralGray0,
         title = "공지사항",
         navIconInfo = NavigationIconInfo.BACK,
-        onClickNavIcon = { commonState.navController.popBackStack() },
+        onClickNavIcon = { navigateToOther() },
         actionIconInfo = ActionIconInfo.ADD,
-        onClickActionIcon = { commonState.navController.navigate(ScreenRouteDef.InnerContent.NoticeCreateOrUpdate.routeName + "/") }
+        onClickActionIcon = { navigateToCreateNotice() }
     )
 
     KitchingManagerTheme {
@@ -75,12 +76,16 @@ fun NoticeListScreen(
                     )
                 } else {
                     LazyColumn {
-                        itemsIndexed(notices) { _, notice ->
-                            NoticeItem(notice = notice) {
-                                commonState.navController.navigate(
-                                    ScreenRouteDef.InnerContent.NoticeDetail.routeName + "/${
-                                        Json.encodeToString(notice)
-                                    }"
+                        items(items = notices, key = { it.noticeId }) {
+                            NoticeItem(notice = it) {
+                                navigateToNoticeDetail(
+                                    NoticeItem(
+                                        noticeId = it.noticeId,
+                                        writerName = it.writerName,
+                                        date = it.date,
+                                        title = it.title,
+                                        content = it.content
+                                    )
                                 )
                             }
                         }

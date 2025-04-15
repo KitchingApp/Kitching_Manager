@@ -15,7 +15,7 @@ interface RecipeRepository {
         name: String,
         steps: List<String>,
         ingredients: List<Ingredient>,
-    ): Flow<AppResult<Boolean>>
+    ): Flow<AppResult<Unit>>
 
     fun createRecipe(
         imageData: ByteArray?,
@@ -23,6 +23,8 @@ interface RecipeRepository {
         recipeName: String,
         steps: List<String>,
         teamId: String,
-        ingredients: List<Map<String, String>>
-    ): Flow<AppResult<Boolean>>
+        ingredients: List<Ingredient>
+    ): Flow<AppResult<Unit>>
+
+    fun deleteRecipe(recipeId: String): Flow<AppResult<Unit>>
 }

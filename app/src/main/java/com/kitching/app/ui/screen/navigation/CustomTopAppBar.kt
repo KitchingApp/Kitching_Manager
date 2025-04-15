@@ -43,25 +43,27 @@ fun CustomTopAppBar(
         title = {
             Text(
                 text = topAppBarState.title,
-                style = if(topAppBarState.containerColor == PrimaryGreen300) H3 else H3_m
+                style = if (topAppBarState.containerColor == PrimaryGreen300) H3 else H3_m
             )
         },
         colors = TopAppBarDefaults.topAppBarColors(
             containerColor = topAppBarState.containerColor,
-            titleContentColor = if(topAppBarState.containerColor == PrimaryGreen300) NeutralGray0 else NeutralGray800,
-            actionIconContentColor = if(topAppBarState.containerColor == PrimaryGreen300) NeutralGray0 else NeutralGray600,
-            navigationIconContentColor = if(topAppBarState.containerColor == PrimaryGreen300) NeutralGray0 else NeutralGray600
+            titleContentColor = if (topAppBarState.containerColor == PrimaryGreen300) NeutralGray0 else NeutralGray800,
+            actionIconContentColor = if (topAppBarState.containerColor == PrimaryGreen300) NeutralGray0 else NeutralGray600,
+            navigationIconContentColor = if (topAppBarState.containerColor == PrimaryGreen300) NeutralGray0 else NeutralGray600
         ),
         navigationIcon = {
-            IconButton(onClick = topAppBarState.onClickNavIcon) {
-                Icon(
-                    imageVector = ImageVector.vectorResource(topAppBarState.navIconInfo.icon),
-                    contentDescription = topAppBarState.navIconInfo.description,
-                )
+            if (topAppBarState.actionIconInfo != ActionIconInfo.NULL) {
+                IconButton(onClick = topAppBarState.onClickNavIcon) {
+                    Icon(
+                        imageVector = ImageVector.vectorResource(topAppBarState.navIconInfo.icon),
+                        contentDescription = topAppBarState.navIconInfo.description,
+                    )
+                }
             }
         },
         actions = {
-            if(topAppBarState.actionIconInfo !== ActionIconInfo.NULL) {
+            if (topAppBarState.actionIconInfo != ActionIconInfo.NULL) {
                 IconButton(onClick = topAppBarState.onClickActionIcon) {
                     Icon(
                         imageVector = ImageVector.vectorResource(topAppBarState.actionIconInfo.icon),
