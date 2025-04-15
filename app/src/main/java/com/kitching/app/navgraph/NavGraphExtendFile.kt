@@ -42,7 +42,7 @@ fun NavGraphBuilder.scheduleSliceNavGraph(
     commonState: CommonState,
 ) {
     navigation<Route.ScheduleGraph>(
-        startDestination = Route.ScheduleGraph.ScheduleMain
+        startDestination = Route.ScheduleGraph.getStartDestination()
     ) {
         composable<Route.ScheduleGraph.ScheduleMain> {
             ScheduleMainScreen(
@@ -57,7 +57,7 @@ fun NavGraphBuilder.prepSliceNavGraph(
     navController: NavController
 ) {
     navigation<Route.PrepGraph>(
-        startDestination = Route.PrepGraph.PrepMain
+        startDestination = Route.PrepGraph.getStartDestination()
     ) {
         composable<Route.PrepGraph.PrepMain> {
             PrepMainScreen(
@@ -84,7 +84,7 @@ fun NavGraphBuilder.recipeSliceNavGraph(
     navController: NavController
 ) {
     navigation<Route.RecipeGraph>(
-        startDestination = Route.RecipeGraph.RecipeMain
+        startDestination = Route.RecipeGraph.getStartDestination()
     ) {
         composable<Route.RecipeGraph.RecipeMain> {
             RecipeMainScreen(
@@ -150,7 +150,7 @@ fun NavGraphBuilder.orderSliceNavGraph(
     navController: NavController,
 ) {
     navigation<Route.OrderGraph>(
-        startDestination = Route.OrderGraph.OrderMain
+        startDestination = Route.OrderGraph.getStartDestination()
     ) {
         composable<Route.OrderGraph.OrderMain> {
             OrderMainScreen(
@@ -177,7 +177,7 @@ fun NavGraphBuilder.otherSliceNavGraph(
     navController: NavController
 ) {
     navigation<Route.OtherGraph>(
-        startDestination = Route.OtherGraph.OtherMain
+        startDestination = Route.OtherGraph.getStartDestination()
     ) {
         composable<Route.OtherGraph.OtherMain> {
             OtherMainScreen(

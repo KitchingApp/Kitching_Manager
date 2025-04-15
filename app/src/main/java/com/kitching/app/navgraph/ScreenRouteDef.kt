@@ -10,18 +10,25 @@ sealed interface Route {
     data object CreateTeam: Route
 
     @Serializable
-    sealed interface BottomTab
+    sealed interface BottomTab {
+        fun getStartDestination(): Route
+    }
+
     @Serializable
     sealed interface OtherMenuItem
 
     @Serializable
     data object ScheduleGraph: BottomTab {
+        override fun getStartDestination(): Route = ScheduleMain
+
         @Serializable
         data object ScheduleMain: Route
     }
 
     @Serializable
     data object PrepGraph: BottomTab {
+        override fun getStartDestination(): Route = PrepMain
+
         @Serializable
         data object PrepMain: Route
         @Serializable
@@ -31,6 +38,8 @@ sealed interface Route {
     @Parcelize
     @Serializable
     data object RecipeGraph: BottomTab, Parcelable {
+        override fun getStartDestination(): Route = RecipeMain
+
         @Serializable
         data object RecipeMain: Route
         @Serializable
@@ -47,6 +56,8 @@ sealed interface Route {
 
     @Serializable
     data object OrderGraph: BottomTab {
+        override fun getStartDestination(): Route = OrderMain
+
         @Serializable
         data object OrderMain: Route
         @Serializable
@@ -55,6 +66,8 @@ sealed interface Route {
 
     @Serializable
     data object OtherGraph: BottomTab {
+        override fun getStartDestination(): Route = OtherMain
+
         @Serializable
         data object OtherMain: Route
         @Serializable
@@ -77,44 +90,3 @@ sealed interface Route {
         data class MemberDetail(val member: MemberItem): Route
     }
 }
-
-//sealed class ScreenRouteDef(val route: String) {
-//
-//    data object ScheduleGraph: ScreenRouteDef("schedule_graph") {
-//        data object ScheduleMain: ScreenRouteDef("schedule_main")
-//    }
-//
-//    data object PrepGraph: ScreenRouteDef("prep_graph") {
-//        data object PrepMain: ScreenRouteDef("prep_main")
-//        data object PrepDetail: ScreenRouteDef("prep_detail")
-//    }
-//
-//    data object RecipeGraph: ScreenRouteDef("recipe_graph") {
-//        data object RecipeMain: ScreenRouteDef("recipe_main")
-//        data object RecipeCreate: ScreenRouteDef("recipe_create")
-//        data object RecipeCreateUseExcel: ScreenRouteDef("recipe_create_use_excel")
-//        data object RecipeUploadInProgress: ScreenRouteDef("recipe_upload_in_progress")
-//        data object RecipeDetail: ScreenRouteDef("recipe_detail")
-//        data object RecipeEdit: ScreenRouteDef("recipe_edit")
-//    }
-//
-//    data object OrderGraph: ScreenRouteDef("order_graph") {
-//        data object OrderMain: ScreenRouteDef("order_main")
-//        data object OrderDetail: ScreenRouteDef("order_detail")
-//    }
-//
-//    data object OtherGraph: ScreenRouteDef("other_graph") {
-//        data object OtherMain: ScreenRouteDef("other_main")
-//        data object InviteCode: ScreenRouteDef("invite_code")
-//        data object NoticeList: ScreenRouteDef("notice_list")
-//        data object NoticeDetail: ScreenRouteDef("notice_detail")
-//        data object NoticeCreateOrUpdate: ScreenRouteDef("notice_create_or_update")
-//        data object StaffLevel: ScreenRouteDef("staff_level")
-//        data object ScheduleTime: ScreenRouteDef("schedule_time")
-//        data object ScheduleTimeCreateOrUpdate: ScreenRouteDef("schedule_time_create_or_update")
-//        data object MemberList: ScreenRouteDef("member_list")
-//        data object MemberDetail: ScreenRouteDef("member_detail")
-//    }
-//
-//    data object CreateTeam: ScreenRouteDef("create_team")
-//}
