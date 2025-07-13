@@ -28,13 +28,13 @@ fun LoginNavHost() {
 
     NavHost(
         navController = navController,
-        startDestination = LoginRouteDef.Splash.routeName
+        startDestination = LoginRouteDef.Splash
     ) {
-        composable(LoginRouteDef.Splash.routeName) {
+        composable<LoginRouteDef.Splash> {
             SplashScreen(
                 onNavigateToLogin = {
-                    navController.navIfNew(LoginRouteDef.Login.routeName) {
-                        popUpTo(LoginRouteDef.Splash.routeName) { inclusive = true }
+                    navController.navIfNew(LoginRouteDef.Login) {
+                        popUpTo(LoginRouteDef.Splash) { inclusive = true }
                     }
                 },
                 onNavigateToMain = {
@@ -46,24 +46,24 @@ fun LoginNavHost() {
             )
         }
 
-        composable(LoginRouteDef.Login.routeName) {
+        composable<LoginRouteDef.Login> {
             LoginMainScreen(
                 viewModel = viewModel,
                 coroutineScope = coroutineScope,
                 onNavigateToSelectTeam = {
-                    navController.navIfNew(LoginRouteDef.SelectTeam.routeName) {
-                        popUpTo(LoginRouteDef.Login.routeName) { inclusive = true }
+                    navController.navIfNew(LoginRouteDef.SelectTeam) {
+                        popUpTo(LoginRouteDef.Login) { inclusive = true }
                     }
                 }
             )
         }
 
-        composable(LoginRouteDef.SelectTeam.routeName) {
+        composable<LoginRouteDef.SelectTeam> {
             SelectTeamScreen(
                 viewModel = viewModel,
                 coroutineScope = coroutineScope,
                 onNavigateToCreateTeam = {
-                    navController.navIfNew(LoginRouteDef.CreateTeam.routeName)
+                    navController.navIfNew(LoginRouteDef.CreateTeam)
                 },
                 onNavigateToMain = {
                     val context = navController.context
@@ -73,7 +73,7 @@ fun LoginNavHost() {
             )
         }
 
-        composable(LoginRouteDef.CreateTeam.routeName) {
+        composable<LoginRouteDef.CreateTeam> {
             CreateTeamScreen(
                 viewModel = viewModel,
                 coroutineScope = coroutineScope,
@@ -81,7 +81,7 @@ fun LoginNavHost() {
                     navController.popBackStack()
                 },
                 onTeamCreated = {
-                    navController.popBackStack(LoginRouteDef.SelectTeam.routeName, false)
+                    navController.popBackStack(LoginRouteDef.SelectTeam, false)
                 }
             )
         }
