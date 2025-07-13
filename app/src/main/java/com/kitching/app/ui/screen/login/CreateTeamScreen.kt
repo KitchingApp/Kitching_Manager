@@ -196,7 +196,7 @@ fun CreateTeamScreen(
             Button(
                 onClick = {
                     coroutineScope.launch {
-                        val userId = viewModel.dataStore.getUserId().toString()
+                        val userId = viewModel.dataStore.getUserId()
                         viewModel.createTeam(userId, teamName, selectedTeamSize?.value ?: 0)
                         onTeamCreated()
                     }
