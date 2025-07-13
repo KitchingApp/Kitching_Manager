@@ -182,7 +182,8 @@ fun NavGraphBuilder.otherSliceNavGraph(
         composable<Route.OtherGraph.OtherMain> {
             OtherMainScreen(
                 commonState = commonState,
-                navigateToEachItem = { navController.navIfNew(Route.OtherGraph.OtherMain) }
+                navigateToEachItem = { otherMenuItem ->
+                    navController.navIfNew(otherMenuItem.destination) }
             )
         }
         composable<Route.OtherGraph.InviteCode> {
