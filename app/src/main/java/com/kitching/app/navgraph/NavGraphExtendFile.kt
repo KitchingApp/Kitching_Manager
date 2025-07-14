@@ -211,7 +211,9 @@ fun NavGraphBuilder.otherSliceNavGraph(
                 commonState = commonState,
                 notice = navBackStackEntry.toRoute<Route.OtherGraph.NoticeDetail>().notice,
                 navigateToNoticeList = { navController.navIfNew(Route.OtherGraph.NoticeList) },
-                navigateToNoticeModify = { navController.navIfNew(Route.OtherGraph.NoticeCreateOrUpdate)}
+                navigateToNoticeModify = { notice ->
+                    navController.navIfNew(Route.OtherGraph.NoticeCreateOrUpdate(notice))
+                }
             )
         }
         composable<Route.OtherGraph.NoticeCreateOrUpdate>(
