@@ -38,6 +38,7 @@ import com.kitching.app.common.NavigationIconInfo
 import com.kitching.app.navgraph.NoticeItem
 import com.kitching.app.ui.factory.viewModelFactory
 import com.kitching.app.ui.model.NoticeViewModel
+import com.kitching.app.ui.screen.common.ProgressIndicatorDialogScreen
 import com.kitching.app.ui.screen.common.ResultConditionScreen
 import com.kitching.app.ui.theme.Body1_m
 import com.kitching.app.ui.theme.Caption1_R
@@ -65,7 +66,6 @@ import java.time.LocalDate
 fun NoticeCreateOrModifyScreen(
     commonState: CommonState,
     notice: NoticeItem?,
-    navigateToNoticeList: () -> Unit,
     popBackStack: () -> Unit,
     viewModel: NoticeViewModel = viewModel(factory = viewModelFactory)
 ) {
@@ -83,11 +83,23 @@ fun NoticeCreateOrModifyScreen(
         if(notice == null) viewModel.getUserName(userId)
     }
 
+    LaunchedEffect(noticeResultState) {
+        when (noticeResultState) {
+            is AppResult.Success -> popBackStack()
+
+            is AppResult.Failure -> {
+                commonState.snackbarHostState.showSnackbar("네트워크가 안좋습니다. 잠시후 다시 시도해주시요.")
+            }
+
+            else -> {}
+        }
+    }
+
     commonState.topAppBarState.value = commonState.topAppBarState.value.copy(
         containerColor = NeutralGray0,
         title = "공지사항",
         navIconInfo = NavigationIconInfo.BACK,
-        onClickNavIcon = { navigateToNoticeList() },
+        onClickNavIcon = { popBackStack() },
         actionIconInfo = ActionIconInfo.NULL,
         onClickActionIcon = {}
     )
@@ -228,10 +240,6 @@ fun NoticeCreateOrModifyScreen(
                                             teamId = teamId
                                         )
                                     }
-                                    if(noticeResultState is AppResult.Success) {
-                                        viewModel.getNotices(teamId)
-                                        navigateToNoticeList()
-                                    }
                                 },
                                 colors = ButtonColors(
                                     containerColor = PrimaryGreen300,
@@ -268,6 +276,9 @@ fun NoticeCreateOrModifyScreen(
                         }
                     }
                 }
+            }
+            if (noticeResultState is AppResult.Loading) {
+                ProgressIndicatorDialogScreen()
             }
         }
     }

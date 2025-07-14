@@ -222,7 +222,6 @@ fun NavGraphBuilder.otherSliceNavGraph(
             NoticeCreateOrModifyScreen(
                 commonState = commonState,
                 notice = navBackStackEntry.toRoute<Route.OtherGraph.NoticeCreateOrUpdate>().notice,
-                navigateToNoticeList = { navController.popBackStack() },
                 popBackStack = { navController.popBackStack() }
             )
         }
