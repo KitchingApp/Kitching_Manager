@@ -12,6 +12,7 @@ import com.kitching.app.ui.screen.order.OrderDetailScreen
 import com.kitching.app.ui.screen.order.OrderMainScreen
 import com.kitching.app.ui.screen.other.InviteCodeScreen
 import com.kitching.app.ui.screen.other.OtherMainScreen
+import com.kitching.app.ui.screen.other.StaffLevelScreen
 import com.kitching.app.ui.screen.other.memberlist.MemberDetailScreen
 import com.kitching.app.ui.screen.other.memberlist.MemberListScreen
 import com.kitching.app.ui.screen.other.notice.NoticeCreateOrModifyScreen
@@ -260,6 +261,12 @@ fun NavGraphBuilder.otherSliceNavGraph(
                 commonState = commonState,
                 member = navBackStackEntry.toRoute<Route.OtherGraph.MemberDetail>().member,
                 navigateToMemberList = { navController.popBackStack() }
+            )
+        }
+        composable<Route.OtherGraph.StaffLevel> {
+            StaffLevelScreen(
+                commonState = commonState,
+                navigateToOther = { navController.popBackStack() }
             )
         }
     }
