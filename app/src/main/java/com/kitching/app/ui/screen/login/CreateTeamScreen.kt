@@ -43,7 +43,6 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.kitching.app.common.NavigationIconInfo
@@ -53,6 +52,7 @@ import com.kitching.app.ui.factory.viewModelFactory
 import com.kitching.app.ui.model.LoginViewModel
 import com.kitching.app.ui.theme.Body1_m
 import com.kitching.app.ui.theme.H3_m
+import com.kitching.app.ui.theme.NeutralGray0
 import com.kitching.app.ui.theme.PrimaryGreen300
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
@@ -79,6 +79,7 @@ fun CreateTeamScreen(
 
     Scaffold(
         modifier = Modifier.fillMaxSize(),
+        containerColor = NeutralGray0,
         topBar = {
             TopAppBar(
                 title = {
@@ -173,6 +174,7 @@ fun CreateTeamScreen(
 
                 ExposedDropdownMenu(
                     expanded = expanded,
+                    containerColor = NeutralGray0,
                     onDismissRequest = { expanded = false }
                 ) {
                     teamSizeList.forEach { item ->
@@ -194,7 +196,7 @@ fun CreateTeamScreen(
             Button(
                 onClick = {
                     coroutineScope.launch {
-                        val userId = viewModel.dataStore.getUserId().toString()
+                        val userId = viewModel.dataStore.getUserId()
                         viewModel.createTeam(userId, teamName, selectedTeamSize?.value ?: 0)
                         onTeamCreated()
                     }

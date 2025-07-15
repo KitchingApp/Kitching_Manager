@@ -1,8 +1,17 @@
 package com.kitching.app.navgraph
 
-sealed class LoginRouteDef(val routeName: String) {
-    object Splash : LoginRouteDef("splash_screen")
-    object Login : LoginRouteDef("login_screen")
-    object SelectTeam : LoginRouteDef("select_team_screen")
-    object CreateTeam : LoginRouteDef("create_team_screen")
+import kotlinx.serialization.Serializable
+
+sealed interface LoginRouteDef {
+    @Serializable
+    data object Splash : LoginRouteDef
+
+    @Serializable
+    data object Login : LoginRouteDef
+
+    @Serializable
+    data object SelectTeam : LoginRouteDef
+
+    @Serializable
+    data object CreateTeam : LoginRouteDef
 }

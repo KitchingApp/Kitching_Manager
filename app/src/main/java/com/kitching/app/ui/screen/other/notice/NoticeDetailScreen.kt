@@ -1,7 +1,6 @@
 package com.kitching.app.ui.screen.other.notice
 
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -32,7 +31,6 @@ import com.kitching.app.common.NavigationIconInfo
 import com.kitching.app.navgraph.NoticeItem
 import com.kitching.app.ui.factory.viewModelFactory
 import com.kitching.app.ui.model.NoticeViewModel
-import com.kitching.app.ui.screen.common.ResultConditionScreen
 import com.kitching.app.ui.screen.commondialog.BasicConfirmDialog
 import com.kitching.app.ui.theme.Body1_m
 import com.kitching.app.ui.theme.Caption1_R
@@ -44,6 +42,7 @@ import com.kitching.app.ui.theme.NeutralGray0
 import com.kitching.app.ui.theme.NeutralGray100
 import com.kitching.app.ui.theme.NeutralGray800
 import com.kitching.app.ui.theme.PrimaryGreen300
+import com.kitching.app.ui.theme.defaultPadding
 import com.kitching.app.util.PreferencesDataStore
 import com.kitching.domain.AppResult
 
@@ -59,7 +58,7 @@ fun NoticeDetailScreen(
     commonState: CommonState,
     notice: NoticeItem,
     navigateToNoticeList: () -> Unit,
-    navigateToNoticeModify: () -> Unit,
+    navigateToNoticeModify: (NoticeItem) -> Unit,
     viewModel: NoticeViewModel = viewModel(factory = viewModelFactory)
 ) {
     var showDeleteDialog by remember { mutableStateOf(false) }
@@ -83,117 +82,102 @@ fun NoticeDetailScreen(
         Surface(
             modifier = Modifier.fillMaxSize()
         ) {
-            ResultConditionScreen(
-                loadingCondition = noticeResultState is AppResult.Loading,
-                successCondition = noticeResultState is AppResult.Success,
-                failCondition = noticeResultState is AppResult.Failure,
-                onRetryBtnClick = {}
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .defaultPadding()
+                    .verticalScroll(rememberScrollState())
             ) {
-                Box(
+                Text(
+                    modifier = Modifier.padding(bottom = 20.dp),
+                    text = notice.title,
+                    style = H2.copy(color = NeutralGray800)
+                )
+                Row(
                     modifier = Modifier
-                        .fillMaxSize()
-                        .padding(20.dp)
+                        .fillMaxWidth()
+                        .padding(bottom = 20.dp),
+                    horizontalArrangement = Arrangement.spacedBy(7.dp)
                 ) {
-                    Column(
-                        modifier = Modifier.fillMaxSize()
+                    Text(
+                        style = Body1_m.copy(color = NeutralGray800),
+                        text = notice.writerName
+                    )
+                    Text(
+                        style = H5.copy(color = NeutralGray800),
+                        text = "|"
+                    )
+                    Text(
+                        style = Body1_m.copy(color = NeutralGray800),
+                        text = notice.date
+                    )
+                }
+                Text(
+                    modifier = Modifier.fillMaxWidth(),
+                    text = notice.content,
+                    style = Caption1_R.copy(color = NeutralGray800)
+                )
+                Spacer(Modifier.weight(1f))
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(top = 20.dp),
+                    horizontalArrangement = Arrangement.spacedBy(19.dp)
+                ) {
+                    TextButton(
+                        modifier = Modifier
+                            .weight(1f)
+                            .height(40.dp),
+                        shape = RoundedCornerShape(20.dp),
+                        onClick = { navigateToNoticeModify(notice) },
+                        colors = ButtonColors(
+                            containerColor = PrimaryGreen300,
+                            contentColor = NeutralGray0,
+                            disabledContainerColor = PrimaryGreen300,
+                            disabledContentColor = NeutralGray0
+                        )
                     ) {
-                        Column(
-                            modifier = Modifier
-                                .weight(1f)
-                                .verticalScroll(rememberScrollState())
-                        ) {
-                            Text(
-                                modifier = Modifier.padding(bottom = 20.dp),
-                                text = notice.title,
-                                style = H2.copy(color = NeutralGray800)
-                            )
-                            Row(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .padding(bottom = 20.dp),
-                                horizontalArrangement = Arrangement.spacedBy(7.dp)
-                            ) {
-                                Text(
-                                    style = Body1_m.copy(color = NeutralGray800),
-                                    text = notice.writerName
-                                )
-                                Text(
-                                    style = H5.copy(color = NeutralGray800),
-                                    text = "|"
-                                )
-                                Text(
-                                    style = Body1_m.copy(color = NeutralGray800),
-                                    text = notice.date
-                                )
-                            }
-                            Text(
-                                modifier = Modifier.fillMaxWidth(),
-                                text = notice.content,
-                                style = Caption1_R.copy(color = NeutralGray800)
-                            )
-                            Spacer(Modifier.weight(1f))
-                            Row(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .padding(top = 20.dp),
-                                horizontalArrangement = Arrangement.spacedBy(19.dp)
-                            ) {
-                                TextButton(
-                                    modifier = Modifier
-                                        .weight(1f)
-                                        .height(40.dp),
-                                    shape = RoundedCornerShape(20.dp),
-                                    onClick = { navigateToNoticeModify() },
-                                    colors = ButtonColors(
-                                        containerColor = PrimaryGreen300,
-                                        contentColor = NeutralGray0,
-                                        disabledContainerColor = PrimaryGreen300,
-                                        disabledContentColor = NeutralGray0
-                                    )
-                                ) {
-                                    Text(
-                                        text = "수정",
-                                        style = H5.copy(color = NeutralGray0)
-                                    )
+                        Text(
+                            text = "수정",
+                            style = H5.copy(color = NeutralGray0)
+                        )
+                    }
+                    TextButton(
+                        modifier = Modifier
+                            .weight(1f)
+                            .height(40.dp),
+                        shape = RoundedCornerShape(20.dp),
+                        onClick = {
+                            showDeleteDialog = true
+                        },
+                        colors = ButtonColors(
+                            containerColor = NeutralGray100,
+                            contentColor = NeutralGray0,
+                            disabledContainerColor = PrimaryGreen300,
+                            disabledContentColor = NeutralGray0
+                        )
+                    ) {
+                        Text(
+                            text = "삭제",
+                            style = H5_m.copy(color = NeutralGray800)
+                        )
+                    }
+
+                    if (showDeleteDialog) {
+                        BasicConfirmDialog(
+                            message = "공지사항을 삭제하시겠습니까?",
+                            confirmText = "삭제",
+                            onClickConfirm = {
+                                viewModel.deleteNotice(notice.noticeId)
+                                if (noticeResultState is AppResult.Success) {
+                                    viewModel.getNotices(teamId)
+                                    navigateToNoticeList()
                                 }
-                                TextButton(
-                                    modifier = Modifier
-                                        .weight(1f)
-                                        .height(40.dp),
-                                    shape = RoundedCornerShape(20.dp),
-                                    onClick = {
-                                        showDeleteDialog = true
-                                    },
-                                    colors = ButtonColors(
-                                        containerColor = NeutralGray100,
-                                        contentColor = NeutralGray0,
-                                        disabledContainerColor = PrimaryGreen300,
-                                        disabledContentColor = NeutralGray0
-                                    )
-                                ) {
-                                    Text(
-                                        text = "삭제",
-                                        style = H5_m.copy(color = NeutralGray800)
-                                    )
-                                }
-                            }
-                        }
-                        if (showDeleteDialog) {
-                            BasicConfirmDialog(
-                                message = "공지사항을 삭제하시겠습니까?",
-                                confirmText = "삭제",
-                                onClickConfirm = {
-                                    viewModel.deleteNotice(notice.noticeId)
-                                    if (noticeResultState is AppResult.Success) {
-                                        viewModel.getNotices(teamId)
-                                        navigateToNoticeList()
-                                    }
-                                    showDeleteDialog = false
-                                },
-                                cancelText = "취소",
-                                onClickCancel = { showDeleteDialog = false }
-                            )
-                        }
+                                showDeleteDialog = false
+                            },
+                            cancelText = "취소",
+                            onClickCancel = { showDeleteDialog = false }
+                        )
                     }
                 }
             }

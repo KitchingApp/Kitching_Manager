@@ -61,7 +61,7 @@ fun PrepMainScreen(
     // 프렙 카테고리 생성, 수정, 삭제 상태
     val prepResultState by viewModel.prepCategoryResult.collectAsStateWithLifecycle()
 
-    LaunchedEffect(Unit) {
+    LaunchedEffect(teamId) {
         teamId = PreferencesDataStore(KitchingApplication.getInstance()).getTeamId()
         viewModel.getPrepCategory(teamId)
     }
@@ -82,10 +82,6 @@ fun PrepMainScreen(
             showCreateDialog = true
         },
     )
-
-    LaunchedEffect(Unit) {
-        viewModel.getPrepCategory(teamId)
-    }
 
     KitchingManagerTheme {
         Surface(
