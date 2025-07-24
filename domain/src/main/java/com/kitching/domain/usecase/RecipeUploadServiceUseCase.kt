@@ -8,7 +8,7 @@ import kotlinx.coroutines.flow.Flow
 class RecipeUploadServiceUseCase(
     private val recipeRepository: RecipeRepository
 ) {
-    suspend operator fun invoke(
+    operator fun invoke(
         imageData: ByteArray?,
         imageName: String,
         recipeName: String,
