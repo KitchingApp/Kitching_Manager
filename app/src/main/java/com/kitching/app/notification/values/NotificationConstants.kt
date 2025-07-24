@@ -8,4 +8,5 @@ object RecipeNotification {
 
     const val RECIPE_UPLOAD_IN_PROGRESS_ID = 2000
     const val RECIPE_UPLOAD_COMPLETE_ID = 2001
+    const val RECIPE_UPLOAD_ERROR_ID = 2002
 }

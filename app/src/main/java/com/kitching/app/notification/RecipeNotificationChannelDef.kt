@@ -94,5 +94,28 @@ class RecipeNotificationChannelDef() : NotificationChannelDef(
                     .build()
             )
         }
+
+        fun showErrorNotification(errorMessage: String) {
+            val pendingIntent = PendingIntent.getActivity(
+                context,
+                0,
+                Intent(context, MainActivity::class.java).apply {
+                    putExtra(NAVIGATE_TO_SCREEN_KEY, Route.RecipeGraph)
+                },
+                PendingIntent.FLAG_ONE_SHOT or PendingIntent.FLAG_IMMUTABLE
+            )
+
+            notificationManager.notify(
+                RecipeNotification.RECIPE_UPLOAD_ERROR_ID,
+                createBasicNotificationBuilder(
+                    context = context,
+                    title = context.getString(R.string.recipe_upload_service_error_notification_title),
+                    text = errorMessage
+                )
+                    .setContentIntent(pendingIntent)
+                    .setAutoCancel(true)
+                    .build()
+            )
+        }
     }
 }
