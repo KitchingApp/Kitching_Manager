@@ -5,11 +5,11 @@ import androidx.work.CoroutineWorker
 import androidx.work.ForegroundInfo
 import androidx.work.WorkerParameters
 import androidx.work.workDataOf
+import com.kitching.app.navgraph.IngredientItem
 import com.kitching.app.notification.RecipeNotificationChannelDef
 import com.kitching.app.notification.values.RecipeNotification
 import com.kitching.data.repository.RecipeRepositoryImpl
 import com.kitching.domain.AppResult
-import com.kitching.domain.entities.Ingredient
 import com.kitching.domain.usecase.RecipeUploadServiceUseCase
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.serialization.json.Json
@@ -41,7 +41,8 @@ class RecipeUploadWorker(
         val recipeSteps = Json.decodeFromString<List<String>>(recipeStepsString)
         val teamId = inputData.getString(KEY_TEAM_ID) ?: ""
         val ingredientsString = inputData.getString(KEY_INGREDIENTS) ?: "[]"
-        val ingredients = Json.decodeFromString<List<Ingredient>>(ingredientsString)
+        val ingredientItems = Json.decodeFromString<List<IngredientItem>>(ingredientsString)
+        val ingredients = ingredientItems.map { it.toDomain() }
 
         recipeUploadServiceUseCase(
             imageData = imageData,

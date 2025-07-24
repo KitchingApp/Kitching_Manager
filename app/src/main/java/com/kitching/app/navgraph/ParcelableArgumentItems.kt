@@ -78,6 +78,8 @@ data class IngredientItem(
             twice = domain.twice,
             unit = domain.unit
         )
+
+        fun init() = IngredientItem("", "", -1, -1, "")
     }
 
     fun toDomain() = Ingredient(
