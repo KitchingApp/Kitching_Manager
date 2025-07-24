@@ -10,11 +10,12 @@ import com.kitching.app.navgraph.RecipeServiceItem
 import com.kitching.app.notification.RecipeNotificationChannelDef
 import com.kitching.app.notification.values.RecipeNotification
 import com.kitching.data.repository.RecipeRepositoryImpl
+import com.kitching.domain.AppResult
 import com.kitching.domain.usecase.RecipeUploadServiceUseCase
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.cancel
-import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import kotlinx.serialization.json.Json
@@ -68,23 +69,32 @@ class RecipeUploadService : Service() {
                     notification.showStartNotification()
 
                     recipeData.recipes.forEachIndexed { index, recipe ->
-                        recipeUploadServiceUseCase.uploadRecipe(
+                        recipeUploadServiceUseCase(
                             imageData = recipe.imageData,
                             imageName = recipe.imageName,
                             recipeName = recipe.recipeName,
                             steps = recipe.recipeSteps,
                             teamId = recipeData.teamId,
                             ingredients = recipe.ingredients.map { ingredientData -> ingredientData.toDomain() }
-                        )
-                        notification.showProgressNotification(index)
+                        ).collectLatest { result ->
+                            when (result) {
+                                is AppResult.Success -> {
+                                    notification.showProgressNotification(index)
+                                }
+
+                                // 추후 추가하기
+                                is AppResult.Failure -> {}
+                                
+                                else -> {}
+                            }
+                        }
                     }
 
-
                     stopForeground(STOP_FOREGROUND_REMOVE)
+                    
                     notification.showCompleteNotification()
 
                     uri.path?.let { path -> File(path).delete() }
-
                 }
             }
         }
