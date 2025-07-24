@@ -32,17 +32,16 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.work.OneTimeWorkRequestBuilder
+import androidx.work.WorkManager
+import androidx.work.workDataOf
 import coil3.compose.AsyncImage
 import com.kitching.app.common.ActionIconInfo
-import com.kitching.app.common.AppResultHandler
 import com.kitching.app.common.CommonState
 import com.kitching.app.common.KitchingApplication
 import com.kitching.app.common.NavigationIconInfo
 import com.kitching.app.common.showToast
-import com.kitching.app.ui.factory.viewModelFactory
-import com.kitching.app.ui.model.RecipeViewModel
+import com.kitching.app.navgraph.IngredientItem
 import com.kitching.app.ui.theme.H2
 import com.kitching.app.ui.theme.H3_m
 import com.kitching.app.ui.theme.KitchingManagerTheme
@@ -51,8 +50,10 @@ import com.kitching.app.ui.theme.NeutralGray300
 import com.kitching.app.ui.theme.NeutralGray500
 import com.kitching.app.ui.theme.NeutralGray800
 import com.kitching.app.util.PreferencesDataStore
-import com.kitching.domain.entities.Ingredient
+import com.kitching.app.work.RecipeUploadWorker
 import kotlinx.coroutines.launch
+import kotlinx.serialization.encodeToString
+import kotlinx.serialization.json.Json
 import java.util.UUID
 
 @SuppressLint("CoroutineCreationDuringComposition")
@@ -60,12 +61,11 @@ import java.util.UUID
 fun RecipeCreateScreen(
     commonState: CommonState,
     navigateToRecipe: () -> Unit,
-    recipeViewModel: RecipeViewModel = viewModel(factory = viewModelFactory)
 ) {
     var imageUri by remember { mutableStateOf<Uri?>(null) }
     var imgName by remember { mutableStateOf("") }
     var recipeName by remember { mutableStateOf("") }
-    var ingredients by remember { mutableStateOf(listOf<Ingredient>(Ingredient.init()))}
+    var ingredients by remember { mutableStateOf(listOf(IngredientItem.init()))}
     var recipeSteps by remember { mutableStateOf(listOf("")) }
     var teamId by remember { mutableStateOf("") }
 
@@ -89,19 +89,27 @@ fun RecipeCreateScreen(
                 context.contentResolver.openInputStream(uri)?.use { it.readBytes() }
             }
 
-            recipeViewModel.createRecipe(
-                imageData = imageData,
-                imageName = imgName,
-                recipeName = recipeName,
-                steps = recipeSteps,
-                teamId = teamId,
-                ingredients = ingredients
+            // WorkManager 데이터 준비
+            val inputData = workDataOf(
+                RecipeUploadWorker.KEY_IMAGE_DATA to Json.encodeToString(imageData),
+                RecipeUploadWorker.KEY_IMAGE_NAME to imgName,
+                RecipeUploadWorker.KEY_RECIPE_NAME to recipeName,
+                RecipeUploadWorker.KEY_RECIPE_STEPS to Json.encodeToString(recipeSteps),
+                RecipeUploadWorker.KEY_TEAM_ID to teamId,
+                RecipeUploadWorker.KEY_INGREDIENTS to Json.encodeToString(ingredients)
             )
+
+            // WorkManager 요청 생성
+            val uploadRequest = OneTimeWorkRequestBuilder<RecipeUploadWorker>()
+                .setInputData(inputData)
+                .build()
+
+            // WorkManager 실행
+            WorkManager.getInstance(context).enqueue(uploadRequest)
+
+            navigateToRecipe()
         }
     )
-
-    // ViewModel의 StateFlow 관찰 (로딩/성공/실패)
-    val uploadState by recipeViewModel.createRecipeResult.collectAsStateWithLifecycle()
 
     val pickMedia = rememberLauncherForActivityResult(PickVisualMedia()) { uri ->
         if (uri != null) {
@@ -213,18 +221,6 @@ fun RecipeCreateScreen(
                     )
                 }
             }
-            // (3) 로딩/에러 UI 표시
-            AppResultHandler(
-                state = uploadState,
-                onFailure = { error ->
-                    showToast(error.message.toString())
-                },
-                onSuccess = {
-                    showToast("레시피 업로드 성공!")
-                    navigateToRecipe()
-                }
-            )
-
         }
     }
 }
