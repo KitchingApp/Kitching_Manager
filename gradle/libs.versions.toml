@@ -30,9 +30,11 @@ retrofit = "2.11.0"
 v2UserVersion = "2.20.6"
 kotlin-serialization = "2.0.21"
 runtimeAndroid = "1.7.7"
+workRuntimeKtx = "2.10.2"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
+androidx-work-runtime-ktx = { module = "androidx.work:work-runtime-ktx", version.ref = "workRuntimeKtx" }
 coil-svg = { module = "io.coil-kt.coil3:coil-svg", version.ref = "coilSvg" }
 retrofit2-converter-moshi = { module = "com.squareup.retrofit2:converter-moshi", version.ref = "retrofit" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }

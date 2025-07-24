@@ -84,6 +84,7 @@ dependencies {
     implementation(libs.kotlinx.serialization.json)
     implementation(libs.coil.svg)
     implementation(libs.androidx.runtime.android)
+    implementation(libs.androidx.work.runtime.ktx)
     implementation(libs.sdk.v2.user)
 
     testImplementation(libs.junit)
