@@ -21,6 +21,7 @@ import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -51,7 +52,6 @@ import com.kitching.app.ui.theme.NeutralGray500
 import com.kitching.app.ui.theme.NeutralGray800
 import com.kitching.app.util.PreferencesDataStore
 import com.kitching.app.work.RecipeUploadWorker
-import kotlinx.coroutines.launch
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import java.util.UUID
@@ -69,7 +69,7 @@ fun RecipeCreateScreen(
     var recipeSteps by remember { mutableStateOf(listOf("")) }
     var teamId by remember { mutableStateOf("") }
 
-    commonState.coroutineScope.launch {
+    LaunchedEffect(Unit) {
         teamId = PreferencesDataStore().getTeamId()
     }
 
@@ -82,16 +82,11 @@ fun RecipeCreateScreen(
         },
         actionIconInfo = ActionIconInfo.CHECK,
         onClickActionIcon = {
-            // (1) 여기서 createRecipe 호출
             val context = KitchingApplication.getInstance()
-            // Uri -> ByteArray 변환
-            val imageData: ByteArray? = imageUri?.let { uri ->
-                context.contentResolver.openInputStream(uri)?.use { it.readBytes() }
-            }
 
             // WorkManager 데이터 준비
             val inputData = workDataOf(
-                RecipeUploadWorker.KEY_IMAGE_DATA to Json.encodeToString(imageData),
+                RecipeUploadWorker.KEY_IMAGE_PATH to imageUri.toString(),
                 RecipeUploadWorker.KEY_IMAGE_NAME to imgName,
                 RecipeUploadWorker.KEY_RECIPE_NAME to recipeName,
                 RecipeUploadWorker.KEY_RECIPE_STEPS to Json.encodeToString(recipeSteps),

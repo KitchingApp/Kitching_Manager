@@ -13,10 +13,11 @@ import com.kitching.domain.AppResult
 import com.kitching.domain.usecase.RecipeUploadServiceUseCase
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.serialization.json.Json
+import androidx.core.net.toUri
 
 class RecipeUploadWorker(
     context: Context,
-    workerParams: WorkerParameters
+    workerParams: WorkerParameters,
 ) : CoroutineWorker(context, workerParams) {
     private val recipeUploadServiceUseCase = RecipeUploadServiceUseCase(RecipeRepositoryImpl())
     private val notificationChannel = RecipeNotificationChannelDef()
@@ -31,10 +32,17 @@ class RecipeUploadWorker(
 
         notification.showStartNotification()
 
-        val imageDataString = inputData.getString(KEY_IMAGE_DATA)
-        val imageData = imageDataString?.let {
-            Json.decodeFromString<ByteArray?>(it)
+        val imagePath = inputData.getString(KEY_IMAGE_PATH) ?: ""
+
+        val imageData: ByteArray? = if (imagePath.isNotEmpty()) {
+            val imageUri = imagePath.toUri()
+            applicationContext.contentResolver.openInputStream(imageUri).use { inputStream ->
+                inputStream?.readBytes()
+            }
+        } else {
+            null
         }
+
         val imageName = inputData.getString(KEY_IMAGE_NAME) ?: ""
         val recipeName = inputData.getString(KEY_RECIPE_NAME) ?: ""
         val recipeStepsString = inputData.getString(KEY_RECIPE_STEPS) ?: "[]"
@@ -90,8 +98,8 @@ class RecipeUploadWorker(
     }
 
     companion object {
-        const val KEY_IMAGE_DATA = "image_data"
         const val KEY_IMAGE_NAME = "image_name"
+        const val KEY_IMAGE_PATH = "image_path"
         const val KEY_RECIPE_NAME = "recipe_name"
         const val KEY_RECIPE_STEPS = "recipe_steps"
         const val KEY_TEAM_ID = "team_id"
