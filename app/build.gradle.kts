@@ -86,6 +86,7 @@ dependencies {
     implementation(libs.androidx.runtime.android)
     implementation(libs.androidx.work.runtime.ktx)
     implementation(libs.sdk.v2.user)
+    implementation(libs.bundles.camerax)
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
