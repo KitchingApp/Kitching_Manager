@@ -1,6 +1,7 @@
 package com.kitching.app.navgraph
 
 import android.os.Parcelable
+import androidx.core.net.toUri
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
@@ -23,6 +24,7 @@ import com.kitching.app.ui.screen.other.scheduletime.ScheduleTimeScreen
 import com.kitching.app.ui.screen.prep.PrepMainScreen
 import com.kitching.app.ui.screen.prep.subdivisionscreen.PrepDetailScreen
 import com.kitching.app.ui.screen.recipe.RecipeMainScreen
+import com.kitching.app.ui.screen.recipe.innercontent.RecipeCameraScreen
 import com.kitching.app.ui.screen.recipe.innercontent.RecipeCreateScreen
 import com.kitching.app.ui.screen.recipe.innercontent.RecipeCreateUseExcelScreen
 import com.kitching.app.ui.screen.recipe.innercontent.RecipeDetailScreen
@@ -82,7 +84,7 @@ fun NavGraphBuilder.prepSliceNavGraph(
 
 fun NavGraphBuilder.recipeSliceNavGraph(
     commonState: CommonState,
-    navController: NavController
+    navController: NavController,
 ) {
     navigation<Route.RecipeGraph>(
         startDestination = Route.RecipeGraph.getStartDestination()
@@ -90,7 +92,7 @@ fun NavGraphBuilder.recipeSliceNavGraph(
         composable<Route.RecipeGraph.RecipeMain> {
             RecipeMainScreen(
                 commonState = commonState,
-                navigateToCreateUesDevice = { navController.navIfNew(Route.RecipeGraph.RecipeCreate) },
+                navigateToCreateUesDevice = { navController.navIfNew(Route.RecipeGraph.RecipeCreate()) },
                 navigateToCreateWithExcelFile = { navController.navIfNew(Route.RecipeGraph.RecipeCreateUseExcel) },
                 navigateToDetail = { recipe ->
                     navController.navIfNew(
@@ -125,10 +127,28 @@ fun NavGraphBuilder.recipeSliceNavGraph(
                 navigateToRecipe = { navController.navIfNew(Route.RecipeGraph.RecipeMain) }
             )
         }
-        composable<Route.RecipeGraph.RecipeCreate> {
+        composable<Route.RecipeGraph.RecipeCreate> { navBackStackEntry ->
+            val route = navBackStackEntry.toRoute<Route.RecipeGraph.RecipeCreate>()
+            val imageUri = route.imageUri?.toUri()
+
             RecipeCreateScreen(
                 commonState = commonState,
-                navigateToRecipe = { navController.popBackStack() }
+                context = navController.context,
+                uri = imageUri,
+                navigateToRecipe = { navController.popBackStack() },
+                navigateToCamera = { navController.navIfNew(Route.RecipeGraph.RecipeCamera) }
+            )
+        }
+        composable<Route.RecipeGraph.RecipeCamera> {
+            RecipeCameraScreen(
+                commonState = commonState,
+                context = navController.context,
+                navigateToCreateRecipe = { navController.popBackStack() },
+                navigateToCreateRecipeWithUri = { uri ->
+                    navController.navIfNew(Route.RecipeGraph.RecipeCreate(uri)) {
+                        popUpTo(Route.RecipeGraph.RecipeCamera) { inclusive = true }
+                    }
+                }
             )
         }
         composable<Route.RecipeGraph.RecipeCreateUseExcel> {
@@ -175,7 +195,7 @@ fun NavGraphBuilder.orderSliceNavGraph(
 
 fun NavGraphBuilder.otherSliceNavGraph(
     commonState: CommonState,
-    navController: NavController
+    navController: NavController,
 ) {
     navigation<Route.OtherGraph>(
         startDestination = Route.OtherGraph.getStartDestination()

@@ -145,7 +145,31 @@ class RecipeDataSourceImpl(
     }.getOrElse { throw FailedCRUDInFirebaseException(it).getException() }
 
     override suspend fun deleteRecipe(recipeId: String): Unit = runCatching {
-        db.collection(COLLECTION_RECIPE).document(recipeId).delete().await()
+        val recipeDoc = db.collection(COLLECTION_RECIPE).document(recipeId).get().await()
+
+        val recipe = recipeDoc.toObject(RecipeDTO::class.java)
+
+        recipe?.picture?.let { pictureUrl ->
+            storage.getReferenceFromUrl(pictureUrl).delete().await()
+        }
+
+        val batch = db.batch()
+
+        val ingredientCollection = db.collection(COLLECTION_RECIPE)
+            .document(recipeId)
+            .collection(COLLECTION_INGREDIENT)
+
+        val ingredientDocs = ingredientCollection.get().await()
+
+        ingredientDocs.documents.forEach { doc ->
+            batch.delete(doc.reference)
+        }
+
+        val recipeRef = db.collection(COLLECTION_RECIPE).document(recipeId)
+
+        batch.delete(recipeRef)
+
+        batch.commit().await()
 
         Unit
     }.getOrElse { throw FailedCRUDInFirebaseException(it).getException() }

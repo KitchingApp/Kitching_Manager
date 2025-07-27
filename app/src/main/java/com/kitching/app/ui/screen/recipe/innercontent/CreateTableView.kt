@@ -24,6 +24,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import com.kitching.app.navgraph.IngredientItem
 import com.kitching.app.ui.theme.BlueColor200
 import com.kitching.app.ui.theme.Body1_m
 import com.kitching.app.ui.theme.Caption1_R
@@ -33,12 +34,11 @@ import com.kitching.app.ui.theme.NeutralGray500
 import com.kitching.app.ui.theme.NeutralGray800
 import com.kitching.app.ui.theme.PrimaryGreen300
 import com.kitching.app.ui.theme.PrimaryGreen50
-import com.kitching.domain.entities.Ingredient
 
 @Composable
 fun CreateIngredientsTable(
-    ingredients: List<Ingredient>,
-    onIngredientsChange: (List<Ingredient>) -> Unit
+    ingredients: List<IngredientItem>,
+    onIngredientsChange: (List<IngredientItem>) -> Unit
 ) {
     Column(
         modifier = Modifier.padding(horizontal = 20.dp)
@@ -119,7 +119,7 @@ fun CreateIngredientsTable(
             contentAlignment = Alignment.Center
         ) {
             IconButton(onClick = {
-                onIngredientsChange(ingredients + Ingredient("", "", -1, -1, ""))
+                onIngredientsChange(ingredients + IngredientItem("", "", -1, -1, ""))
             }) {
                 Icon(
                     imageVector = ImageVector.vectorResource(R.drawable.add_button),

@@ -14,6 +14,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.dp
 import com.kitching.app.common.ActionIconInfo
+import com.kitching.app.common.NavigationIconInfo
 import com.kitching.app.common.TopAppBarState
 import com.kitching.app.ui.theme.H3
 import com.kitching.app.ui.theme.H3_m
@@ -53,7 +54,7 @@ fun CustomTopAppBar(
             navigationIconContentColor = if (topAppBarState.containerColor == PrimaryGreen300) NeutralGray0 else NeutralGray600
         ),
         navigationIcon = {
-            if (topAppBarState.actionIconInfo != ActionIconInfo.NULL) {
+            if (topAppBarState.navIconInfo != NavigationIconInfo.NULL) {
                 IconButton(onClick = topAppBarState.onClickNavIcon) {
                     Icon(
                         imageVector = ImageVector.vectorResource(topAppBarState.navIconInfo.icon),

@@ -1,10 +1,13 @@
 package com.kitching.app.ui.screen.recipe.innercontent
 
+import android.Manifest
 import android.annotation.SuppressLint
+import android.content.Context
+import android.content.pm.PackageManager
 import android.net.Uri
-import com.kitching.app.R
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.PickVisualMediaRequest
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.result.contract.ActivityResultContracts.PickVisualMedia
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
@@ -21,6 +24,7 @@ import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -32,17 +36,18 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.core.content.ContextCompat
+import androidx.work.OneTimeWorkRequestBuilder
+import androidx.work.WorkManager
+import androidx.work.workDataOf
 import coil3.compose.AsyncImage
+import com.kitching.app.R
 import com.kitching.app.common.ActionIconInfo
-import com.kitching.app.common.AppResultHandler
 import com.kitching.app.common.CommonState
-import com.kitching.app.common.KitchingApplication
 import com.kitching.app.common.NavigationIconInfo
 import com.kitching.app.common.showToast
-import com.kitching.app.ui.factory.viewModelFactory
-import com.kitching.app.ui.model.RecipeViewModel
+import com.kitching.app.navgraph.IngredientItem
+import com.kitching.app.ui.screen.recipe.innercontent.camera.ImagePickerBottomSheet
 import com.kitching.app.ui.theme.H2
 import com.kitching.app.ui.theme.H3_m
 import com.kitching.app.ui.theme.KitchingManagerTheme
@@ -51,26 +56,51 @@ import com.kitching.app.ui.theme.NeutralGray300
 import com.kitching.app.ui.theme.NeutralGray500
 import com.kitching.app.ui.theme.NeutralGray800
 import com.kitching.app.util.PreferencesDataStore
-import com.kitching.domain.entities.Ingredient
-import kotlinx.coroutines.launch
+import com.kitching.app.work.RecipeUploadWorker
+import kotlinx.serialization.encodeToString
+import kotlinx.serialization.json.Json
 import java.util.UUID
 
 @SuppressLint("CoroutineCreationDuringComposition")
 @Composable
 fun RecipeCreateScreen(
     commonState: CommonState,
+    context: Context,
+    uri: Uri? = null,
     navigateToRecipe: () -> Unit,
-    recipeViewModel: RecipeViewModel = viewModel(factory = viewModelFactory)
+    navigateToCamera: () -> Unit
 ) {
-    var imageUri by remember { mutableStateOf<Uri?>(null) }
+    var imageUri by remember { mutableStateOf(uri) }
     var imgName by remember { mutableStateOf("") }
     var recipeName by remember { mutableStateOf("") }
-    var ingredients by remember { mutableStateOf(listOf<Ingredient>(Ingredient.init()))}
+    var ingredients by remember { mutableStateOf(listOf(IngredientItem.init()))}
     var recipeSteps by remember { mutableStateOf(listOf("")) }
     var teamId by remember { mutableStateOf("") }
 
-    commonState.coroutineScope.launch {
+    var showSelectImage by remember { mutableStateOf(false) }
+
+    var hasCameraPermission by remember {
+        mutableStateOf(
+            ContextCompat.checkSelfPermission(
+                context,
+                Manifest.permission.CAMERA
+            ) == PackageManager.PERMISSION_GRANTED
+        )
+    }
+
+    val permissionLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.RequestPermission(),
+        onResult = { isGranted ->
+            hasCameraPermission = isGranted
+        }
+    )
+
+    LaunchedEffect(Unit) {
         teamId = PreferencesDataStore().getTeamId()
+
+        if (uri != null) {
+            imgName = UUID.randomUUID().toString().replace("-", "")
+        }
     }
 
     commonState.topAppBarState.value = commonState.topAppBarState.value.copy(
@@ -82,33 +112,34 @@ fun RecipeCreateScreen(
         },
         actionIconInfo = ActionIconInfo.CHECK,
         onClickActionIcon = {
-            // (1) 여기서 createRecipe 호출
-            val context = KitchingApplication.getInstance()
-            // Uri -> ByteArray 변환
-            val imageData: ByteArray? = imageUri?.let { uri ->
-                context.contentResolver.openInputStream(uri)?.use { it.readBytes() }
-            }
-
-            recipeViewModel.createRecipe(
-                imageData = imageData,
-                imageName = imgName,
-                recipeName = recipeName,
-                steps = recipeSteps,
-                teamId = teamId,
-                ingredients = ingredients
+            // WorkManager 데이터 준비
+            val inputData = workDataOf(
+                RecipeUploadWorker.KEY_IMAGE_PATH to imageUri.toString(),
+                RecipeUploadWorker.KEY_IMAGE_NAME to imgName,
+                RecipeUploadWorker.KEY_RECIPE_NAME to recipeName,
+                RecipeUploadWorker.KEY_RECIPE_STEPS to Json.encodeToString(recipeSteps),
+                RecipeUploadWorker.KEY_TEAM_ID to teamId,
+                RecipeUploadWorker.KEY_INGREDIENTS to Json.encodeToString(ingredients)
             )
+
+            // WorkManager 요청 생성
+            val uploadRequest = OneTimeWorkRequestBuilder<RecipeUploadWorker>()
+                .setInputData(inputData)
+                .build()
+
+            // WorkManager 실행
+            WorkManager.getInstance(context).enqueue(uploadRequest)
+
+            navigateToRecipe()
         }
     )
-
-    // ViewModel의 StateFlow 관찰 (로딩/성공/실패)
-    val uploadState by recipeViewModel.createRecipeResult.collectAsStateWithLifecycle()
 
     val pickMedia = rememberLauncherForActivityResult(PickVisualMedia()) { uri ->
         if (uri != null) {
             imageUri = uri
             imgName = UUID.randomUUID().toString().replace("-", "")
         } else {
-            showToast("이미지를 못 불러 왔습니다.")
+            showToast("이미지를 다시 선택해주세요.")
         }
     }
 
@@ -135,7 +166,7 @@ fun RecipeCreateScreen(
                             .fillMaxWidth()
                             .height(380.dp)
                             .border(1.dp, NeutralGray500)
-                            .clickable { launchPhotoPicker() },
+                            .clickable { showSelectImage = true },
                         contentAlignment = Alignment.Center
                     ) {
                         if (imageUri != null) {
@@ -213,18 +244,25 @@ fun RecipeCreateScreen(
                     )
                 }
             }
-            // (3) 로딩/에러 UI 표시
-            AppResultHandler(
-                state = uploadState,
-                onFailure = { error ->
-                    showToast(error.message.toString())
-                },
-                onSuccess = {
-                    showToast("레시피 업로드 성공!")
-                    navigateToRecipe()
-                }
-            )
 
+            if (showSelectImage) {
+                ImagePickerBottomSheet(
+                    onDismiss = { showSelectImage = false },
+                    onCameraSelected = {
+                        showSelectImage = false
+
+                        if (hasCameraPermission) {
+                            navigateToCamera()
+                        } else {
+                            permissionLauncher.launch(Manifest.permission.CAMERA)
+                        }
+                    },
+                    onGallerySelected = {
+                        showSelectImage = false
+                        launchPhotoPicker()
+                    }
+                )
+            }
         }
     }
 }
