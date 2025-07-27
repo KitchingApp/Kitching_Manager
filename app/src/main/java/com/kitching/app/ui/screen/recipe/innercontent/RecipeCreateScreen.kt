@@ -1,10 +1,13 @@
 package com.kitching.app.ui.screen.recipe.innercontent
 
+import android.Manifest
 import android.annotation.SuppressLint
+import android.content.Context
+import android.content.pm.PackageManager
 import android.net.Uri
-import com.kitching.app.R
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.PickVisualMediaRequest
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.result.contract.ActivityResultContracts.PickVisualMedia
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
@@ -33,16 +36,18 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.core.content.ContextCompat
 import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.WorkManager
 import androidx.work.workDataOf
 import coil3.compose.AsyncImage
+import com.kitching.app.R
 import com.kitching.app.common.ActionIconInfo
 import com.kitching.app.common.CommonState
-import com.kitching.app.common.KitchingApplication
 import com.kitching.app.common.NavigationIconInfo
 import com.kitching.app.common.showToast
 import com.kitching.app.navgraph.IngredientItem
+import com.kitching.app.ui.screen.recipe.innercontent.camera.ImagePickerBottomSheet
 import com.kitching.app.ui.theme.H2
 import com.kitching.app.ui.theme.H3_m
 import com.kitching.app.ui.theme.KitchingManagerTheme
@@ -60,17 +65,42 @@ import java.util.UUID
 @Composable
 fun RecipeCreateScreen(
     commonState: CommonState,
+    context: Context,
+    uri: Uri? = null,
     navigateToRecipe: () -> Unit,
+    navigateToCamera: () -> Unit
 ) {
-    var imageUri by remember { mutableStateOf<Uri?>(null) }
+    var imageUri by remember { mutableStateOf(uri) }
     var imgName by remember { mutableStateOf("") }
     var recipeName by remember { mutableStateOf("") }
     var ingredients by remember { mutableStateOf(listOf(IngredientItem.init()))}
     var recipeSteps by remember { mutableStateOf(listOf("")) }
     var teamId by remember { mutableStateOf("") }
 
+    var showSelectImage by remember { mutableStateOf(false) }
+
+    var hasCameraPermission by remember {
+        mutableStateOf(
+            ContextCompat.checkSelfPermission(
+                context,
+                Manifest.permission.CAMERA
+            ) == PackageManager.PERMISSION_GRANTED
+        )
+    }
+
+    val permissionLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.RequestPermission(),
+        onResult = { isGranted ->
+            hasCameraPermission = isGranted
+        }
+    )
+
     LaunchedEffect(Unit) {
         teamId = PreferencesDataStore().getTeamId()
+
+        if (uri != null) {
+            imgName = UUID.randomUUID().toString().replace("-", "")
+        }
     }
 
     commonState.topAppBarState.value = commonState.topAppBarState.value.copy(
@@ -82,8 +112,6 @@ fun RecipeCreateScreen(
         },
         actionIconInfo = ActionIconInfo.CHECK,
         onClickActionIcon = {
-            val context = KitchingApplication.getInstance()
-
             // WorkManager 데이터 준비
             val inputData = workDataOf(
                 RecipeUploadWorker.KEY_IMAGE_PATH to imageUri.toString(),
@@ -111,7 +139,7 @@ fun RecipeCreateScreen(
             imageUri = uri
             imgName = UUID.randomUUID().toString().replace("-", "")
         } else {
-            showToast("이미지를 못 불러 왔습니다.")
+            showToast("이미지를 다시 선택해주세요.")
         }
     }
 
@@ -138,7 +166,7 @@ fun RecipeCreateScreen(
                             .fillMaxWidth()
                             .height(380.dp)
                             .border(1.dp, NeutralGray500)
-                            .clickable { launchPhotoPicker() },
+                            .clickable { showSelectImage = true },
                         contentAlignment = Alignment.Center
                     ) {
                         if (imageUri != null) {
@@ -215,6 +243,25 @@ fun RecipeCreateScreen(
                         onStepsChange = { recipeSteps = it.toMutableList() }
                     )
                 }
+            }
+
+            if (showSelectImage) {
+                ImagePickerBottomSheet(
+                    onDismiss = { showSelectImage = false },
+                    onCameraSelected = {
+                        showSelectImage = false
+
+                        if (hasCameraPermission) {
+                            navigateToCamera()
+                        } else {
+                            permissionLauncher.launch(Manifest.permission.CAMERA)
+                        }
+                    },
+                    onGallerySelected = {
+                        showSelectImage = false
+                        launchPhotoPicker()
+                    }
+                )
             }
         }
     }

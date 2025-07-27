@@ -98,7 +98,7 @@ fun RecipeMainScreen(
                     Column(
                         modifier = Modifier
                             .fillMaxSize()
-                            .padding(10.dp),
+                            .padding(horizontal = 10.dp),
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
                         LazyVerticalGrid(

@@ -43,7 +43,9 @@ sealed interface Route {
         @Serializable
         data object RecipeMain: Route
         @Serializable
-        data object RecipeCreate: Route
+        data class RecipeCreate(val imageUri: String? = null): Route
+        @Serializable
+        data object RecipeCamera: Route
         @Serializable
         data object RecipeCreateUseExcel: Route
         @Serializable
