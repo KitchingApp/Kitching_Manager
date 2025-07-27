@@ -34,6 +34,7 @@ fun RecipeCameraScreen(
     var capturedBitmap by remember { mutableStateOf<Bitmap?>(null) }
 
     commonState.topAppBarState.value = commonState.topAppBarState.value.copy(
+        title = "레시피 사진 추가",
         navIconInfo = NavigationIconInfo.BACK,
         onClickNavIcon = {
             navigateToCreateRecipe()
