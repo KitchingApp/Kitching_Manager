@@ -75,7 +75,7 @@ fun NoticeCreateOrModifyScreen(
     var teamId by remember { mutableStateOf("") }
     var userId by remember { mutableStateOf("") }
     val userNameResultState by viewModel.userName.collectAsStateWithLifecycle()
-    val noticeResultState by viewModel.noticeResult.collectAsStateWithLifecycle()
+    val noticeResultState by viewModel.createNoticeResult.collectAsStateWithLifecycle()
 
     LaunchedEffect(Unit) {
         teamId = PreferencesDataStore().getTeamId()
@@ -85,7 +85,11 @@ fun NoticeCreateOrModifyScreen(
 
     LaunchedEffect(noticeResultState) {
         when (noticeResultState) {
-            is AppResult.Success -> popBackStack()
+            is AppResult.Success -> {
+                val message = (noticeResultState as AppResult.Success).data
+                commonState.snackbarHostState.showSnackbar(message.toString())
+                popBackStack()
+            }
 
             is AppResult.Failure -> {
                 commonState.snackbarHostState.showSnackbar("네트워크가 안좋습니다. 잠시후 다시 시도해주시요.")

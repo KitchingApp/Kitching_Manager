@@ -55,7 +55,8 @@ val viewModelFactory = object : ViewModelProvider.Factory {
                     )
                 isAssignableFrom(NoticeViewModel::class.java) ->
                     NoticeViewModel(
-                        noticeRepository = NoticeRepositoryImpl()
+                        noticeRepository = NoticeRepositoryImpl(),
+                        pushMessageRepository = PushMessageRepositoryImpl()
                     )
                 isAssignableFrom(StaffLevelViewModel::class.java) ->
                     StaffLevelViewModel(
