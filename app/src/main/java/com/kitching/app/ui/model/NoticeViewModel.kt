@@ -28,7 +28,7 @@ class NoticeViewModel(
     }
 
     private val _createNoticeResult = MutableStateFlow<AppResult<String>>(AppResult.Initial)
-    val createNoticeResult get() = _noticeResult.asStateFlow()
+    val createNoticeResult get() = _createNoticeResult.asStateFlow()
 
     fun createNotice(userId: String, teamId: String, title: String, content: String) {
         viewModelScope.launch {
@@ -107,5 +107,10 @@ class NoticeViewModel(
                 _userName.value = it
             }
         }
+    }
+
+    fun resetNoticeResult() {
+        _noticeResult.value = AppResult.Initial
+        _createNoticeResult.value = AppResult.Initial
     }
 }

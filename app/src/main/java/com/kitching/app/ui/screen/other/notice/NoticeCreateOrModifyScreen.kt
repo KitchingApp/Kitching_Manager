@@ -75,7 +75,8 @@ fun NoticeCreateOrModifyScreen(
     var teamId by remember { mutableStateOf("") }
     var userId by remember { mutableStateOf("") }
     val userNameResultState by viewModel.userName.collectAsStateWithLifecycle()
-    val noticeResultState by viewModel.createNoticeResult.collectAsStateWithLifecycle()
+    val noticeCreateResult by viewModel.createNoticeResult.collectAsStateWithLifecycle()
+    val noticeUpdateResult by viewModel.noticeResult.collectAsStateWithLifecycle()
 
     LaunchedEffect(Unit) {
         teamId = PreferencesDataStore().getTeamId()
@@ -83,17 +84,36 @@ fun NoticeCreateOrModifyScreen(
         if(notice == null) viewModel.getUserName(userId)
     }
 
-    LaunchedEffect(noticeResultState) {
-        when (noticeResultState) {
+    LaunchedEffect(noticeCreateResult) {
+        when (noticeCreateResult) {
             is AppResult.Success -> {
-                val message = (noticeResultState as AppResult.Success).data
-                commonState.snackbarHostState.showSnackbar(message.toString())
+                val message = (noticeCreateResult as AppResult.Success).data
+                viewModel.resetNoticeResult()
                 popBackStack()
+                commonState.snackbarHostState.showSnackbar(message)
             }
 
             is AppResult.Failure -> {
-                commonState.snackbarHostState.showSnackbar("네트워크가 안좋습니다. 잠시후 다시 시도해주시요.")
+                viewModel.resetNoticeResult()
                 popBackStack()
+                commonState.snackbarHostState.showSnackbar("네트워크가 안좋습니다. 잠시후 다시 시도해주시요.")
+            }
+
+            else -> {}
+        }
+    }
+
+    LaunchedEffect(noticeUpdateResult) {
+        when (noticeUpdateResult) {
+            is AppResult.Success -> {
+                viewModel.resetNoticeResult()
+                popBackStack()
+                commonState.snackbarHostState.showSnackbar("공지사항이 수정되었습니다.")
+            }
+
+            is AppResult.Failure -> {
+                viewModel.resetNoticeResult()
+                commonState.snackbarHostState.showSnackbar("네트워크가 안좋습니다. 잠시후 다시 시도해주세요.")
             }
 
             else -> {}
@@ -114,10 +134,10 @@ fun NoticeCreateOrModifyScreen(
             modifier = Modifier.fillMaxSize()
         ) {
             ResultConditionScreen(
-                loadingCondition = noticeResultState is AppResult.Loading && userNameResultState is AppResult.Loading,
+                loadingCondition = noticeCreateResult is AppResult.Loading || userNameResultState is AppResult.Loading,
                 successCondition = if(notice == null) userNameResultState is AppResult.Success else true,
                 failCondition =
-                noticeResultState is AppResult.Failure && (if(notice == null) userNameResultState is AppResult.Failure else true),
+                    noticeCreateResult is AppResult.Failure || (if(notice == null) userNameResultState is AppResult.Failure else true),
                 onRetryBtnClick = {}
             ) {
                 Box(
@@ -282,7 +302,7 @@ fun NoticeCreateOrModifyScreen(
                     }
                 }
             }
-            if (noticeResultState is AppResult.Loading) {
+            if (noticeUpdateResult is AppResult.Loading) {
                 ProgressIndicatorDialogScreen()
             }
         }
