@@ -10,4 +10,11 @@ interface PushMessageRepository {
         schedule: Schedule,
         rejectReason: String
     ): Flow<AppResult<Boolean>>
+
+    fun sendNoticeMessage(
+        title: String,
+        userId: String,
+        teamId: String,
+        content: String,
+    ): Flow<AppResult<String?>>
 }

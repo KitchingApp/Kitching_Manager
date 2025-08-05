@@ -6,6 +6,10 @@ import com.kitching.data.datasource.PushMessageDataSource
 import com.kitching.data.datasource.PushMessageDataSourceImpl
 import com.kitching.data.datasource.TeamDataSource
 import com.kitching.data.datasource.TeamDataSourceImpl
+import com.kitching.data.datasource.UserDataSource
+import com.kitching.data.datasource.UserDataSourceImpl
+import com.kitching.data.datasource.UserTeamDataSource
+import com.kitching.data.datasource.UserTeamDataSourceImpl
 import com.kitching.data.exception.PushMessageFailedException
 import com.kitching.domain.AppResult
 import com.kitching.domain.entities.FcmToken
@@ -17,7 +21,9 @@ import kotlinx.coroutines.flow.flow
 class PushMessageRepositoryImpl(
     private val fcmTokenDataSource: FcmTokenDataSource = FcmTokenDataSourceImpl(),
     private val pushMessageDataSource: PushMessageDataSource = PushMessageDataSourceImpl(),
-    private val teamDataSource: TeamDataSource = TeamDataSourceImpl()
+    private val teamDataSource: TeamDataSource = TeamDataSourceImpl(),
+    private val userDataSource: UserDataSource = UserDataSourceImpl(),
+    private val userTeamDataSource: UserTeamDataSource = UserTeamDataSourceImpl()
 ) : PushMessageRepository {
     override fun sendRejectPushMessage(
         teamId: String,
@@ -52,5 +58,48 @@ class PushMessageRepositoryImpl(
         } else {
             emit(AppResult.Success(true))
         }
+    }.catch { emit(AppResult.Failure(it)) }
+
+    override fun sendNoticeMessage(
+        title: String,
+        userId: String,
+        teamId: String,
+        content: String,
+    ) = flow {
+        emit(AppResult.Loading)
+        val writerName = userDataSource.getUser(userId).userName
+
+        val teamMembers = userTeamDataSource.getAllMembers(teamId)
+
+        val memberUserIds = teamMembers.map { it.userId }
+
+        val allTokens = mutableListOf<String>()
+
+        memberUserIds.forEach { userId ->
+            val tokens = fcmTokenDataSource.getTokens(userId)
+            allTokens.addAll(tokens.map { it.token })
+        }
+
+        val res = pushMessageDataSource.sendNoticePushMessage(
+            title = title,
+            writerName = writerName,
+            content = content,
+            fcmTokens = allTokens
+        )
+
+        // 추후 코드별 정리
+        val result = when (res.code()) {
+            200 -> res.body()?.message
+
+            206 -> res.body()?.message
+
+            400 -> res.body()?.message
+
+            500 -> res.body()?.message
+
+            else -> res.body()?.message
+        }
+
+        emit(AppResult.Success(result))
     }.catch { emit(AppResult.Failure(it)) }
 }

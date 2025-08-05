@@ -1,15 +1,14 @@
-/**
- * Import function triggers from their respective submodules:
- *
- * import {onCall} from "firebase-functions/v2/https";
- * import {onDocumentWritten} from "firebase-functions/v2/firestore";
- *
- * See a full list of supported triggers at https://firebase.google.com/docs/functions
- */
-
 import { initializeApp } from 'firebase-admin/app';
-import { pushMessage } from './fcmFunctions';
+import { 
+  sendScheduleRejectMessage, 
+  sendNoticeMessage 
+} from './fcmFunctions';
 
+// Firebase Admin SDK 초기화
 initializeApp();
 
-export { pushMessage };
+// Functions Export (독립 엔드포인트)
+export { 
+  sendScheduleRejectMessage,  // 스케줄 거절 알림
+  sendNoticeMessage           // 공지사항 알림 (일괄 전송)
+};
