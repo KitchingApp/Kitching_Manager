@@ -31,6 +31,7 @@ import com.kitching.app.common.NavigationIconInfo
 import com.kitching.app.navgraph.NoticeItem
 import com.kitching.app.ui.factory.viewModelFactory
 import com.kitching.app.ui.model.NoticeViewModel
+import com.kitching.app.ui.screen.common.ProgressIndicatorDialogScreen
 import com.kitching.app.ui.screen.commondialog.BasicConfirmDialog
 import com.kitching.app.ui.theme.Body1_m
 import com.kitching.app.ui.theme.Caption1_R
@@ -43,7 +44,6 @@ import com.kitching.app.ui.theme.NeutralGray100
 import com.kitching.app.ui.theme.NeutralGray800
 import com.kitching.app.ui.theme.PrimaryGreen300
 import com.kitching.app.ui.theme.defaultPadding
-import com.kitching.app.util.PreferencesDataStore
 import com.kitching.domain.AppResult
 
 /**
@@ -63,11 +63,24 @@ fun NoticeDetailScreen(
 ) {
     var showDeleteDialog by remember { mutableStateOf(false) }
 
-    var teamId by remember { mutableStateOf("") }
     val noticeResultState by viewModel.noticeResult.collectAsStateWithLifecycle()
 
-    LaunchedEffect(Unit) {
-        teamId = PreferencesDataStore().getTeamId()
+    LaunchedEffect(noticeResultState) {
+        when (noticeResultState) {
+            is AppResult.Success ->{
+                viewModel.resetNoticeResult()
+                navigateToNoticeList()
+                commonState.snackbarHostState.showSnackbar("공지사항이 삭제되었습니다.")
+            }
+
+            is AppResult.Failure -> {
+                viewModel.resetNoticeResult()
+                navigateToNoticeList()
+                commonState.snackbarHostState.showSnackbar("네트워크가 안좋습니다. 잠시후 다시 시도해주세요.")
+            }
+
+            else -> {}
+        }
     }
 
     commonState.topAppBarState.value = commonState.topAppBarState.value.copy(
@@ -169,10 +182,6 @@ fun NoticeDetailScreen(
                             confirmText = "삭제",
                             onClickConfirm = {
                                 viewModel.deleteNotice(notice.noticeId)
-                                if (noticeResultState is AppResult.Success) {
-                                    viewModel.getNotices(teamId)
-                                    navigateToNoticeList()
-                                }
                                 showDeleteDialog = false
                             },
                             cancelText = "취소",
@@ -180,6 +189,10 @@ fun NoticeDetailScreen(
                         )
                     }
                 }
+            }
+
+            if (noticeResultState is AppResult.Loading) {
+                ProgressIndicatorDialogScreen()
             }
         }
     }
