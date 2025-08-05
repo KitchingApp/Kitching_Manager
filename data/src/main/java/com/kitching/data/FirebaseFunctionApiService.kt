@@ -14,10 +14,10 @@ import retrofit2.http.POST
 const val FIREBASE_FUNCTION_BASE_URL = "https://us-central1-kitching-91adf.cloudfunctions.net/"
 
 interface FirebaseFunctionApiService {
-    @POST("/pushMessage")
-    suspend fun sendPushMessage(@Body scheduleRejectPushMsgReq: ScheduleRejectPushMsgReq): Response<ScheduleRejectPushMsgRes>
+    @POST("sendScheduleRejectMessage")
+    suspend fun sendScheduleRejectMessage(@Body scheduleRejectPushMsgReq: ScheduleRejectPushMsgReq): Response<ScheduleRejectPushMsgRes>
 
-    @POST("/sendNoticeMessage")
+    @POST("sendNoticeMessage")
     suspend fun sendNoticeMessage(@Body noticeMessageReq: NoticeMessageReq): Response<NoticeMessageRes>
 
     companion object {

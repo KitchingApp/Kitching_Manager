@@ -13,7 +13,7 @@ class PushMessageDataSourceImpl(
         scheduleTimeName: String,
         rejectReason: String,
         registrationToken: String
-    ) = firebaseFunctionApiService.sendPushMessage(ScheduleRejectPushMsgReq(
+    ) = firebaseFunctionApiService.sendScheduleRejectMessage(ScheduleRejectPushMsgReq(
         teamName = teamName,
         scheduleDate = scheduleDate,
         scheduleTimeName = scheduleTimeName,

@@ -93,6 +93,7 @@ fun NoticeCreateOrModifyScreen(
 
             is AppResult.Failure -> {
                 commonState.snackbarHostState.showSnackbar("네트워크가 안좋습니다. 잠시후 다시 시도해주시요.")
+                popBackStack()
             }
 
             else -> {}
