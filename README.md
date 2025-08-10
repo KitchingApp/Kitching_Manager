@@ -36,3 +36,9 @@
 - 직급 생성/수정/삭제
 - 스케줄타임(ex. 오픈, 미들, 마감)의 이름과 시간대를 관리
 - 팀에 합류되어 있는 직원들에게 매니저 권한(매니저앱 사용 가능)을 부여하거나 직급 등을 조절
+
+#### ✨ 개발 팀원
+|Android|Android|
+|:---:|:---:|
+|[박민수](https://github.com/Eddie-Pak)|[김채연](https://github.com/kimbangto)|
+|<img src="https://github.com/Eddie-Pak.png?size=144">|<img src="https://github.com/kimbangto.png?size=144">|
