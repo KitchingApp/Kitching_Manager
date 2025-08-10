@@ -29,7 +29,7 @@
 
 #### 📌그 외
 
-<img src="https://github.com/user-attachments/assets/46c8d043-9200-4944-a4ee-cefd87e8fb95" width="200px" /> <img src="https://github.com/user-attachments/assets/4cbf92a7-e867-4cae-8b94-4b454edc243a" width="200px" />
+<img src="https://github.com/user-attachments/assets/46c8d043-9200-4944-a4ee-cefd87e8fb95" width="200px" /> <img src="https://github.com/user-attachments/assets/c1be23aa-7028-421d-ada4-790b2c4f9009" width="200px" />
 
 - 팀에 합류할 수 있는 초대코드 열람
 - 레스토랑 내부 공지사항 생성/수정/삭제, 공지사항 작성시 스탭앱 같은 팀인원에게 FCM발송 기능
