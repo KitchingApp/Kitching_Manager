@@ -23,9 +23,10 @@
 
 #### 🍳레시피
 
-<img src="https://github.com/user-attachments/assets/e635e2f4-982c-4dc1-8837-f1e60a800f21" width="200px" /> <img src="https://github.com/user-attachments/assets/9af3d011-33fe-45aa-9f05-2fe1b29f1161" width="200px" /> <img src="https://github.com/user-attachments/assets/8891b9b4-846e-4da5-be61-af4b3c3e9ca6" width="200px" /> <img src="https://github.com/user-attachments/assets/bf56f0b8-fb7e-4dbe-aa42-69acca78745e" width="200px" />
+<img src="https://github.com/user-attachments/assets/e635e2f4-982c-4dc1-8837-f1e60a800f21" width="200px" /> <img src="https://github.com/user-attachments/assets/8891b9b4-846e-4da5-be61-af4b3c3e9ca6" width="200px" /> <img src="https://github.com/user-attachments/assets/5a725455-b0b8-44b2-ba15-21758d8a0444" width="200px" /> <img src="https://github.com/user-attachments/assets/bf56f0b8-fb7e-4dbe-aa42-69acca78745e" width="200px" />
 - 직원들이 열람할 수 있는 레스토랑의 레시피 생성/수정/삭제 기능
-- CameraX를 활용한 사진 직접 업로드, 사용자 편의를 위한 엑셀 파일 일괄 업로드 기능
+- CameraX를 활용한 사진 직접 업로드 기능
+- 사용자 편의를 위한 WorkManager를 통한 업로드, 엑셀 파일 일괄 Service 업로드 기능
 
 #### 📌그 외
 
