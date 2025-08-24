@@ -163,6 +163,8 @@ private fun takePhotoForRecipe(
                     true
                 )
 
+                image.close()
+
                 onPhotoTaken(rotatedBitmap)
             }
 
