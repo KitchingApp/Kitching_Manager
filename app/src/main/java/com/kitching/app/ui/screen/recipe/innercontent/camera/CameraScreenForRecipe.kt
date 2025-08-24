@@ -6,6 +6,7 @@ import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.Matrix
 import android.os.Build
+import android.util.Size
 import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
@@ -13,6 +14,9 @@ import androidx.camera.core.CameraSelector
 import androidx.camera.core.ImageCapture
 import androidx.camera.core.ImageCaptureException
 import androidx.camera.core.ImageProxy
+import androidx.camera.core.resolutionselector.AspectRatioStrategy
+import androidx.camera.core.resolutionselector.ResolutionSelector
+import androidx.camera.core.resolutionselector.ResolutionStrategy
 import androidx.camera.view.CameraController
 import androidx.camera.view.LifecycleCameraController
 import androidx.camera.view.PreviewView
@@ -66,8 +70,20 @@ fun CameraScreenForRecipe(
     val controller = remember {
         LifecycleCameraController(context).apply {
             setEnabledUseCases(CameraController.IMAGE_CAPTURE)
-            imageCaptureMode = ImageCapture.CAPTURE_MODE_MINIMIZE_LATENCY
             cameraSelector = CameraSelector.DEFAULT_BACK_CAMERA
+            val resolutionSelector = ResolutionSelector.Builder()
+                .setResolutionStrategy(
+                    ResolutionStrategy(
+                        Size(1080, 1440),
+                        ResolutionStrategy.FALLBACK_RULE_CLOSEST_LOWER_THEN_HIGHER
+                    )
+                )
+                .setAspectRatioStrategy(
+                    AspectRatioStrategy.RATIO_4_3_FALLBACK_AUTO_STRATEGY
+                )
+                .build()
+            imageCaptureMode = ImageCapture.CAPTURE_MODE_MINIMIZE_LATENCY
+            imageCaptureResolutionSelector = resolutionSelector
         }
     }
 
@@ -111,9 +127,9 @@ fun CameraPreview(
         factory = {
             PreviewView(it).apply {
                 this.controller = controller
-                /**
-                 * 현재 화면의 Life Cycle 과 CameraX Controller 을 동기화 시킴
-                 */
+
+                scaleType = PreviewView.ScaleType.FILL_CENTER
+
                 controller.bindToLifecycle(lifecycleOwner)
             }
         },
@@ -132,45 +148,30 @@ private fun takePhotoForRecipe(
         object : ImageCapture.OnImageCapturedCallback() {
             override fun onCaptureSuccess(image: ImageProxy) {
                 super.onCaptureSuccess(image)
-                val rotationDegrees = image.imageInfo.rotationDegrees
 
-                // 원본 비트맵 생성
-                val originalBitmap = image.toBitmap()
+                 val matrix = Matrix().apply {
+                     postRotate(image.imageInfo.rotationDegrees.toFloat())
+                 }
 
-                // 회전 보정된 비트맵 생성
-                val correctedBitmap = when (rotationDegrees) {
-                    90 -> rotateBitmap(originalBitmap, 90f)
-                    180 -> rotateBitmap(originalBitmap, 180f)
-                    270 -> rotateBitmap(originalBitmap, -90f)
-                    else -> originalBitmap  // 0도는 그대로
-                }
+                val rotatedBitmap = Bitmap.createBitmap(
+                    image.toBitmap(),
+                    0,
+                    0,
+                    image.width,
+                    image.height,
+                    matrix,
+                    true
+                )
 
                 image.close()
-                onPhotoTaken(correctedBitmap)
+
+                onPhotoTaken(rotatedBitmap)
             }
+
             override fun onError(exception: ImageCaptureException) {
                 super.onError(exception)
                 Toast.makeText(context, "사진 촬영에 실패했습니다.", Toast.LENGTH_SHORT).show()
             }
         }
     )
-}
-
-// 비트맵 회전 함수
-private fun rotateBitmap(bitmap: Bitmap, degrees: Float): Bitmap {
-    return if (degrees != 0f) {
-        val matrix = Matrix().apply {
-            postRotate(degrees)
-        }
-        val rotatedBitmap = Bitmap.createBitmap(
-            bitmap, 0, 0, bitmap.width, bitmap.height, matrix, true
-        )
-        // 원본 비트맵 해제 (메모리 절약)
-        if (!bitmap.isRecycled) {
-            bitmap.recycle()
-        }
-        rotatedBitmap
-    } else {
-        bitmap
-    }
 }
