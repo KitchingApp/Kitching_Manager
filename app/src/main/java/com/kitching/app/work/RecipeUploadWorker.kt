@@ -73,8 +73,6 @@ class RecipeUploadWorker(
 
                 is AppResult.Failure -> {
                     notification.showErrorNotification(result.exception.message.toString())
-
-                    throw result.exception
                 }
             }
         }
