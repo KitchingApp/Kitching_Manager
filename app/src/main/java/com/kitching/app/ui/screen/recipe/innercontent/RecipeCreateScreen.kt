@@ -37,6 +37,7 @@ import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
+import androidx.work.BackoffPolicy
 import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.WorkManager
 import androidx.work.workDataOf
@@ -59,6 +60,7 @@ import com.kitching.app.util.PreferencesDataStore
 import com.kitching.app.work.RecipeUploadWorker
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
+import java.time.Duration
 import java.util.UUID
 
 @SuppressLint("CoroutineCreationDuringComposition")
@@ -125,6 +127,10 @@ fun RecipeCreateScreen(
             // WorkManager 요청 생성
             val uploadRequest = OneTimeWorkRequestBuilder<RecipeUploadWorker>()
                 .setInputData(inputData)
+                .setBackoffCriteria(
+                    BackoffPolicy.EXPONENTIAL,
+                    Duration.ofSeconds(30)
+                )
                 .build()
 
             // WorkManager 실행
