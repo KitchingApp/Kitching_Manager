@@ -1,6 +1,7 @@
 package com.kitching.app.work
 
 import android.content.Context
+import androidx.core.net.toUri
 import androidx.work.CoroutineWorker
 import androidx.work.ForegroundInfo
 import androidx.work.WorkerParameters
@@ -13,7 +14,6 @@ import com.kitching.domain.AppResult
 import com.kitching.domain.usecase.RecipeUploadServiceUseCase
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.serialization.json.Json
-import androidx.core.net.toUri
 
 class RecipeUploadWorker(
     context: Context,
@@ -73,18 +73,22 @@ class RecipeUploadWorker(
 
                 is AppResult.Failure -> {
                     notification.showErrorNotification(result.exception.message.toString())
+                    throw result.exception
                 }
             }
         }
 
         notification.showCompleteNotification()
+    }.fold(
+        onSuccess = { Result.success() },
+        onFailure = { exception ->
+            when {
+                runAttemptCount < 3 -> Result.retry()
 
-        Result.success()
-    }.getOrElse { exception ->
-        Result.failure(
-            workDataOf(KEY_ERROR_MESSAGE to exception.message)
-        )
-    }
+                else -> Result.failure(workDataOf(KEY_ERROR_MESSAGE to exception.message))
+            }
+        }
+    )
 
     private fun createForegroundInfo(): ForegroundInfo {
         notificationChannel.createChannel(applicationContext)
